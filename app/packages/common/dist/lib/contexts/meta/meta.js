@@ -28,31 +28,31 @@ const getEmptyMetaState_1 = require("./getEmptyMetaState");
 const loadAccounts_1 = require("./loadAccounts");
 const wallet_adapter_react_1 = require("@solana/wallet-adapter-react");
 const MetaContext = react_1.default.createContext({
-    ...getEmptyMetaState_1.getEmptyMetaState(),
+    ...(0, getEmptyMetaState_1.getEmptyMetaState)(),
     isLoading: false,
     patchState: () => {
         throw new Error('unreachable');
     },
 });
 function MetaProvider({ children = null }) {
-    const connection = connection_1.useConnection();
-    const { isReady, storeAddress, ownerAddress } = store_1.useStore();
-    const { publicKey } = wallet_adapter_react_1.useWallet();
-    const [state, setState] = react_1.useState(getEmptyMetaState_1.getEmptyMetaState());
-    const [isLoading, setIsLoading] = react_1.useState(true);
+    const connection = (0, connection_1.useConnection)();
+    const { isReady, storeAddress, ownerAddress } = (0, store_1.useStore)();
+    const { publicKey } = (0, wallet_adapter_react_1.useWallet)();
+    const [state, setState] = (0, react_1.useState)((0, getEmptyMetaState_1.getEmptyMetaState)());
+    const [isLoading, setIsLoading] = (0, react_1.useState)(true);
     const patchState = (...args) => {
         setState(current => {
             var _a;
-            const newState = lodash_1.merge({}, current, ...args, { store: current.store });
+            const newState = (0, lodash_1.merge)({}, current, ...args, { store: current.store });
             const currentMetdata = (_a = current.metadata) !== null && _a !== void 0 ? _a : [];
             const nextMetadata = args.reduce((memo, { metadata = [] }) => {
                 return [...memo, ...metadata];
             }, []);
-            newState.metadata = lodash_1.uniqWith([...currentMetdata, ...nextMetadata], (a, b) => a.pubkey === b.pubkey);
+            newState.metadata = (0, lodash_1.uniqWith)([...currentMetdata, ...nextMetadata], (a, b) => a.pubkey === b.pubkey);
             return newState;
         });
     };
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         (async () => {
             if (!storeAddress || !ownerAddress) {
                 if (isReady) {
@@ -63,7 +63,7 @@ function MetaProvider({ children = null }) {
             else if (!state.store) {
                 setIsLoading(true);
             }
-            const nextState = await loadAccounts_1.loadAccounts(connection, ownerAddress);
+            const nextState = await (0, loadAccounts_1.loadAccounts)(connection, ownerAddress);
             setState(nextState);
             // if (publicKey) {
             //   const nextState = await loadAccounts(connection, ownerAddress);
@@ -87,7 +87,7 @@ function MetaProvider({ children = null }) {
 }
 exports.MetaProvider = MetaProvider;
 const useMeta = () => {
-    const context = react_1.useContext(MetaContext);
+    const context = (0, react_1.useContext)(MetaContext);
     return context;
 };
 exports.useMeta = useMeta;

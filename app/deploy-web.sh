@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 
 echo "Starting to deploy 'web', installing and bootstrapping..."
-yarn&& yarn bootstrap
+yarn install && yarn bootstrap
 
 echo "Preparing 'common'..."
 cd ./packages/common || exit
 yarn prepare
 cd ../checkout || exit
-
-#echo "Preparing 'client'..."
-#yarn prepare
-#cd ../client || exit
 
 echo "Preparing 'checkout'..."
 yarn prepare

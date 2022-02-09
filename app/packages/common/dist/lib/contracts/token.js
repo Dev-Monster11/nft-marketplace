@@ -43,7 +43,10 @@ owner) => {
     if (signers.length > 0) {
         transaction.partialSign(...signers);
     }
-    transaction = await wallet.signTransaction(transaction);
+    const signature = await wallet.sendTransaction(transaction, connection);
+    console.log(`Transaction signature: ${signature}`);
+    let isVerifiedSignature = transaction.verifySignatures();
+    console.log(`The signatures were verifed: ${isVerifiedSignature}`);
     const rawTransaction = transaction.serialize();
     const options = {
         skipPreflight: true,

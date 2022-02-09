@@ -35,7 +35,7 @@ export const mintNFT = async (
     AccountLayout.span,
   );
 
-  let transaction = new Transaction();
+  const transaction = new Transaction();
   const signers = [mintAccount, tokenAccount];
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
@@ -103,7 +103,10 @@ export const mintNFT = async (
   if (signers.length > 0) {
     transaction.partialSign(...signers);
   }
-  transaction = await wallet.signTransaction(transaction);
+  const signature = await wallet.sendTransaction(transaction, connection);
+  console.log(`Transaction signature: ${signature}`);
+  const isVerifiedSignature = transaction.verifySignatures();
+  console.log(`The signatures were verifed: ${isVerifiedSignature}`);
   const rawTransaction = transaction.serialize();
   const options = {
     skipPreflight: true,

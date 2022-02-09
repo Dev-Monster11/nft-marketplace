@@ -13,5 +13,5 @@ export declare const WalletModalProvider: FC<{
 export declare const WalletProvider: FC<{
     children: ReactNode;
 }>;
-export declare type WalletSigner = Pick<WalletAdapter, 'publicKey' | 'signTransaction' | 'signAllTransactions'>;
+export declare type WalletSigner = Pick<WalletAdapter, 'publicKey' | 'sendTransaction'>;
 //# sourceMappingURL=wallet.d.ts.map
