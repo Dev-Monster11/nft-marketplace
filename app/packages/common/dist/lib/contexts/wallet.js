@@ -21,11 +21,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WalletProvider = exports.WalletModalProvider = exports.WalletModal = exports.useWalletModal = exports.WalletModalContext = void 0;
 const wallet_adapter_react_1 = require("@solana/wallet-adapter-react");
+const wallet_adapter_solflare_1 = require("@solana/wallet-adapter-solflare");
 const wallet_adapter_wallets_1 = require("@solana/wallet-adapter-wallets");
 const antd_1 = require("antd");
 const react_1 = __importStar(require("react"));
 const components_1 = require("../components");
 const utils_1 = require("../utils");
+// import { QueeWalletAdapter } from './wallet/QueeWalletAdapter';
 const { Panel } = antd_1.Collapse;
 exports.WalletModalContext = react_1.createContext({
     visible: false,
@@ -110,6 +112,12 @@ const WalletProvider = ({ children }) => {
         wallet_adapter_wallets_1.getSolongWallet(),
         wallet_adapter_wallets_1.getMathWallet(),
         wallet_adapter_wallets_1.getSolletWallet(),
+        {
+            name: "Solflare",
+            url: 'https://solflare.com',
+            icon: `https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/icons/phantom.svg`,
+            adapter: () => new wallet_adapter_solflare_1.SolflareWalletAdapter()
+        }
     ], []);
     const onError = react_1.useCallback((error) => {
         console.error(error);

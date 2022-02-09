@@ -1,1 +1,1 @@
-export * from './MyWalletAdapter';
+export * from './QueenWalletAdapter'

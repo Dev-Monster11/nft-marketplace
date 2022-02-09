@@ -10,6 +10,16 @@ export declare const WalletModal: () => JSX.Element;
 export declare const WalletModalProvider: FC<{
     children: ReactNode;
 }>;
+export declare enum WalletName {
+    Ledger = "Ledger",
+    MathWallet = "MathWallet",
+    Phantom = "Phantom",
+    Solflare = "Solflare",
+    SolflareWeb = "Solflare (Web)",
+    Sollet = "Sollet",
+    Solong = "Solong",
+    Torus = "Torus"
+}
 export declare const WalletProvider: FC<{
     children: ReactNode;
 }>;

@@ -11,6 +11,7 @@ import {
   getSolflareWallet,
   getSolletWallet,
   getSolongWallet,
+  Wallet
 } from '@solana/wallet-adapter-wallets';
 import { Button, Collapse, Space } from 'antd';
 import React, {
@@ -25,7 +26,7 @@ import React, {
 } from 'react';
 import { MetaplexModal } from '../components';
 import { notify } from '../utils';
-import { MyWalletAdapter } from './wallet/MyWalletAdapter';
+// import { QueeWalletAdapter } from './wallet/QueeWalletAdapter';
 const { Panel } = Collapse;
 
 export interface WalletModalContextState {
@@ -201,11 +202,11 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
       getMathWallet(),
       getSolletWallet(),
       {
-        name: WalletName.Ledger,
+        name: "Solflare",
         url: 'https://solflare.com',
         icon: `https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/icons/phantom.svg`,
         adapter: () => new SolflareWalletAdapter()
-      }
+      } as Wallet
     ],
     [],
   );

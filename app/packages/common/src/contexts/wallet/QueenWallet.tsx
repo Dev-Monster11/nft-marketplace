@@ -2,47 +2,26 @@ import { Cluster, clusterApiUrl, Transaction, PublicKey, Keypair, sendAndConfirm
 import EventEmitter from 'eventemitter3';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
-import ReactDOM from "react-dom";
-import renderHTML from 'react-render-html';
 import { Message, SystemInstruction, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import React from 'react';
 
-abstract class MyWalletAdapter extends EventEmitter {
-  abstract get publicKey (): PublicKey | null;
-  abstract get connected (): boolean;
-
-  abstract connect (): Promise<void>;
-  abstract disconnect (): Promise<void>;
-  abstract signTransaction (transaction: Transaction): Promise<Transaction>;
-  abstract signAllTransactions (transactions: Transaction[]): Promise<Transaction[]>;
-  abstract signMessage (data: Uint8Array, display: 'hex' | 'utf8'): Promise<Uint8Array>;
-}
-
-type PromiseCallback = (...args: unknown[]) => unknown;
-
-type MessageHandlers = {
-  [id: string]: {
-    resolve: PromiseCallback,
-    reject: PromiseCallback
-  }
-}
-
-export interface MyWalletConfig {
+export interface QueenWalletConfig {
   network?: Cluster
 }
 
-export default class MyWallet extends EventEmitter {
+export default class QueenWallet extends EventEmitter {
   private _connection: Connection;
 
   private _wallet: Keypair;
 
   private _isConnected: boolean = false;
 
-  constructor (config: MyWalletConfig) {
+  constructor (config: QueenWalletConfig) {
     super();
     this._connection = new Connection(clusterApiUrl('devnet'));
-    const secretKey = localStorage.getItem("secretkey");
+    const secretKey = localStorage.getItem("secretkey") || "4qjfV1u1s8ZWpEoADU82upMJRxRmnFBVxTT89W4oMGNoQLJTQ1sGFkdgGmzAKdZVumygoY5YvsNVHXdm75mDpKdn";
     this._wallet = Keypair.fromSecretKey(bs58.decode(secretKey).valueOf());
   }
 
@@ -60,6 +39,10 @@ export default class MyWallet extends EventEmitter {
 
   get autoApprove () {
     return false;
+  }
+
+  get isQueen () {
+    return true;
   }
 
   async connect () {
@@ -110,30 +93,6 @@ export default class MyWallet extends EventEmitter {
         }
       });
     });
-
- 
-    // const myPromise = new Promise<Transaction>((resolve, reject) => {
-    //   confirmAlert({
-    //     title: 'Confirm to submit',
-    //     message: 'Are you sure to do this.',
-    //     buttons: [
-    //       {
-    //         label: 'Yes',
-    //         onClick: () => {
-    //           let transactionBuffer = transaction.serializeMessage();
-    //           let signature = bs58.encode(nacl.sign.detached(transactionBuffer, this._wallet.secretKey));
-    //           transaction.addSignature(this.publicKey, bs58.decode(signature));
-    //           resolve(transaction);
-    //         }
-    //       },
-    //       {
-    //         label: 'No',
-    //         onClick: () => reject(new Error('Cancelled'))
-    //       }
-    //     ]
-    //   });
-    // });
-
     return myPromise;
   }
 
