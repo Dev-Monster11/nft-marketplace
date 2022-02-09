@@ -407,6 +407,7 @@ export const AuctionCard = ({
       if (instantSalePrice && (allowBidToPublic || allowBidToAuctionOwner)) {
         let bidTxid: string | undefined;
 
+        console.log(`starting bid for ${auctionView}`);
         try {
           console.log('sendPlaceBid');
           const { amount, txid } = await sendPlaceBid(
@@ -418,6 +419,7 @@ export const AuctionCard = ({
             instantSalePrice,
             'confirmed',
           );
+          console.log(txid, amount);
           setLastBid({ amount });
           bidTxid = txid;
           track('instant_sale_bid_submitted', {
@@ -795,17 +797,18 @@ export const AuctionCard = ({
   // Conduct an instant sale
   const instantFiatSaleBtn = (
     <Space
+      style={{ display: 'flex', justifyContent: 'center' }}
       align="center"
       onLoad={canEndInstantSale ? endInstantSale : instantFiatSale}
     >
       {!isAuctionManagerAuthorityNotWalletOwner ? (
         canEndInstantSale ? (
-          <Button onClick={endInstantSale}>End Sale & Claim Item</Button>
+          /*  <Button onClick={endInstantSale}>End Sale & Claim Item</Button> */ ''
         ) : (
-          <Button onClick={endInstantSale}>Claim Item</Button>
+          /*  <Button onClick={endInstantSale}>Claim Item</Button> */ ''
         )
       ) : auctionView.myBidderPot ? (
-        <Button onClick={instantFiatSale}>Claim Purchase</Button>
+        /*  <Button onClick={instantFiatSale}>Claim Purchase</Button> */ ''
       ) : (
         <currentCheckout.processPayment />
       )}
@@ -951,16 +954,12 @@ export const AuctionCard = ({
             </Button>
           )}
           <hr />
-          <Space
-            className="ant-card"
-            style={{
-              position: 'absolute',
-              top: 68,
-              left: 140,
-              padding: '0 10px 0 10px',
-            }}
-          >
-            <Text>Or pay with card</Text>
+          <Space className="ant-card pay_with_text">
+            {isAuctionManagerAuthorityNotWalletOwner ? (
+              <Text>Or pay with card</Text>
+            ) : (
+              ''
+            )}
           </Space>
           {showStartAuctionBtn
             ? startAuctionBtn

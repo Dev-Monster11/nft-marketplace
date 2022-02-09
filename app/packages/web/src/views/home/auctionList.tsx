@@ -1,11 +1,13 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import {
+  MetaplexOverlay,
+  MetaplexModal,
   useStore,
   loadMetadataForCreator,
   useConnection,
 } from '@oyster/common';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Alert, Button, Spin, Divider, Select, Input } from 'antd';
+import { Alert, Button, Spin, Divider, Select, Input, Drawer } from 'antd';
 import React, { useState, useEffect } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { Link, useParams } from 'react-router-dom';
@@ -18,6 +20,7 @@ import {
 import { Banner } from '../../components/Banner';
 import DrawerWrapper from '../modals/DrawerWrapper';
 import { useMeta } from '../../contexts';
+import CheckOutModal from '../modals/CheckOutModal';
 
 export enum LiveAuctionViewState {
   All = '0',
@@ -64,6 +67,41 @@ export const AuctionListView = () => {
   const handleChange = function (value: string) {
     setGlobalAdress(value);
   };
+
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height,
+    };
+  }
+
+  function useWindowDimensions() {
+    const [windowDimensions, setWindowDimensions] = useState(
+      getWindowDimensions(),
+    );
+
+    useEffect(() => {
+      function handleResize() {
+        setWindowDimensions(getWindowDimensions());
+      }
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return windowDimensions;
+  }
+  const { height, width } = useWindowDimensions();
+  const [mobileMode, setMobileMode] = useState<boolean>(false);
+  useEffect(() => {
+    if (width <= 575) {
+      setMobileMode(true);
+    } else if (width > 575) {
+      setMobileMode(false);
+    }
+  }, [height, width]);
+
   useEffect(() => {
     if (!id) {
       return;
@@ -149,10 +187,9 @@ export const AuctionListView = () => {
         <div className="d-flex">
           <h3 className="me-2 me-sm-3 d-none d-sm-block">Creators: </h3>
           <Select
-            className="mb-2"
+            className="mb-2 select_artists"
             onChange={handleChange}
             defaultValue="All"
-            style={{ width: '30rem' }}
           >
             <Option value={'initial'}>All</Option>
             {creators.map((m, idx) => {
@@ -186,7 +223,7 @@ export const AuctionListView = () => {
           // const creator = useCreators(m)
           const creatorAdress =
             m.thumbnail.metadata.info.data.creators![0].address;
-          console.log(creatorAdress, '||', globalAdress);
+          // console.log(creatorAdress, '||', globalAdress);
           // console.log(creator, 'this is the creator')
           if (m.auction.info.state !== 2 && creatorAdress === globalAdress)
             return (
@@ -219,11 +256,39 @@ export const AuctionListView = () => {
           <Spin indicator={<LoadingOutlined />} />
         </div>
       )}
-      {showModal && (
+      {/* {showModal && (
         <DrawerWrapper
-          show={showModal}
           id={itemId}
           hide={() => setShowModal(false)}
+          placement="bottom"
+          show={showModal && mobileMode}
+          mobileMode={mobileMode}
+        />
+        
+      )} */}
+      <MetaplexModal
+        maskClosable={true}
+        closable={false}
+        onCancel={() => setShowModal(false)}
+        visible={showModal && mobileMode}
+      >
+        <div className="p-2">
+          <CheckOutModal
+            mobile={mobileMode}
+            show={showModal}
+            id={itemId}
+            hide={() => setShowModal(false)}
+          />
+        </div>
+      </MetaplexModal>
+
+      {showModal && (
+        <DrawerWrapper
+          id={itemId}
+          hide={() => setShowModal(false)}
+          placement="right"
+          show={showModal && !mobileMode}
+          mobileMode={mobileMode}
         />
       )}
     </>

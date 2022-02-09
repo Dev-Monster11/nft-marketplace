@@ -1,37 +1,44 @@
-import {
-  ENV as ChainId,
-  TokenInfo,
-  TokenListProvider,
-} from '@solana/spl-token-registry';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { getTokenListContainerPromise } from '../utils';
+import { TokenInfo, ENV as ChainId } from '@solana/spl-token-registry';
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import {
-  Blockhash,
+  Keypair,
   clusterApiUrl,
   Commitment,
   Connection,
-  FeeCalculator,
-  Keypair,
   RpcResponseAndContext,
   SignatureStatus,
   SimulatedTransactionResponse,
   Transaction,
   TransactionInstruction,
   TransactionSignature,
-  sendAndConfirmRawTransaction,
+  Blockhash,
+  FeeCalculator,
 } from '@solana/web3.js';
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import nacl from "tweetnacl";
+import { chunks, sleep, useLocalStorageState } from '../utils/utils';
+import { notify } from '../utils/notifications';
 import { ExplorerLink } from '../components/ExplorerLink';
 import { useQuerySearch } from '../hooks';
-import { notify } from '../utils/notifications';
-import { sleep, useLocalStorageState } from '../utils/utils';
 import { WalletSigner } from './wallet';
+import { initCusper } from '@metaplex-foundation/cusper'
 import getConfig from 'next/config';
+
+const cusper = initCusper()
+const logs = [
+  'Program CwrqeMj2U8tFr1Rhkgwc84tpAsqbt9pTt2a4taoTADPr invoke [1]',
+  'Program log: Custom program error: 0x07D0',
+]
+
+function showError(err?: string) {
+  try {
+    const error = { ...new Error('Test error'), logs }
+    cusper.throwError(error)
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 
 let nextConfig = getConfig();
@@ -42,17 +49,26 @@ interface BlockhashAndFeeCalculator {
   feeCalculator: FeeCalculator;
 }
 
-export type ENV =
+export type ENDPOINT_NAME =
   | 'mainnet-beta (Triton)'
   | 'mainnet-beta (Triton Staging)'
   | 'mainnet-beta (Solana)'
   | 'mainnet-beta (Serum)'
+  | 'mainnet-beta'
   | 'testnet'
   | 'devnet'
   | 'localnet'
   | 'lending';
 
-export const ENDPOINTS: { name: ENV; endpoint: string; ChainId: ChainId }[] = [
+export type ENV = ENDPOINT_NAME;
+
+type EndpointMap = {
+  name: ENDPOINT_NAME;
+  endpoint: string;
+  ChainId: ChainId;
+};
+
+  export const ENDPOINTS: Array<EndpointMap> = [
   {
     name: publicRuntimeConfig.publicSolanaNetwork,
     endpoint: publicRuntimeConfig.publicSolanaRpcHost, 
@@ -80,105 +96,139 @@ export const ENDPOINTS: { name: ENV; endpoint: string; ChainId: ChainId }[] = [
   },
 ];
 
-const DEFAULT = ENDPOINTS[0].endpoint;
+const DEFAULT_ENDPOINT = ENDPOINTS[0];
 const DEFAULT_CONNECTION_TIMEOUT = 300 * 1000;
 
 interface ConnectionConfig {
-  connection: Connection;
-  endpoint: string;
-  env: ENV;
+  setEndpointMap: (val: string) => void;
   setEndpoint: (val: string) => void;
-  tokens: TokenInfo[];
+  connection: Connection;
+  endpointMap: EndpointMap;
+  endpoint: string;
+  env: ENDPOINT_NAME;
+  tokens: Map<string, TokenInfo>;
   tokenMap: Map<string, TokenInfo>;
 }
 
 const ConnectionContext = React.createContext<ConnectionConfig>({
-  endpoint: DEFAULT,
+  setEndpointMap: () => { },
   setEndpoint: () => { },
-  connection: new Connection(DEFAULT, { commitment: 'recent', confirmTransactionInitialTimeout:  DEFAULT_CONNECTION_TIMEOUT }),
+  connection: new Connection(DEFAULT_ENDPOINT.endpoint, 'recent'),
+  endpointMap: DEFAULT_ENDPOINT,
   env: ENDPOINTS[0].name,
-  tokens: [],
+  endpoint: DEFAULT_ENDPOINT.endpoint,
+  tokens: new Map(),
   tokenMap: new Map<string, TokenInfo>(),
 });
 
-export function ConnectionProvider({
-  children = undefined,
-}: {
-  children: ReactNode;
-}) {
+export function ConnectionProvider({ children }: { children: any }) {
   const searchParams = useQuerySearch();
-  const network = searchParams.get('network');
-  const queryEndpoint =
-    network && ENDPOINTS.find(({ name }) => name.startsWith(network))?.endpoint;
+  const [networkStorage, setNetworkStorage] =
+    // @ts-ignore
+    useLocalStorageState<ENDPOINT_NAME>('network', DEFAULT_ENDPOINT.name);
+  const networkParam = searchParams.get('network');
 
-  const [savedEndpoint, setEndpoint] = useLocalStorageState(
+  const [savedEndpoint, setEndpointMap] = useLocalStorageState(
     'connectionEndpoint',
     ENDPOINTS[0].endpoint,
   );
-  const endpoint = queryEndpoint || savedEndpoint;
+  const setEndpoint = setEndpointMap
 
-  const connection = useMemo(
-    () => new Connection(endpoint, { commitment: 'recent', confirmTransactionInitialTimeout: DEFAULT_CONNECTION_TIMEOUT }),
-    [endpoint],
-  );
+  let maybeEndpoint;
+  if (networkParam) {
+    let endpointParam = ENDPOINTS.find(({ name }) => name === networkParam);
+    if (endpointParam) {
+      maybeEndpoint = endpointParam;
+    }
+  }
+
+  if (networkStorage && !maybeEndpoint?.endpoint) {
+    let endpointStorage = ENDPOINTS.find(({ name }) => name === networkStorage);
+    if (endpointStorage) {
+      maybeEndpoint = endpointStorage;
+    }
+  }
+
+  const endpointMap = maybeEndpoint|| DEFAULT_ENDPOINT;
+  const endpoint = maybeEndpoint?.endpoint|| DEFAULT_ENDPOINT.endpoint;
+  
+
+  const { current: connection } = useRef(new Connection(endpointMap.endpoint));
+
+  const [tokens, setTokens] = useState<Map<string, TokenInfo>>(new Map());
+  const [tokenMap, setTokenMap] = useState<Map<string, TokenInfo>>(new Map());
 
   const env =
-    ENDPOINTS.find(end => end.endpoint === endpoint)?.name || ENDPOINTS[0].name;
+    ENDPOINTS.find(end => end.endpoint === endpointMap.endpoint)?.name || ENDPOINTS[0].name;
 
-  const [tokens, setTokens] = useState<TokenInfo[]>([]);
-  const [tokenMap, setTokenMap] = useState<Map<string, TokenInfo>>(new Map());
   useEffect(() => {
-    // fetch token files
-    new TokenListProvider().resolve().then(container => {
-      const list = container
-        .excludeByTag('nft')
-        .filterByChainId(
-          ENDPOINTS.find(end => end.endpoint === endpoint)?.ChainId ||
-          ChainId.MainnetBeta,
-        )
-        .getList();
+    function fetchTokens() {
+      return getTokenListContainerPromise().then(container => {
+        const list = container
+          .excludeByTag('nft')
+          .filterByChainId(endpointMap.ChainId)
+          .getList();
 
-      const knownMints = [...list].reduce((map, item) => {
-        map.set(item.address, item);
-        return map;
-      }, new Map<string, TokenInfo>());
+          const knownMints = [...list].reduce((map, item) => {
+            map.set(item.address, item);
+            return map;
+          }, new Map<string, TokenInfo>());
 
-      setTokenMap(knownMints);
-      setTokens(list);
-    });
-  }, [env]);
+        const map = new Map(list.map(item => [item.address, item]));
+        setTokenMap(knownMints);
+        setTokens(map);
+      });
+    }
 
-  // The websocket library solana/web3.js uses closes its websocket connection when the subscription list
-  // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.
-  // This is a hack to prevent the list from every getting empty
+    fetchTokens();
+  }, []);
+
+  useEffect(() => {
+    function updateNetworkInLocalStorageIfNeeded() {
+      if (networkStorage !== endpointMap.name) {
+        setNetworkStorage(endpointMap.name);
+      }
+    }
+
+    updateNetworkInLocalStorageIfNeeded();
+  }, []);
+
+  // solana/web3.js closes its websocket connection when the subscription list
+  // is empty after opening for the first time, preventing subsequent
+  // subscriptions from receiving responses.
+  // This is a hack to prevent the list from ever being empty.
   useEffect(() => {
     const id = connection.onAccountChange(
       Keypair.generate().publicKey,
-      () => { },
+      () => {},
     );
     return () => {
       connection.removeAccountChangeListener(id);
     };
-  }, [connection]);
+  }, []);
 
   useEffect(() => {
     const id = connection.onSlotChange(() => null);
     return () => {
       connection.removeSlotChangeListener(id);
     };
-  }, [connection]);
+  }, []);
+
+  const contextValue = React.useMemo(() => {
+    return {
+      setEndpointMap,
+      setEndpoint,
+      endpointMap,
+      endpoint,
+      connection,
+      tokens,
+      tokenMap,
+      env,
+    };
+  }, [tokens]);
 
   return (
-    <ConnectionContext.Provider
-      value={{
-        endpoint,
-        setEndpoint,
-        connection,
-        tokens,
-        tokenMap,
-        env,
-      }}
-    >
+    <ConnectionContext.Provider value={contextValue}>
       {children}
     </ConnectionContext.Provider>
   );
@@ -191,13 +241,16 @@ export function useConnection(): Connection {
 export function useConnectionConfig() {
   const context = useContext(ConnectionContext);
   return {
-    endpoint: context.endpoint,
+    setEndpointMap: context.setEndpointMap,
     setEndpoint: context.setEndpoint,
+    endpointMap: context.endpointMap,
+    endpoint: context.endpoint,
     env: context.env,
     tokens: context.tokens,
     tokenMap: context.tokenMap,
   };
 }
+
 
 export const getErrorForTransaction = async (
   connection: Connection,
@@ -244,7 +297,7 @@ export async function sendTransactionsWithManualRetry(
   let stopPoint = 0;
   let tries = 0;
   let lastInstructionsLength = null;
-  const toRemoveSigners: Record<number, boolean> = {};
+  let toRemoveSigners: Record<number, boolean> = {};
   instructions = instructions.filter((instr, i) => {
     if (instr.length > 0) {
       return true;
@@ -297,6 +350,92 @@ export async function sendTransactionsWithManualRetry(
   }
 }
 
+export const sendTransactionsInChunks = async (
+  connection: Connection,
+  wallet: WalletSigner,
+  instructionSet: TransactionInstruction[][],
+  signersSet: Keypair[][],
+  sequenceType: SequenceType = SequenceType.Parallel,
+  commitment: Commitment = 'singleGossip',
+  timeout: number = 120000,
+  batchSize: number,
+): Promise<number> => {
+  if (!wallet.publicKey) throw new WalletNotConnectedError();
+  let instructionsChunk: TransactionInstruction[][][] = [instructionSet];
+  let signersChunk: Keypair[][][] = [signersSet];
+
+  instructionsChunk = chunks(instructionSet, batchSize);
+  signersChunk = chunks(signersSet, batchSize);
+
+  for (let c = 0; c < instructionsChunk.length; c++) {  
+    const unsignedTxns: Transaction[] = [];
+
+    for (let i = 0; i < instructionsChunk[c].length; i++) {
+      const instructions = instructionsChunk[c][i];
+      const signers = signersChunk[c][i];
+      if (instructions.length === 0) {
+        continue;
+      }
+      // const transaction = new Transaction();
+      const transaction = new Transaction();
+      const block = await connection.getRecentBlockhash(commitment);
+      console.log(`sendTransactionsInChunks(${c}/${i}): ${block}`)
+      instructions.forEach(instruction => console.log(`instruction: ${instruction}`));
+
+      instructions.forEach(instruction => transaction.add(instruction));
+      transaction.recentBlockhash = block.blockhash;
+      // signers.forEach(signer => console.log(wallet.publicKey, signer, signer.publicKey));
+      // signers.forEach(signer => transaction.addSignature(wallet.publicKey, signer.publicKey));
+      transaction.setSigners(
+        // fee payed by the wallet owner
+        wallet.publicKey,
+        ...signers.map(s => s.publicKey)
+      );
+      if (signers.length > 0) {
+        transaction.partialSign(...signers);
+      }
+      unsignedTxns.push(transaction);
+    }
+
+    console.log(`wallet signer: ${wallet.publicKey}`);
+    const signedTxns = await wallet.signAllTransactions(unsignedTxns);
+
+    const breakEarlyObject = { breakEarly: false, i: 0 };
+    console.log(
+      'Signed txns length',
+      signedTxns.length,
+      'vs handed in length',
+      instructionSet.length,
+    );
+    for (let i = 0; i < signedTxns.length; i++) {
+      const signedTxnPromise = sendSignedTransaction({
+        connection,
+        signedTransaction: signedTxns[i],
+        timeout,
+      });
+      signedTxnPromise.catch(reason => {
+        // @ts-ignore
+        if (sequenceType === SequenceType.StopOnFailure) {
+          breakEarlyObject.breakEarly = true;
+          breakEarlyObject.i = i;
+        }
+      });
+
+      try {
+        await signedTxnPromise;
+      } catch (e) {
+        console.log('Caught failure', e);
+        if (breakEarlyObject.breakEarly) {
+          console.log('Died on ', breakEarlyObject.i);
+          return breakEarlyObject.i; // Return the txn we failed on by index
+        }
+      }
+    }
+  }
+
+  return instructionSet.length;
+};
+
 export const sendTransactions = async (
   connection: Connection,
   wallet: WalletSigner,
@@ -304,8 +443,8 @@ export const sendTransactions = async (
   signersSet: Keypair[][],
   sequenceType: SequenceType = SequenceType.Parallel,
   commitment: Commitment = 'singleGossip',
-  successCallback: (txid: string, ind: number) => void = () => { },
-  failCallback: (reason: string, ind: number) => boolean = () => false,
+  successCallback: (txid: string, ind: number) => void = (txid, ind) => {},
+  failCallback: (reason: string, ind: number) => boolean = (txid, ind) => false,
   block?: BlockhashAndFeeCalculator,
 ): Promise<number> => {
   if (!wallet.publicKey) throw new WalletNotConnectedError();
@@ -324,7 +463,7 @@ export const sendTransactions = async (
       continue;
     }
 
-    const transaction = new Transaction();
+    let transaction = new Transaction();
     instructions.forEach(instruction => transaction.add(instruction));
     transaction.recentBlockhash = block.blockhash;
     transaction.setSigners(
@@ -335,6 +474,11 @@ export const sendTransactions = async (
 
     if (signers.length > 0) {
       transaction.partialSign(...signers);
+      // transaction.setSigners(
+      //   // fee payed by the wallet owner
+      //   wallet.publicKey,
+      //   ...signers.map(s => s.publicKey),
+      // );
     }
 
     unsignedTxns.push(transaction);
@@ -344,7 +488,7 @@ export const sendTransactions = async (
 
   const pendingTxns: Promise<{ txid: string; slot: number }>[] = [];
 
-  const breakEarlyObject = { breakEarly: false, i: 0 };
+  let breakEarlyObject = { breakEarly: false, i: 0 };
   console.log(
     'Signed txns length',
     signedTxns.length,
@@ -352,19 +496,19 @@ export const sendTransactions = async (
     instructionSet.length,
   );
   for (let i = 0; i < signedTxns.length; i++) {
+    console.log(`signedTransaction ${i}: ${signedTxns[i]}`);
     const signedTxnPromise = sendSignedTransaction({
       connection,
       signedTransaction: signedTxns[i],
     });
 
     signedTxnPromise
-      .then(({ txid }) => {
-        console.log(`Instructions set ${i} succeeded. Transaction Id ${txid}`);
+      .then(({ txid, slot }) => {
         successCallback(txid, i);
       })
-      .catch((e) => {
-        failCallback(e.message, i);
-        console.log(`Instructions set ${i} failed.`);
+      .catch(reason => {
+        // @ts-ignore
+        failCallback(signedTxns[i], i);
         if (sequenceType === SequenceType.StopOnFailure) {
           breakEarlyObject.breakEarly = true;
           breakEarlyObject.i = i;
@@ -393,6 +537,80 @@ export const sendTransactions = async (
   return signedTxns.length;
 };
 
+export const sendTransactionsWithRecentBlock = async (
+  connection: Connection,
+  wallet: WalletSigner,
+  instructionSet: TransactionInstruction[][],
+  signersSet: Keypair[][],
+  commitment: Commitment = 'singleGossip',
+): Promise<number> => {
+  if (!wallet.publicKey) throw new WalletNotConnectedError();
+
+  const unsignedTxns: Transaction[] = [];
+
+  for (let i = 0; i < instructionSet.length; i++) {
+    const instructions = instructionSet[i];
+    const signers = signersSet[i];
+
+    if (instructions.length === 0) {
+      continue;
+    }
+
+    const block = await connection.getRecentBlockhash(commitment);
+    await sleep(1200);
+
+    const transaction = new Transaction();
+    instructions.forEach(instruction => transaction.add(instruction));
+    transaction.recentBlockhash = block.blockhash;
+
+    signers.forEach(signer => console.log(wallet.publicKey, signer, signer.publicKey));
+    transaction.setSigners(
+      // fee payed by the wallet owner
+      wallet.publicKey,
+      ...signers.map(s => s.publicKey),
+    );
+
+    if (signers.length > 0) {
+      transaction.partialSign(...signers);
+    }
+
+    unsignedTxns.push(transaction);
+  }
+
+  const signedTxns = await wallet.signAllTransactions(unsignedTxns);
+
+  const breakEarlyObject = { breakEarly: false, i: 0 };
+  console.log(
+    'Signed txns length',
+    signedTxns.length,
+    'vs handed in length',
+    instructionSet.length,
+  );
+  for (let i = 0; i < signedTxns.length; i++) {
+    const signedTxnPromise = sendSignedTransaction({
+      connection,
+      signedTransaction: signedTxns[i],
+    });
+
+    signedTxnPromise.catch(() => {
+      breakEarlyObject.breakEarly = true;
+      breakEarlyObject.i = i;
+    });
+
+    try {
+      await signedTxnPromise;
+    } catch (e) {
+      console.log('Caught failure', e);
+      if (breakEarlyObject.breakEarly) {
+        console.log('Died on ', breakEarlyObject.i);
+        return breakEarlyObject.i; // Return the txn we failed on by index
+      }
+    }
+  }
+
+  return signedTxns.length;
+};
+
 export const sendTransaction = async (
   connection: Connection,
   wallet: WalletSigner,
@@ -412,24 +630,32 @@ export const sendTransaction = async (
   ).blockhash;
 
   if (includesFeePayer) {
-    transaction.setSigners(...signers.map(s => s.publicKey));
+    // transaction.setSigners(...signers.map(s => s.publicKey));
+    transaction.partialSign(...signers);
   } else {
+    signers.forEach(signer => console.log(wallet.publicKey, signer, signer.publicKey));
     transaction.setSigners(
       // fee payed by the wallet owner
       wallet.publicKey,
-      ...signers.map(s => s.publicKey),
+      ...signers.map(s => s.publicKey)
     );
   }
 
   if (signers.length > 0) {
     transaction.partialSign(...signers);
+    // transaction.setSigners(
+    //   // fee payed by the wallet owner
+    //   wallet.publicKey,
+    //   ...signers.map(s => s.publicKey),
+    // );
   }
   if (!includesFeePayer) {
+    // transaction.feePayer = wallet.publicKey;
     transaction = await wallet.signTransaction(transaction);
   }
 
   const rawTransaction = transaction.serialize();
-  const options = {
+  let options = {
     skipPreflight: true,
     commitment,
   };
@@ -444,6 +670,7 @@ export const sendTransaction = async (
       connection,
       commitment,
     );
+    console.log(`confirmation -->>> : ${confirmation}`);
 
     if (!confirmation)
       throw new Error('Timed out awaiting confirmation on transaction');
@@ -455,8 +682,8 @@ export const sendTransaction = async (
         message: 'Transaction failed...',
         description: (
           <>
-            {errors.map((err, i) => (
-              <div key={i}>{err}</div>
+            {errors.map(err => (
+              <div>{err}</div>
             ))}
             <ExplorerLink address={txid} type="transaction" />
           </>
@@ -482,53 +709,118 @@ export const sendTransactionWithRetry = async (
   includesFeePayer: boolean = false,
   block?: BlockhashAndFeeCalculator,
   beforeSend?: () => void,
-): Promise<{ txid: string, slot: number }> => {
+) => {
   if (!wallet.publicKey) throw new WalletNotConnectedError();
 
-  let transaction = new Transaction();
+  console.log(`sendTransactionWithRetry; wallet: ${wallet.publicKey}`)
+  console.log(`sendTransactionWithRetry; instructions: ${instructions}`)
+  console.log(`sendTransactionWithRetry; signers: ${signers.flat}`)
+  console.log(`sendTransactionWithRetry; commitment: ${commitment}`)
+  console.log(`sendTransactionWithRetry; includesFeePayer: ${includesFeePayer.valueOf}`)
+
+
+  let transaction = new Transaction({ feePayer: wallet.publicKey});
   instructions.forEach(instruction => transaction.add(instruction));
   transaction.recentBlockhash = (
     block || (await connection.getRecentBlockhash(commitment))
   ).blockhash;
 
-  if (includesFeePayer) {
-    transaction.setSigners(...signers.map(s => s.publicKey));
-  } else {
-    transaction.setSigners(
-      // fee payed by the wallet owner
-      wallet.publicKey,
-      ...signers.map(s => s.publicKey),
-    );
-  }
+  
+  showError()
 
-  if (signers.length > 0) {
-    transaction.partialSign(...signers);
-  }
+
+  console.log(`signedTransaction2; feePayer: ${transaction.feePayer}`);
+  console.log(`signedTransaction2; instructions: ${transaction.instructions}`);
+  console.log(`signedTransaction2; nonceInfo: ${transaction.nonceInfo}`);
+  console.log(`signedTransaction2; recentBlockhash: ${transaction.recentBlockhash}`);
+  console.log(`signedTransaction2; signature: ${transaction.signature}`);
+
   if (!includesFeePayer) {
+    // console.log(`store paying for transaction?: ${wallet.publicKey}`);
+    // transaction.feePayer = wallet.publicKey;
     transaction = await wallet.signTransaction(transaction);
+
+    let isVerifiedSignature = transaction.verifySignatures();
+    console.log(`The signatures were verifed: ${isVerifiedSignature}`)
+    
+    console.log(`sendTransactionWithRetry; post-sign`)
   }
 
+  console.log(`sendTransactionWithRetry; pre-beforeSend`)
   if (beforeSend) {
+    console.log(`sendTransactionWithRetry; pre-beforeSend`)
     beforeSend();
   }
-
   const { txid, slot } = await sendSignedTransaction({
     connection,
     signedTransaction: transaction,
   });
+  // const { txid, slot } = await sendSignedTransaction({
+  //   connection,
+  //   signedTransaction: transaction,
+  // });
+  console.log(`sendTransactionWithRetry; txid: ${txid}`)
 
   return { txid, slot };
 };
+
+// export const sendTransactionWithRetry = async (
+//   connection: Connection,
+//   wallet: WalletSigner,
+//   instructions: TransactionInstruction[],
+//   signers: Keypair[],
+//   commitment: Commitment = 'singleGossip',
+//   includesFeePayer: boolean = false,
+//   block?: BlockhashAndFeeCalculator,
+//   beforeSend?: () => void,
+// ): Promise<{ txid: string, slot: number }> => {
+//   if (!wallet.publicKey) throw new WalletNotConnectedError();
+
+//   let transaction = new Transaction();
+//   instructions.forEach(instruction => transaction.add(instruction));
+//   transaction.recentBlockhash = (
+//     block || (await connection.getRecentBlockhash(commitment))
+//   ).blockhash;
+
+//   if (includesFeePayer) {
+//     transaction.setSigners(...signers.map(s => s.publicKey));
+//   } else {
+//     transaction.setSigners(
+//       // fee payed by the wallet owner
+//       wallet.publicKey,
+//       ...signers.map(s => s.publicKey),
+//     );
+//   }
+
+//   if (signers.length > 0) {
+//     transaction.partialSign(...signers);
+//   }
+//   if (!includesFeePayer) {
+//     transaction = await wallet.signTransaction(transaction);
+//   }
+
+//   if (beforeSend) {
+//     beforeSend();
+//   }
+
+//   const { txid, slot } = await sendSignedTransaction({
+//     connection,
+//     signedTransaction: transaction,
+//   });
+
+//   return { txid, slot };
+// };
 
 export const getUnixTs = () => {
   return new Date().getTime() / 1000;
 };
 
-const DEFAULT_TIMEOUT = 30000;
+const DEFAULT_TIMEOUT = 15000;
 
 export async function sendSignedTransaction({
   signedTransaction,
   connection,
+  timeout = DEFAULT_TIMEOUT,
 }: {
   signedTransaction: Transaction;
   connection: Connection;
@@ -537,28 +829,85 @@ export async function sendSignedTransaction({
   successMessage?: string;
   timeout?: number;
 }): Promise<{ txid: string; slot: number }> {
-  const rawTransaction = signedTransaction.serialize();
-  let slot = 0;
+  console.log(`sendSignedTransaction; feePayer: ${signedTransaction.feePayer}`);
+  console.log(`sendSignedTransaction; instructions: ${signedTransaction.instructions}`);
+  console.log(`sendSignedTransaction; nonceInfo: ${signedTransaction.nonceInfo}`);
+  console.log(`sendSignedTransaction; recentBlockhash: ${signedTransaction.recentBlockhash}`);
+  console.log(`sendSignedTransaction; signature: ${signedTransaction.signature}`);
 
-  const txid = await sendAndConfirmRawTransaction(
-    connection,
+  const rawTransaction = signedTransaction.serialize();
+  const startTime = getUnixTs();
+  let slot = 0;
+  const txid: TransactionSignature = await connection.sendRawTransaction(
     rawTransaction,
     {
       skipPreflight: true,
-      commitment: 'confirmed'
-    }
+    },
   );
 
-  const confirmation = await connection.getConfirmedTransaction(txid, 'confirmed');
+  console.log('Started awaiting confirmation for', txid);
 
-  if (confirmation) {
-    slot = confirmation.slot;
+  let done = false;
+  (async () => {
+    while (!done && getUnixTs() - startTime < timeout) {
+      connection.sendRawTransaction(rawTransaction, {
+        skipPreflight: true,
+      });
+      await sleep(500);
+    }
+  })();
+  try {
+    const confirmation = await awaitTransactionSignatureConfirmation(
+      txid,
+      timeout,
+      connection,
+      'recent',
+      true,
+    );
+
+    if (!confirmation)
+      throw new Error('Timed out awaiting confirmation on transaction');
+
+    if (confirmation.err) {
+      console.error(confirmation.err);
+      throw new Error('Transaction failed: Custom instruction error');
+    }
+
+    slot = confirmation?.slot || 0;
+  } catch (err: any) {
+    console.error('Timeout Error caught', err);
+    if (err.timeout) {
+      throw new Error('Timed out awaiting confirmation on transaction');
+    }
+    let simulateResult: SimulatedTransactionResponse | null = null;
+    try {
+      simulateResult = (
+        await simulateTransaction(connection, signedTransaction, 'single')
+      ).value;
+    } catch (e) {}
+    if (simulateResult && simulateResult.err) {
+      if (simulateResult.logs) {
+        for (let i = simulateResult.logs.length - 1; i >= 0; --i) {
+          const line = simulateResult.logs[i];
+          if (line.startsWith('Program log: ')) {
+            throw new Error(
+              'Transaction failed: ' + line.slice('Program log: '.length),
+            );
+          }
+        }
+      }
+      throw new Error(JSON.stringify(simulateResult.err));
+    }
+    // throw new Error('Transaction failed');
+  } finally {
+    done = true;
   }
 
+  console.log('Latency', txid, getUnixTs() - startTime);
   return { txid, slot };
 }
 
-export async function simulateTransaction(
+async function simulateTransaction(
   connection: Connection,
   transaction: Transaction,
   commitment: Commitment,
@@ -573,7 +922,7 @@ export async function simulateTransaction(
   // @ts-ignore
   const wireTransaction = transaction._serialize(signData);
   const encodedTransaction = wireTransaction.toString('base64');
-  const config = { encoding: 'base64', commitment };
+  const config: any = { encoding: 'base64', commitment };
   const args = [encodedTransaction, config];
 
   // @ts-ignore
@@ -583,6 +932,7 @@ export async function simulateTransaction(
   }
   return res.result;
 }
+
 
 async function awaitTransactionSignatureConfirmation(
   txid: TransactionSignature,
@@ -598,7 +948,7 @@ async function awaitTransactionSignatureConfirmation(
     err: null,
   };
   let subId = 0;
-  status = await new Promise((resolve, reject) => {
+  status = await new Promise(async (resolve, reject) => {
     setTimeout(() => {
       if (done) {
         return;
@@ -660,7 +1010,7 @@ async function awaitTransactionSignatureConfirmation(
           }
         }
       })();
-      return sleep(2000);
+      await sleep(2000);
     }
   });
 
