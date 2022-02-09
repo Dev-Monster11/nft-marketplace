@@ -55,6 +55,7 @@ import {
   FundProjectionScreenOutlined,
   BlockOutlined,
   ThunderboltOutlined,
+  ProfileOutlined,
 } from '@ant-design/icons';
 import { useTheme, Theme } from '../../contexts/themecontext';
 
@@ -149,6 +150,31 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
       </div>
     );
   }
+  const detailContent = () => {
+    return (
+      <>
+        <h5>
+          Blockchain :{' '}
+          <span style={{ textDecoration: 'underline' }}>
+            {publicRuntimeConfig.publicSolanaNetwork}
+          </span>{' '}
+        </h5>
+        <h5>
+          Creator :{' '}
+          <span style={{ textDecoration: 'underline' }}>
+            {art.creators![0].address}
+          </span>{' '}
+        </h5>
+        <h5>
+          Asset :{' '}
+          <span style={{ textDecoration: 'underline' }}>{art.mint}</span>{' '}
+        </h5>
+        <div className="text-center">
+          <ViewOn id={id} />
+        </div>
+      </>
+    );
+  };
   const items = [
     ...(auction?.items
       .flat()
@@ -187,7 +213,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
       ></Popover>
     );
   }
-  console.log(art);
+
   return (
     <Row justify="space-between" ref={ref} gutter={[24, 0]}>
       <Col span={12}>
@@ -503,7 +529,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             onClick={() => setDetailShow(!detailShow)}
           >
             <h4>
-              <TransactionOutlined />
+              <ProfileOutlined />
             </h4>
             <h4>Details</h4>
             <div>
@@ -515,25 +541,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             </div>
           </Row>
           <div hidden={detailShow} className="p-1">
-            <h5>
-              Blockchain :{' '}
-              <span style={{ textDecoration: 'underline' }}>
-                {publicRuntimeConfig.publicSolanaNetwork}
-              </span>{' '}
-            </h5>
-            <h5>
-              Creator :{' '}
-              <span style={{ textDecoration: 'underline' }}>
-                {art.creators![0].address}
-              </span>{' '}
-            </h5>
-            <h5>
-              Asset :{' '}
-              <span style={{ textDecoration: 'underline' }}>{art.mint}</span>{' '}
-            </h5>
-            <div className="text-center">
-              <ViewOn id={id} />
-            </div>
+            {detailContent()}
           </div>
           <hr />
         </Col>
@@ -646,7 +654,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             onClick={() => setDetailShow(!detailShow)}
           >
             <h4>
-              <TransactionOutlined />
+              <ProfileOutlined />
             </h4>
             <h4 style={{ marginRight: '270px' }}>Details</h4>
             <div>
@@ -658,25 +666,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             </div>
           </Row>
           <div hidden={detailShow} className="p-1">
-            <h5>
-              Blockchain :{' '}
-              <span style={{ textDecoration: 'underline' }}>
-                {publicRuntimeConfig.publicSolanaNetwork}
-              </span>{' '}
-            </h5>
-            <h5>
-              Creator :{' '}
-              <span style={{ textDecoration: 'underline' }}>
-                {art.creators![0].address}
-              </span>{' '}
-            </h5>
-            <h5>
-              Asset :{' '}
-              <span style={{ textDecoration: 'underline' }}>{art.mint}</span>{' '}
-            </h5>
-            <div className="text-center">
-              <ViewOn id={id} />
-            </div>
+            {detailContent()}
           </div>
           <hr />
         </Col>
