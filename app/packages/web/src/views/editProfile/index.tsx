@@ -9,6 +9,7 @@ import { AddProfile } from '../../store/actions/profileAction';
 
 export const EditProfileView = () => {
   const { connected, publicKey } = useWallet();
+  console.log(publicKey.toBase58())
   const history = useHistory();
   !connected && history.push('/');
 
@@ -27,8 +28,7 @@ export const EditProfileView = () => {
     Email: '',
     Profile_URL: '',
     Banner_URL: '',
-    
-    
+    publicKey: publicKey.toBase58()
   });
 const dispatch = useDispatch()
   const _handleImageChange = (e: any) => {

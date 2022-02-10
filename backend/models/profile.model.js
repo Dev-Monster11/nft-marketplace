@@ -10,8 +10,7 @@ var schema = new mongoose.Schema(
     Email: String,
     Profile_URL: String,
     Banner_URL: String,
- 
-    
+    publicKey : String
   },
   { timestamps: true }
 );
