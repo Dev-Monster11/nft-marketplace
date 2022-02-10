@@ -110,7 +110,7 @@ export const DashboardView = () => {
           <Card hoverable={true} className='card'>
             <div className='flexRow'>
               <span className='cardTitle'>TOTAL # COLLECTED</span>
-              <span className='cardValue'>0 ETH</span>
+              <span className='cardValue'>0 SOL</span>
             </div>
           </Card>
         </Col>
