@@ -16,8 +16,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <ThemeContext.Provider value={{ theme, setTheme }}>
-        {/* <Component {...pageProps} /> */}
-        <CountdownView />
+        <Component {...pageProps} />
+        {/* <CountdownView /> */}
       </ThemeContext.Provider>
     </>
   );
