@@ -27,6 +27,8 @@ export const EditProfileView = () => {
     Email: '',
     Profile_URL: '',
     Banner_URL: '',
+    
+    
   });
 const dispatch = useDispatch()
   const _handleImageChange = (e: any) => {
