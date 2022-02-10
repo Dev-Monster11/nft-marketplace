@@ -266,6 +266,7 @@ export const AppBar = (props: P) => {
         >
           <Menu theme="dark" mode="horizontal" selectedKeys={activeItems}>
             {menuItems}
+
             <Menu.Item key={"about"}>
               <a href="https://www.queendom.io/">About</a>
             </Menu.Item>
