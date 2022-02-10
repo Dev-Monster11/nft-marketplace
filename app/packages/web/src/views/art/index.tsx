@@ -81,13 +81,13 @@ export const ArtView = () => {
   const unverified = (
     <>
       {tag}
-      <div>
+      <h4>
         <i>
           This artwork is still missing verification from{' '}
           {art.creators?.filter(c => !c.verified).length} contributors before it
           can be considered verified and sellable on the platform.
         </i>
-      </div>
+      </h4>
       <br />
     </>
   );
@@ -237,7 +237,7 @@ export const ArtView = () => {
           <>
             <Divider />
             <br />
-            <div>Attributes</div>
+            <h3 className="fw-bold">Attributes</h3>
 
             <List>
               {attributes.map((attribute, i) => {

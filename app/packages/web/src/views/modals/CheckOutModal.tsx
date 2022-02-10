@@ -150,6 +150,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
       </div>
     );
   }
+
   const detailContent = () => {
     return (
       <>
@@ -175,6 +176,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
       </>
     );
   };
+
   const items = [
     ...(auction?.items
       .flat()

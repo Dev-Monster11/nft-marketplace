@@ -12,8 +12,8 @@ const utils_1 = require("../../utils");
 const antd_1 = require("antd");
 const Settings_1 = require("../Settings");
 const CurrentUserBadge = (props) => {
-    const { wallet, publicKey } = wallet_adapter_react_1.useWallet();
-    const { account } = accounts_1.useNativeAccount();
+    const { wallet, publicKey } = (0, wallet_adapter_react_1.useWallet)();
+    const { account } = (0, accounts_1.useNativeAccount)();
     if (!wallet || !publicKey) {
         return null;
     }
@@ -23,8 +23,8 @@ const CurrentUserBadge = (props) => {
             " SOL")),
         react_1.default.createElement(antd_1.Popover, { placement: "topRight", title: "Settings", content: react_1.default.createElement(Settings_1.Settings, null), trigger: "click" },
             react_1.default.createElement("div", null,
-                react_1.default.createElement("span", null, wallet.name),
-                react_1.default.createElement("img", { src: wallet.icon })))));
+                react_1.default.createElement("span", null, wallet.adapter.name),
+                react_1.default.createElement("img", { src: wallet.adapter.icon })))));
 };
 exports.CurrentUserBadge = CurrentUserBadge;
 //# sourceMappingURL=index.js.map

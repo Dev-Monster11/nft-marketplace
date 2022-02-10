@@ -2,10 +2,11 @@ import {
   AccountsProvider,
   ConnectionProvider,
   StoreProvider,
-  WalletProvider,
+  // WalletProvider,
   MetaProvider,
 } from '@oyster/common';
 import React, { FC } from 'react';
+import { WalletProvider } from './contexts'
 import { ConfettiProvider } from './components/Confetti';
 import { AppLayout } from './components/Layout';
 import { LoaderProvider } from './components/Loader';

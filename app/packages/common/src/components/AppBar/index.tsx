@@ -5,7 +5,7 @@ import { SettingOutlined } from '@ant-design/icons';
 import { Settings } from '../Settings';
 import { LABELS } from '../../constants/labels';
 import { ConnectButton } from '..';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 export const AppBar = (props: {
   left?: JSX.Element;
@@ -13,6 +13,7 @@ export const AppBar = (props: {
   useWalletBadge?: boolean;
   additionalSettings?: JSX.Element;
 }) => {
+  const { connection } = useConnection();
   const { connected } = useWallet();
 
   const TopBar = (

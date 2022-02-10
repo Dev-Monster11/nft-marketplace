@@ -947,10 +947,12 @@ export const AuctionCard = ({
               className="metaplex-fullwidth rounded-3"
               type="primary"
               size="large"
+              style={{ fontSize: '1rem' }}
               onClick={() => history.push('/signin')}
             >
-              Connect wallet to{' '}
-              {auctionView.isInstantSale ? 'purchase' : 'place bid'} with Sol
+              {' '}
+              Connect sol before{' '}
+              {auctionView.isInstantSale ? 'purchasing' : 'placing bid'}
             </Button>
           )}
           <hr />

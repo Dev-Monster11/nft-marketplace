@@ -369,6 +369,7 @@ export const sendTransactionsInChunks = async (
 
   for (let c = 0; c < instructionsChunk.length; c++) {  
     const unsignedTxns: Transaction[] = [];
+    const signedTxns: Transaction[] = [];
 
     for (let i = 0; i < instructionsChunk[c].length; i++) {
       const instructions = instructionsChunk[c][i];
@@ -384,8 +385,6 @@ export const sendTransactionsInChunks = async (
 
       instructions.forEach(instruction => transaction.add(instruction));
       transaction.recentBlockhash = block.blockhash;
-      // signers.forEach(signer => console.log(wallet.publicKey, signer, signer.publicKey));
-      // signers.forEach(signer => transaction.addSignature(wallet.publicKey, signer.publicKey));
       transaction.setSigners(
         // fee payed by the wallet owner
         wallet.publicKey,
@@ -393,12 +392,21 @@ export const sendTransactionsInChunks = async (
       );
       if (signers.length > 0) {
         transaction.partialSign(...signers);
+        // transaction.setSigners(
+        //   // fee payed by the wallet owner
+        //   wallet.publicKey,
+        //   ...signers.map(s => s.publicKey),
+        // );
       }
       unsignedTxns.push(transaction);
+      const trxSig = await wallet.sendTransaction(transaction, connection);
+      console.log(`Transaction signature: ${trxSig}`);
+      let isVerifiedSignature = transaction.verifySignatures();
+      console.log(`The signatures were verifed: ${isVerifiedSignature}`)
+      signedTxns.push(transaction)
     }
 
     console.log(`wallet signer: ${wallet.publicKey}`);
-    const signedTxns = await wallet.signAllTransactions(unsignedTxns);
 
     const breakEarlyObject = { breakEarly: false, i: 0 };
     console.log(
@@ -450,6 +458,7 @@ export const sendTransactions = async (
   if (!wallet.publicKey) throw new WalletNotConnectedError();
 
   const unsignedTxns: Transaction[] = [];
+  const signedTxns: Transaction[] = [];
 
   if (!block) {
     block = await connection.getRecentBlockhash(commitment);
@@ -482,9 +491,14 @@ export const sendTransactions = async (
     }
 
     unsignedTxns.push(transaction);
+    const trxSig = await wallet.sendTransaction(transaction, connection);
+    console.log(`Transaction signature: ${trxSig}`);
+    let isVerifiedSignature = transaction.verifySignatures();
+    console.log(`The signatures were verifed: ${isVerifiedSignature}`)
+    signedTxns.push(transaction)
   }
 
-  const signedTxns = await wallet.signAllTransactions(unsignedTxns);
+  // const signedTxns = await wallet.signAllTransactions(unsignedTxns);
 
   const pendingTxns: Promise<{ txid: string; slot: number }>[] = [];
 
@@ -547,6 +561,7 @@ export const sendTransactionsWithRecentBlock = async (
   if (!wallet.publicKey) throw new WalletNotConnectedError();
 
   const unsignedTxns: Transaction[] = [];
+  const signedTxns: Transaction[] = [];
 
   for (let i = 0; i < instructionSet.length; i++) {
     const instructions = instructionSet[i];
@@ -575,9 +590,14 @@ export const sendTransactionsWithRecentBlock = async (
     }
 
     unsignedTxns.push(transaction);
+    const trxSig = await wallet.sendTransaction(transaction, connection);
+    console.log(`Transaction signature(${i}): ${trxSig}`);
+    let isVerifiedSignature = transaction.verifySignatures();
+    console.log(`The signatures were verifed: ${isVerifiedSignature}`)
+    signedTxns.push(transaction)
   }
 
-  const signedTxns = await wallet.signAllTransactions(unsignedTxns);
+  // const signedTxns = await wallet.signAllTransactions(unsignedTxns);
 
   const breakEarlyObject = { breakEarly: false, i: 0 };
   console.log(
@@ -651,7 +671,10 @@ export const sendTransaction = async (
   }
   if (!includesFeePayer) {
     // transaction.feePayer = wallet.publicKey;
-    transaction = await wallet.signTransaction(transaction);
+    const trxSig = await wallet.sendTransaction(transaction, connection);
+    console.log(`Transaction signature: ${trxSig}`);
+    let isVerifiedSignature = transaction.verifySignatures();
+    console.log(`The signatures were verifed: ${isVerifiedSignature}`)
   }
 
   const rawTransaction = transaction.serialize();
@@ -726,7 +749,7 @@ export const sendTransactionWithRetry = async (
   ).blockhash;
 
   
-  showError()
+  // showError()
 
 
   console.log(`signedTransaction2; feePayer: ${transaction.feePayer}`);
@@ -738,7 +761,10 @@ export const sendTransactionWithRetry = async (
   if (!includesFeePayer) {
     // console.log(`store paying for transaction?: ${wallet.publicKey}`);
     // transaction.feePayer = wallet.publicKey;
-    transaction = await wallet.signTransaction(transaction);
+    const trxSig = await wallet.sendTransaction(transaction, connection);
+    console.log(`Transaction signature: ${trxSig}`);
+
+    // transaction.addSignature(wallet.publicKey, signature)
 
     let isVerifiedSignature = transaction.verifySignatures();
     console.log(`The signatures were verifed: ${isVerifiedSignature}`)
@@ -796,7 +822,8 @@ export const sendTransactionWithRetry = async (
 //     transaction.partialSign(...signers);
 //   }
 //   if (!includesFeePayer) {
-//     transaction = await wallet.signTransaction(transaction);
+    // transaction = await wallet.sendTransaction(transaction, connection);
+    // const signature = await wallet.sendTransaction(transaction, connection);
 //   }
 
 //   if (beforeSend) {

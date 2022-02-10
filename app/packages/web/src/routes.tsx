@@ -14,7 +14,7 @@ import {
   // CheckoutPageView,
   // ResultPageView,
   // CartPageView,
-  LearnPageView,
+  // LearnPageView,
   DashboardView,
   SignInView,
   SignInConfirmView,
