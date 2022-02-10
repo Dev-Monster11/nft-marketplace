@@ -8,5 +8,6 @@ db.mongoose = mongoose;
 db.connString = dbConfig.connString;
 db.users = require("./users.model.js")(mongoose);
 db.message = require("./message.model.js")(mongoose);
+db.nftMetadata = require("./nftMetadata.model.js")(mongoose);
 
 module.exports = db;
