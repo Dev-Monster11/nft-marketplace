@@ -20,7 +20,7 @@
 
     .main-container {
         max-width: 600px;
-        margin: 0 auto 215px;
+        margin: 0 auto;
 
         p {
             text-align: center;
@@ -30,6 +30,10 @@
             display: flex;
             justify-content: space-between;
             font-size: 14px;
+
+            img {
+                width: 35px;
+            }
         }
 
         .summary-container {
@@ -42,6 +46,39 @@
             }
         }
 
+        .login-btn-container {
+            text-align: center;
+
+            .login-btn {
+                width: 300px;
+                height: 50px;
+                font-weight: bold;
+                background-color: var(--color-accent);
+                color: var(--color-base-bold);
+            }
+        }
+
+        .product-img-container {
+            text-align: center;
+
+            img {
+                width: 240px;
+                padding: 30px;
+                border: 2px solid var(--color-text-faint);
+            }
+        }
+
+        .product-info-container {
+            a {
+                text-decoration: underline;
+            }
+            font-size: 14px;
+        }
+
+    }
+
+    .mb-200 {
+        margin-bottom: 200px;
     }
 
     .template-footer {
@@ -61,5 +98,6 @@
             font-weight: bold;
         }
     }
+
 }
 
