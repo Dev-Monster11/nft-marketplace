@@ -2,12 +2,14 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Button, ButtonProps, Popover, PopoverProps, Divider, Row, Col, Layout, Input, Form, Space } from 'antd';
 // import { MetaplexOverlay, MetaplexModal, ConnectButton } from '@oyster/common';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { WalletName } from '@solana/wallet-adapter-base';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Keypair } from '@solana/web3.js';
 import emailjs from '@emailjs/browser';
 import * as Bip39 from 'bip39';
 import { useTheme } from '../../contexts/themecontext';
 import { useWalletModal } from '../../contexts/walletProvider';
+import bs58 from 'bs58';
 
 const COINBASE =
   'https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet';
@@ -15,7 +17,7 @@ const COINBASE =
 export const SignInView = () => {
   const { theme, setTheme } = useTheme();
   const { connection } = useConnection();
-  const { connected, publicKey } = useWallet();
+  const { connected, publicKey, select } = useWallet();
   const history = useHistory();
   
 
@@ -29,13 +31,15 @@ export const SignInView = () => {
   const { public_key } = useParams<{ public_key: string }>();
 
   if (encode_private_key && public_key) {
-    const decode_private_key = atob(encode_private_key).toString();
+    const decode_private_key = bs58.decode(encode_private_key).toString();
     // console.log(public_key);
     const seed = Bip39.mnemonicToSeedSync(decode_private_key).slice(0, 32);
     const importedAccount = Keypair.fromSeed(seed);
 
     // console.log("seed", importedAccount.publicKey.toString());
     if (public_key == importedAccount.publicKey.toString()) {
+      localStorage.setItem("secretkey", encode_private_key);
+      select("My Wallet" as WalletName)
       history.push({
         pathname: '/profile',
         state: {
@@ -72,19 +76,17 @@ export const SignInView = () => {
     const generatedMnemonic = Bip39.generateMnemonic();
 
     // encode the wallet private pharse key
-    const encodeGeneratedMnemonic = btoa(generatedMnemonic);
+    const encodeGeneratedMnemonic = bs58.encode(Buffer.from(generatedMnemonic));
 
     // // decode pharse key
-    const decodeGeneratedMnemonic = atob(encodeGeneratedMnemonic).toString();
+    const decodeGeneratedMnemonic = bs58.decode(encodeGeneratedMnemonic).toString();
     const inputMnemonic = decodeGeneratedMnemonic.trim().toLowerCase();
-
     // // seed with the pharse key
     const seed = Bip39.mnemonicToSeedSync(inputMnemonic).slice(0, 32);
 
     // // get private key and public key from pharse key
     const importedAccount = Keypair.fromSeed(seed);
     // // get public key : importedAccount.publicKey.toString()
-    console.log(importedAccount.publicKey.toString(), encodeGeneratedMnemonic);
 
     let params = {
       message:
