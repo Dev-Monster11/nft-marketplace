@@ -63,7 +63,7 @@ interface Props {
   show: boolean;
   hide: (value: any) => void;
   id: string;
-  mobile: boolean;
+  mobile?: boolean;
 }
 
 const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
@@ -215,7 +215,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
       ></Popover>
     );
   }
-  console.log(art);
+
   return (
     <Row justify="space-between" ref={ref} gutter={[24, 0]}>
       <Col span={12}>

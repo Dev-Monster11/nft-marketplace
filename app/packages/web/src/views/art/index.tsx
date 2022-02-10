@@ -177,12 +177,12 @@ export const ArtView = () => {
             })}
           </Space>
           <div>
-            <h3 className="fw-bold">Edition</h3>
+            <Text>Edition</Text>
             <h4>{badge}</h4>
           </div>
           {art.type === ArtType.Master && (
             <div>
-              <h3 className="fw-bold">Max Supply</h3>
+              <Text>Max Supply</Text>
               <h4>{maxSupply}</h4>
             </div>
           )}
@@ -224,8 +224,8 @@ export const ArtView = () => {
         <Divider />
         {art.creators?.find(c => !c.verified) && unverified}
         <br />
-        <h3 className="fw-bold text-center">ABOUT THE CREATION</h3>
-        <h4 className="text-center">{description}</h4>
+        <h3>ABOUT THE CREATION</h3>
+        <h4>{description}</h4>
         <br />
         {/*
               TODO: add info about artist

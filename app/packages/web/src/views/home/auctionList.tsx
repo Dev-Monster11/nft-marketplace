@@ -1,5 +1,7 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import {
+  MetaplexOverlay,
+  MetaplexModal,
   useStore,
   loadMetadataForCreator,
   useConnection,
@@ -263,6 +265,7 @@ export const AuctionListView = () => {
           show={showModal && mobileMode}
           mobileMode={mobileMode}
         />
+        
       )} */}
       <MetaplexModal
         maskClosable={true}
@@ -279,6 +282,7 @@ export const AuctionListView = () => {
           />
         </div>
       </MetaplexModal>
+
       {showModal && (
         <DrawerWrapper
           id={itemId}
