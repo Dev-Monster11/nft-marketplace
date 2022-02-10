@@ -18,7 +18,7 @@ owner) => {
     // Allocate memory for the account
     const mintRent = await connection.getMinimumBalanceForRentExemption(spl_token_1.MintLayout.span);
     const accountRent = await connection.getMinimumBalanceForRentExemption(spl_token_1.AccountLayout.span);
-    let transaction = new web3_js_1.Transaction();
+    const transaction = new web3_js_1.Transaction();
     const signers = [mintAccount, tokenAccount];
     transaction.recentBlockhash = (await connection.getRecentBlockhash('max')).blockhash;
     transaction.add(web3_js_1.SystemProgram.createAccount({
@@ -45,7 +45,7 @@ owner) => {
     }
     const signature = await wallet.sendTransaction(transaction, connection);
     console.log(`Transaction signature: ${signature}`);
-    let isVerifiedSignature = transaction.verifySignatures();
+    const isVerifiedSignature = transaction.verifySignatures();
     console.log(`The signatures were verifed: ${isVerifiedSignature}`);
     const rawTransaction = transaction.serialize();
     const options = {

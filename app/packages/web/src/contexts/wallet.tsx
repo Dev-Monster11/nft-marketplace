@@ -27,9 +27,9 @@ import {
 import { clusterApiUrl } from '@solana/web3.js';
 
 import { Button, Collapse } from 'antd';
-import { MetaplexModal } from '../components';
+import { MetaplexModal } from '../components/MetaplexModal';
 import { notify } from '../utils';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 const { Panel } = Collapse;
 
 export interface WalletModalContextState {
@@ -233,7 +233,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
     ],
     [network]
   );
-  console.log(`wallets: ${wallets.flat.arguments}`);
+  console.log(`wallets: ${wallets}`);
 
 
   // const wallets = useMemo(

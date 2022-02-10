@@ -1,5 +1,5 @@
-import { WalletAdapter } from '@solana/wallet-adapter-base';
 import React, { FC, ReactNode } from 'react';
+import { WalletAdapter } from '@solana/wallet-adapter-base';
 export interface WalletModalContextState {
     visible: boolean;
     setVisible: (open: boolean) => void;

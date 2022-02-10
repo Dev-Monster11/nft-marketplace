@@ -20,12 +20,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WalletProvider = exports.WalletModalProvider = exports.WalletModal = exports.useWalletModal = exports.WalletModalContext = void 0;
+const react_1 = __importStar(require("react"));
 const wallet_adapter_react_1 = require("@solana/wallet-adapter-react");
 const wallet_adapter_base_1 = require("@solana/wallet-adapter-base");
 const wallet_adapter_wallets_1 = require("@solana/wallet-adapter-wallets");
-const antd_1 = require("antd");
-const react_1 = __importStar(require("react"));
 const web3_js_1 = require("@solana/web3.js");
+const antd_1 = require("antd");
 const components_1 = require("../components");
 const utils_1 = require("../utils");
 const { Panel } = antd_1.Collapse;
@@ -69,7 +69,7 @@ const WalletModal = () => {
                         letterSpacing: '-0.01em',
                         color: 'rgba(255, 255, 255, 255)',
                     } }, "Other Wallets"), key: "1" }, wallets.map((wallet, idx) => {
-                if (wallet.adapter === phatomWallet)
+                if (wallet.adapter.name === 'Phantom')
                     return null;
                 return (react_1.default.createElement(antd_1.Button, { key: idx, className: "metaplex-button w100", style: {
                         marginBottom: 5,
@@ -84,8 +84,11 @@ const WalletModal = () => {
 exports.WalletModal = WalletModal;
 const WalletModalProvider = ({ children, }) => {
     const { publicKey } = (0, wallet_adapter_react_1.useWallet)();
+    console.log(`loading wallet ... ${publicKey}`);
     const [connected, setConnected] = (0, react_1.useState)(!!publicKey);
+    console.log(`wallet connection state: ${connected}`);
     const [visible, setVisible] = (0, react_1.useState)(false);
+    console.log(`wallet visibility state: ${visible}`);
     (0, react_1.useEffect)(() => {
         if (publicKey) {
             const base58 = publicKey.toBase58();
@@ -118,14 +121,17 @@ exports.WalletModalProvider = WalletModalProvider;
 const WalletProvider = ({ children }) => {
     // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
     const network = wallet_adapter_base_1.WalletAdapterNetwork.Devnet;
+    console.log(`network: ${network}`);
     // You can also provide a custom RPC endpoint.
     const endpoint = (0, react_1.useMemo)(() => (0, web3_js_1.clusterApiUrl)(network), [network]);
+    console.log(`endpoint: ${endpoint}`);
     const wallets = (0, react_1.useMemo)(() => [
         new wallet_adapter_wallets_1.PhantomWalletAdapter(),
         new wallet_adapter_wallets_1.SolflareWalletAdapter({ network }),
         new wallet_adapter_wallets_1.LedgerWalletAdapter(),
         new wallet_adapter_wallets_1.SolletWalletAdapter({ network }),
     ], [network]);
+    console.log(`wallets: ${wallets.flat.arguments}`);
     // const wallets = useMemo(
     //   () => [
     //     getPhantomWallet(),
@@ -152,10 +158,9 @@ const WalletProvider = ({ children }) => {
             description: error.message,
         });
     }, []);
-    return (
-    // <BaseWalletProvider wallets={wallets} onError={onError} autoConnect={false}>
-    react_1.default.createElement(wallet_adapter_react_1.WalletProvider, { wallets: wallets, onError: onError, autoConnect: true },
-        react_1.default.createElement(exports.WalletModalProvider, null, children)));
+    return (react_1.default.createElement(wallet_adapter_react_1.ConnectionProvider, { endpoint: endpoint },
+        react_1.default.createElement(wallet_adapter_react_1.WalletProvider, { wallets: wallets, onError: onError, autoConnect: true },
+            react_1.default.createElement(exports.WalletModalProvider, null, children))));
 };
 exports.WalletProvider = WalletProvider;
 //# sourceMappingURL=wallet.js.map

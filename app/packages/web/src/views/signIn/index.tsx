@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Divider, Row, Col, Layout, Input, Form } from 'antd';
-import { MetaplexOverlay, MetaplexModal, ConnectButton } from '@oyster/common';
-import { useWallet } from '@solana/wallet-adapter-react';
+// import { MetaplexOverlay, MetaplexModal, ConnectButton } from '@oyster/common';
+import { ConnectButton } from '@oyster/common';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Keypair } from '@solana/web3.js';
 import emailjs from '@emailjs/browser';
@@ -13,10 +14,12 @@ const COINBASE =
 
 export const SignInView = () => {
   const { theme, setTheme } = useTheme();
+  const { connection } = useConnection();
   const { connected, publicKey } = useWallet();
   const history = useHistory();
+  
 
-  console.log('sign in = ', connected, publicKey);
+  console.log('sign in = ',  connected, publicKey);
   connected && history.push('/signinconfirm');
 
   const [showForm, setShowForm] = useState(true);
