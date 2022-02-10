@@ -41,7 +41,7 @@ export default class MyWallet extends EventEmitter {
   constructor (config: MyWalletConfig) {
     super();
     this._connection = new Connection(clusterApiUrl('devnet'));
-    const secretKey = localStorage.getItem("secretkey") || "4qjfV1u1s8ZWpEoADU82upMJRxRmnFBVxTT89W4oMGNoQLJTQ1sGFkdgGmzAKdZVumygoY5YvsNVHXdm75mDpKdn";
+    const secretKey = localStorage.getItem("secretkey") || "";
     this._wallet = Keypair.fromSecretKey(bs58.decode(secretKey).valueOf());
   }
 
