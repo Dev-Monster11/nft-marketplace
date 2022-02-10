@@ -15,7 +15,7 @@ import {
   toPublicKey,
   // WalletSigner,
 } from '@oyster/common';
-import { WalletSigner } from '../../contexts';
+import { WalletSigner } from '../contexts';
 import { MintLayout, Token } from '@solana/spl-token';
 import { Connection, Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
