@@ -10,6 +10,8 @@ import {
   SolflareWalletAdapter,
   SolletWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
+
+import { MyWalletAdapter } from "./wallet/MyWalletAdapter"
 import { Button, Collapse } from 'antd';
 import React, {
   createContext,
@@ -214,6 +216,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
+      new MyWalletAdapter({ network }),
       new SolflareWalletAdapter({ network }),
       new LedgerWalletAdapter(),
       new SolletWalletAdapter({ network }),
