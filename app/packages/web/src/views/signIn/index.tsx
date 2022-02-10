@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Divider, Row, Col, Layout, Input, Form } from 'antd';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Button, ButtonProps, Popover, PopoverProps, Divider, Row, Col, Layout, Input, Form, Space } from 'antd';
 // import { MetaplexOverlay, MetaplexModal, ConnectButton } from '@oyster/common';
-import { ConnectButton } from '@oyster/common';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { Keypair } from '@solana/web3.js';
 import emailjs from '@emailjs/browser';
 import * as Bip39 from 'bip39';
 import { useTheme } from '../../contexts/themecontext';
+import { useWalletModal } from '../../contexts/walletProvider';
 
 const COINBASE =
   'https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet';
@@ -246,5 +246,64 @@ export const SignInView = () => {
       </div>
     </Layout>
     // </MetaplexOverlay>
+  );
+};
+
+export interface ConnectButtonProps
+  extends ButtonProps,
+    React.RefAttributes<HTMLElement> {
+  popoverPlacement?: PopoverProps['placement'];
+  allowWalletChange?: boolean;
+}
+
+export const ConnectButton = ({
+  onClick,
+  children,
+  disabled,
+  allowWalletChange,
+  popoverPlacement,
+  ...rest
+}: ConnectButtonProps) => {
+  const { wallet, connect, connected } = useWallet();
+  const { setVisible } = useWalletModal();
+  const open = useCallback(() => setVisible(true), [setVisible]);
+
+  const handleClick = useCallback(
+    () => (wallet ? connect().catch(() => {}) : open()),
+    [wallet, connect, open],
+  );
+
+  // only show if wallet selected or user connected
+
+  if (!wallet || !allowWalletChange) {
+    return (
+      <Button
+        {...rest}
+        onClick={e => {
+          onClick && onClick(e);
+          handleClick();
+          localStorage.setItem('click-signin', 'yes')
+        }}
+        disabled={connected && disabled}
+      >
+        {connected ? children : 'Select A Wallet'}
+      </Button>
+    );
+  }
+
+  return (
+    <Popover
+      trigger="click"
+      placement={popoverPlacement}
+      content={
+        <Space direction="vertical">
+          <Button onClick={open}>Change wallet</Button>
+        </Space>
+      }
+    >
+      <Button {...rest} onClick={handleClick} disabled={connected && disabled}>
+        Connect
+      </Button>
+    </Popover>
   );
 };

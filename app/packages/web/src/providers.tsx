@@ -6,7 +6,7 @@ import {
   MetaProvider,
 } from '@oyster/common';
 import React, { FC } from 'react';
-import { WalletProvider } from './contexts'
+import { WalletProvider } from './contexts/walletProvider'
 import { ConfettiProvider } from './components/Confetti';
 import { AppLayout } from './components/Layout';
 import { LoaderProvider } from './components/Loader';

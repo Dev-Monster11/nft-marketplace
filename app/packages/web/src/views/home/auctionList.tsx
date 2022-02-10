@@ -1,7 +1,7 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import {
+  MetaplexOverlay,
   // MetaplexOverlay,
-  MetaplexModal,
   useStore,
   loadMetadataForCreator,
   useConnection,
