@@ -508,11 +508,9 @@ export class Checkout extends React.Component<
           className="metaplex-space-align-stretch  ant-card"
           direction="vertical"
         >
-          <Layout>
-            <Elements stripe={this.stripe!}>
-              <this.doPayment />
-            </Elements>
-          </Layout>
+          <Elements stripe={this.stripe!}>
+            <this.doPayment />
+          </Elements>
         </Space>
       </Space>
     );

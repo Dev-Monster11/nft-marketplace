@@ -7,6 +7,7 @@ async function fetchGetJSON(url) {
         return data;
     }
     catch (err) {
+        // @ts-ignore
         throw new Error(err.message);
     }
 }

@@ -5,6 +5,7 @@ import {
   useStore,
   loadMetadataForCreator,
   useConnection,
+  MetaplexModal,
 } from '@oyster/common';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Alert, Button, Spin, Divider, Select, Input, Drawer } from 'antd';

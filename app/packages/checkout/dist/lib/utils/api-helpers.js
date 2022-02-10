@@ -47,6 +47,7 @@ export function fetchGetJSON(url) {
                     return [2 /*return*/, data];
                 case 2:
                     err_1 = _a.sent();
+                    // @ts-ignore
                     throw new Error(err_1.message);
                 case 3: return [2 /*return*/];
             }
@@ -67,10 +68,11 @@ export function fetchPostJSON(url, data) {
                             credentials: 'same-origin',
                             headers: {
                                 'Content-Type': 'application/json',
+                                // 'Content-Type': 'application/x-www-form-urlencoded',
                             },
                             redirect: 'follow',
                             referrerPolicy: 'no-referrer',
-                            body: JSON.stringify(data || {}),
+                            body: JSON.stringify(data || {}), // body data type must match "Content-Type" header
                         })];
                 case 1:
                     response = _a.sent();
@@ -78,6 +80,7 @@ export function fetchPostJSON(url, data) {
                 case 2: return [2 /*return*/, _a.sent()]; // parses JSON response into native JavaScript objects
                 case 3:
                     err_2 = _a.sent();
+                    // @ts-ignore
                     throw new Error(err_2.message);
                 case 4: return [2 /*return*/];
             }

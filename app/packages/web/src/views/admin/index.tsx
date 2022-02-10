@@ -27,7 +27,7 @@ import {
   useStore,
   useUserAccounts,
   useWalletModal,
-  WalletSigner,
+  // WalletSigner,
   loadCreators,
   loadAuctionManagers,
   loadAuctionsForAuctionManagers,
@@ -36,6 +36,7 @@ import {
   processMetaplexAccounts,
   subscribeProgramChanges,
 } from '@oyster/common';
+import { WalletSigner } from '../../contexts';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection } from '@solana/web3.js';
 import { saveAdmin } from '../../actions/saveAdmin';

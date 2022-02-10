@@ -1,0 +1,99 @@
+yarn upgrade
+yarn upgrade v1.22.17
+[1/4] Resolving packages...
+warning @hapi/joi@17.1.1: Switch to 'npm install joi'
+warning @hapi/joi > @hapi/address@4.1.0: Moved to 'npm install @sideway/address'
+warning @hapi/joi > @hapi/formula@2.0.0: Moved to 'npm install @sideway/formula'
+warning @hapi/joi > @hapi/pinpoint@2.0.0: Moved to 'npm install @sideway/pinpoint'
+warning imgbb > restful-decorator > lazy-cookies > @types/moment@2.13.0: This is a stub types definition for Moment (https://github.com/moment/moment). Moment provides its own type definitions, so you don't need @types/moment installed!
+warning jest > jest-cli > jest-config > @jest/test-sequencer > jest-haste-map > sane@4.1.0: some dependency vulnerabilities fixed, support for node < 10 dropped, and newer ECMAScript syntax/features added
+warning jest > jest-cli > jest-config > @jest/test-sequencer > jest-haste-map > sane > micromatch > snapdragon > source-map-resolve@0.5.3: See https://github.com/lydell/source-map-resolve#deprecated
+warning jest > jest-cli > jest-config > @jest/test-sequencer > jest-haste-map > sane > micromatch > snapdragon > source-map-resolve > resolve-url@0.2.1: https://github.com/lydell/resolve-url#deprecated
+warning jest > jest-cli > jest-config > @jest/test-sequencer > jest-haste-map > sane > micromatch > snapdragon > source-map-resolve > source-map-url@0.4.1: See https://github.com/lydell/source-map-url#deprecated
+warning jest > jest-cli > jest-config > @jest/test-sequencer > jest-haste-map > sane > micromatch > snapdragon > source-map-resolve > urix@0.1.0: Please see https://github.com/lydell/urix#deprecated
+warning jest-config > @jest/test-sequencer > jest-haste-map > sane@4.1.0: some dependency vulnerabilities fixed, support for node < 10 dropped, and newer ECMAScript syntax/features added
+warning jest-config > @jest/test-sequencer > jest-haste-map > fsevents@1.2.13: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
+warning jest-config > jest-environment-jsdom > jsdom > left-pad@1.3.0: use String.prototype.padStart()
+warning jest-config > jest-environment-jsdom > jsdom > request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+warning jest-config > jest-environment-jsdom > jsdom > request > uuid@3.4.0: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+warning jest-config > jest-environment-jsdom > jsdom > request-promise-native@1.0.9: request-promise-native has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142
+warning jest-config > jest-environment-jsdom > jsdom > request > har-validator@5.1.5: this library is no longer supported
+warning lerna > @lerna/bootstrap > read-package-tree@5.3.1: The functionality that this package provided is now in @npmcli/arborist
+warning lerna > @lerna/version > temp-write > uuid@3.4.0: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+warning lerna > @lerna/bootstrap > @lerna/run-lifecycle > npm-lifecycle > node-gyp > request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+warning lerna > @lerna/bootstrap > @lerna/symlink-dependencies > @lerna/create-symlink > @zkochan/cmd-shim > mkdirp-promise@5.0.1: This package is broken and no longer maintained. 'mkdirp' itself supports promises now, please switch to that.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @hapi/joi@17.1.1: Switch to 'npm install joi'
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @hapi/joi@17.1.1: Switch to 'npm install joi'
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > unreal-pixelstreaming-node > tslint@6.1.3: TSLint has been deprecated in favor of ESLint. Please see https://github.com/palantir/tslint/issues/4534 for more information.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > arweave-deploy@1.9.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > arweave-deploy@1.9.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @types/testing-library__react@10.2.0: This is a stub types definition. testing-library__react provides its own type definitions, so you do not need this installed.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > redux-devtools-extension@2.13.9: Package moved to @redux-devtools/extension.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @testing-library/jest-dom > css > source-map-resolve@0.5.3: See https://github.com/lydell/source-map-resolve#deprecated
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @testing-library/jest-dom > css > urix@0.1.0: Please see https://github.com/lydell/urix#deprecated
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @solana/spl-name-service > crypto@1.0.1: This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @testing-library/react > @types/testing-library__react > @types/testing-library__dom@7.5.0: This is a stub types definition. testing-library__dom provides its own type definitions, so you do not need this installed.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > webpack-dev-server > chokidar@2.1.8: Chokidar 2 does not receive security updates since 2019. Upgrade to chokidar 3 with 15x fewer dependencies
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @solana/spl-name-service > webpack-dev-server > chokidar@2.1.8: Chokidar 2 does not receive security updates since 2019. Upgrade to chokidar 3 with 15x fewer dependencies
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > webpack-dev-server > chokidar > fsevents@1.2.13: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > webpack-dev-server > sockjs > uuid@3.4.0: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > webpack-dev-server > webpack-log > uuid@3.4.0: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @solana/web3.js > rpc-websockets > circular-json@0.5.9: CircularJSON is in maintenance only, flatted is its successor.
+warning workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > webpack-dev-server > url > querystring@0.2.0: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
+warning @commitlint/cli > @commitlint/read > babel-runtime > core-js@2.6.12: core-js@<3.4 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
+warning @commitlint/cli > babel-polyfill > core-js@2.6.12: core-js@<3.4 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+warning " > bootstrap@5.1.3" has unmet peer dependency "@popperjs/core@^2.10.2".
+warning "imgbb > restful-decorator@1.0.61" has unmet peer dependency "tough-cookie@*".
+warning "imgbb > restful-decorator > debug-color2@1.2.7" has unmet peer dependency "debug@^4.3.2".
+warning "imgbb > ts-type@1.2.40" has unmet peer dependency "@types/bluebird@*".
+warning "imgbb > ts-type@1.2.40" has unmet peer dependency "@types/node@*".
+warning "imgbb > ts-type@1.2.40" has unmet peer dependency "ts-toolbelt@^8.0.7".
+warning "imgbb > restful-decorator > axios-cookiejar-support@1.0.1" has unmet peer dependency "@types/tough-cookie@>=2.3.3".
+warning "imgbb > restful-decorator > axios-cookiejar-support@1.0.1" has unmet peer dependency "tough-cookie@>=2.3.3".
+warning "imgbb > restful-decorator > lazy-cookies@1.0.38" has unmet peer dependency "tough-cookie@*".
+warning "imgbb > restful-decorator > @bluelovers/axios-extend > axios-cookiejar-support@2.0.3" has unmet peer dependency "tough-cookie@>=4.0.0".
+warning "imgbb > restful-decorator > lazy-cookies > crlf-normalize > ts-type@2.1.4" has unmet peer dependency "@types/bluebird@*".
+warning "imgbb > restful-decorator > lazy-cookies > crlf-normalize > ts-type@2.1.4" has unmet peer dependency "@types/node@*".
+warning "imgbb > restful-decorator > lazy-cookies > crlf-normalize > ts-type@2.1.4" has unmet peer dependency "ts-toolbelt@^9.6.0".
+warning "imgbb > restful-decorator > @bluelovers/axios-extend > axios-cookiejar-support > http-cookie-agent@1.0.4" has unmet peer dependency "tough-cookie@^4.0.0".
+warning " > react-render-html@0.6.0" has incorrect peer dependency "react@^16.1.0".
+warning " > styled-components@5.3.3" has unmet peer dependency "react-is@>= 16.8.0".
+warning "lerna > @lerna/version > @lerna/github-client > @octokit/rest > @octokit/plugin-request-log@1.0.4" has unmet peer dependency "@octokit/core@>=3".
+warning " > ts-jest@24.3.0" has incorrect peer dependency "jest@>=24 <25".
+warning " > ts-node@10.5.0" has unmet peer dependency "@types/node@*".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @testing-library/user-event@7.2.1" has unmet peer dependency "@testing-library/dom@>=5".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @babel/preset-typescript@7.16.7" has unmet peer dependency "@babel/core@^7.0.0-0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @bugsnag/plugin-react@7.16.1" has unmet peer dependency "@bugsnag/core@^7.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @tailwindcss/typography@0.5.1" has unmet peer dependency "tailwindcss@>=3.0.0 || >= 3.0.0-alpha.1 || insiders".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @stripe/react-stripe-js@1.7.0" has incorrect peer dependency "@stripe/stripe-js@^1.20.3".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @typechain/ethers-v4@1.0.1" has unmet peer dependency "typechain@^2.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @typechain/ethers-v4@1.0.1" has unmet peer dependency "ethers@^4.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > less-loader@10.2.0" has unmet peer dependency "webpack@^5.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > redux-devtools-extension@2.13.9" has unmet peer dependency "redux@^3.1.0 || ^4.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > webpack-dev-server@3.11.0" has unmet peer dependency "webpack@^4.0.0 || ^5.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @solana/spl-name-service > webpack-dev-server@3.11.3" has unmet peer dependency "webpack@^4.0.0 || ^5.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > react-virtualized@9.22.3" has incorrect peer dependency "react@^15.3.0 || ^16.0.0-alpha".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > react-virtualized@9.22.3" has incorrect peer dependency "react-dom@^15.3.0 || ^16.0.0-alpha".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > react-screen-capture@1.0.1" has incorrect peer dependency "react@^16.13.1".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > react-screen-capture@1.0.1" has incorrect peer dependency "react-dom@^16.13.1".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @babel/preset-typescript > @babel/plugin-transform-typescript@7.16.8" has unmet peer dependency "@babel/core@^7.0.0-0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @solana/spl-name-service > crypto-ts@1.0.2" has unmet peer dependency "@angular/common@>= 5.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @solana/spl-name-service > crypto-ts@1.0.2" has unmet peer dependency "@angular/core@>= 5.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > react-hot-toast > goober@2.1.7" has unmet peer dependency "csstype@^2.6.2".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > webpack-dev-server > webpack-dev-middleware@3.7.3" has unmet peer dependency "webpack@^4.0.0 || ^5.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > magic-sdk > @magic-sdk/commons@1.2.1" has incorrect peer dependency "@magic-sdk/provider@^4.3.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > magic-sdk > @magic-sdk/commons@1.2.1" has incorrect peer dependency "@magic-sdk/types@^3.1.1".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin@7.17.1" has unmet peer dependency "@babel/core@^7.0.0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > web > @babel/preset-typescript > @babel/plugin-transform-typescript > @babel/plugin-syntax-typescript@7.16.7" has unmet peer dependency "@babel/core@^7.0.0-0".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @solana/wallet-adapter-wallets > @solana/wallet-adapter-torus > @toruslabs/solana-embed@0.1.0" has unmet peer dependency "@babel/runtime@7.x".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @solana/wallet-adapter-wallets > @solana/wallet-adapter-torus > @toruslabs/solana-embed > @toruslabs/base-controllers@1.6.1" has unmet peer dependency "@babel/runtime@7.x".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @solana/wallet-adapter-wallets > @solana/wallet-adapter-torus > @toruslabs/solana-embed > @toruslabs/http-helpers@2.2.0" has unmet peer dependency "@babel/runtime@7.x".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @solana/wallet-adapter-wallets > @solana/wallet-adapter-torus > @toruslabs/solana-embed > @toruslabs/openlogin-jrpc@1.4.0" has unmet peer dependency "@babel/runtime@7.x".
+warning "workspace-aggregator-1e5c04b1-189d-4ab0-a95d-e871440ead34 > @oyster/common > @solana/wallet-adapter-wallets > @solana/wallet-adapter-torus > @toruslabs/solana-embed > @toruslabs/openlogin-jrpc > @toruslabs/openlogin-utils@1.4.0" has unmet peer dependency "@babel/runtime@7.x".
+warning " > @typescript-eslint/eslint-plugin@4.33.0" has incorrect peer dependency "eslint@^5.0.0 || ^6.0.0 || ^7.0.0".
+warning " > @typescript-eslint/parser@4.33.0" has incorrect peer dependency "eslint@^5.0.0 || ^6.0.0 || ^7.0.0".
+[4/4] Rebuilding all packages...
+success Saved lockfile.
+success Saved 1192 new dependencies.
