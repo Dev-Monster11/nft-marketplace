@@ -13,7 +13,7 @@ import {
   ConnectionProvider,
   WalletProvider as BaseWalletProvider,
 } from '@solana/wallet-adapter-react';
-import { 
+import {
   WalletAdapter,
   WalletError,
   WalletAdapterNetwork,
@@ -54,8 +54,7 @@ export const WalletModal: FC = () => {
     setShowWallets(false);
   }, [setVisible, setShowWallets]);
 
-
-  const phatomWallet = useMemo(() =>  new PhantomWalletAdapter(), []);
+  const phatomWallet = useMemo(() => new PhantomWalletAdapter(), []);
 
   return (
     <MetaplexModal title="Connect Wallet" visible={visible} onCancel={close}>
@@ -226,15 +225,14 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const wallets = useMemo(
     () => [
-        new PhantomWalletAdapter(),
-        new SolflareWalletAdapter({ network }),
-        new LedgerWalletAdapter(),
-        new SolletWalletAdapter({ network }),
+      new PhantomWalletAdapter(),
+      new SolflareWalletAdapter({ network }),
+      new LedgerWalletAdapter(),
+      new SolletWalletAdapter({ network }),
     ],
-    [network]
+    [network],
   );
   console.log(`wallets: ${wallets}`);
-
 
   // const wallets = useMemo(
   //   () => [
@@ -274,7 +272,4 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-export type WalletSigner = Pick<
-  WalletAdapter,
-  'publicKey' | 'sendTransaction'
->;
+export type WalletSigner = Pick<WalletAdapter, 'publicKey' | 'sendTransaction'>;
