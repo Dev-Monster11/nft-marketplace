@@ -14,9 +14,11 @@ import { CoingeckoProvider } from './contexts/coingecko';
 import { Storefront } from '@oyster/common';
 import { AnalyticsProvider } from './components/Analytics';
 import getConfig from 'next/config';
+import { Provider } from 'react-redux'
+import {store} from './store/store'
 
 
-let nextConfig = getConfig();
+const nextConfig = getConfig();
 const publicRuntimeConfig = nextConfig.publicRuntimeConfig;
 
 interface ProvidersProps {
@@ -39,7 +41,9 @@ export const Providers: FC<ProvidersProps> = ({ children, storefront }) => {
                 <LoaderProvider>
                   <ConfettiProvider>
                     <AnalyticsProvider>
+                    <Provider store={store}>
                         <AppLayout storefront={storefront}>{children}</AppLayout>
+                        </Provider>
                     </AnalyticsProvider>
                   </ConfettiProvider>
                 </LoaderProvider>

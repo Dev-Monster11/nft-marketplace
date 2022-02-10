@@ -1,19 +1,11 @@
 // @ts-nocheck
 
-import {
-  Button,
-  Col,
-  Row,
-  Spin,
-  Tabs,
-  Card,
-  Badge,
-  Input,
-  Divider,
-} from 'antd';
-import React, { useEffect, useState, useRef } from 'react';
+import { Button, Col, Row, Input, Divider } from 'antd';
+import React, {  useState, useRef,  } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useDispatch } from 'react-redux';
+import { AddProfile } from '../../store/actions/profileAction';
 
 export const EditProfileView = () => {
   const { connected, publicKey } = useWallet();
@@ -23,9 +15,20 @@ export const EditProfileView = () => {
   const [file, setFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
   const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string>('');
+
   const inputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
-
+  const [profiledata, setprofiledata] = useState({
+    Display_name: '',
+    Custom_Url: '',
+    Bio: '',
+    Twitter_Username: '',
+    Personal_site: '',
+    Email: '',
+    Profile_URL: '',
+    Banner_URL: '',
+  });
+const dispatch = useDispatch()
   const _handleImageChange = (e: any) => {
     e.preventDefault();
 
@@ -57,7 +60,17 @@ export const EditProfileView = () => {
 
     reader.readAsDataURL(selected);
   };
-
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setprofiledata(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+  const UpdateProfile = () => {
+    console.log(profiledata)
+    dispatch(AddProfile(profiledata))
+}
   return (
     <div className="editProfileContainer">
       <h1>Edit Profile</h1>
@@ -120,6 +133,10 @@ export const EditProfileView = () => {
             <Input
               className="customInput"
               placeholder="Enter your display name"
+              value={profiledata.Display_name}
+              type="text"
+              onChange={handleChange}
+              name="Display_name"
             ></Input>
           </div>
           <div className="inputContainer">
@@ -127,6 +144,10 @@ export const EditProfileView = () => {
             <Input
               className="customInput"
               placeholder="Enter your custom url"
+              value={profiledata.Custom_Url}
+              type="text"
+              onChange={handleChange}
+              name="Custom_Url"
             ></Input>
           </div>
           <div className="inputContainer">
@@ -134,6 +155,10 @@ export const EditProfileView = () => {
             <Input
               className="customInput"
               placeholder="Tell about yourself in a few words"
+              value={profiledata.Bio}
+              type="text"
+              onChange={handleChange}
+              name="Bio"
             ></Input>
           </div>
           <div className="inputContainer">
@@ -144,11 +169,22 @@ export const EditProfileView = () => {
             <Input
               className="customInput"
               placeholder="Enter your in Twitter"
+              value={profiledata.Twitter_Username}
+              type="text"
+              onChange={handleChange}
+              name="Twitter_Username"
             ></Input>
           </div>
           <div className="inputContainer">
             <div className="customLabel">Personal site or portfolio</div>
-            <Input className="customInput" placeholder="https://"></Input>
+            <Input
+              className="customInput"
+              placeholder="https://"
+              value={profiledata.Personal_site}
+              type="text"
+              onChange={handleChange}
+              name="Personal_site"
+            ></Input>
           </div>
           <div className="inputContainer">
             <div className="customLabel">Email</div>
@@ -158,6 +194,10 @@ export const EditProfileView = () => {
             <Input
               className="customInput"
               placeholder="Enter your email"
+              value={profiledata.Email}
+              type="email"
+              onChange={handleChange}
+              name="Email"
             ></Input>
           </div>
           <div className="verifyContainer">
@@ -174,7 +214,7 @@ export const EditProfileView = () => {
             </div>
           </div>
           <div className="updateBtnContainer">
-            <Button className="updateBtn">Update profile</Button>
+            <Button className="updateBtn" onClick={()=>UpdateProfile()} >Update profile</Button>
           </div>
         </Col>
         <Col md={6} className="rightContainer desktop-show">
