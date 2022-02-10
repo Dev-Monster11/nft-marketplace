@@ -3,6 +3,7 @@ import {
   useStore,
   loadMetadataForCreator,
   useConnection,
+  MetaplexModal,
 } from '@oyster/common';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Alert, Button, Spin, Divider, Select, Input, Drawer } from 'antd';
@@ -185,10 +186,9 @@ export const AuctionListView = () => {
         <div className="d-flex">
           <h3 className="me-2 me-sm-3 d-none d-sm-block">Creators: </h3>
           <Select
-            className="mb-2"
+            className="mb-2 select_artists"
             onChange={handleChange}
             defaultValue="All"
-            style={{ width: '30rem' }}
           >
             <Option value={'initial'}>All</Option>
             {creators.map((m, idx) => {
@@ -222,7 +222,7 @@ export const AuctionListView = () => {
           // const creator = useCreators(m)
           const creatorAdress =
             m.thumbnail.metadata.info.data.creators![0].address;
-          console.log(creatorAdress, '||', globalAdress);
+          // console.log(creatorAdress, '||', globalAdress);
           // console.log(creator, 'this is the creator')
           if (m.auction.info.state !== 2 && creatorAdress === globalAdress)
             return (
@@ -255,7 +255,7 @@ export const AuctionListView = () => {
           <Spin indicator={<LoadingOutlined />} />
         </div>
       )}
-      {showModal && (
+      {/* {showModal && (
         <DrawerWrapper
           id={itemId}
           hide={() => setShowModal(false)}
@@ -263,7 +263,22 @@ export const AuctionListView = () => {
           show={showModal && mobileMode}
           mobileMode={mobileMode}
         />
-      )}
+      )} */}
+      <MetaplexModal
+        maskClosable={true}
+        closable={false}
+        onCancel={() => setShowModal(false)}
+        visible={showModal && mobileMode}
+      >
+        <div className="p-2">
+          <CheckOutModal
+            mobile={mobileMode}
+            show={showModal}
+            id={itemId}
+            hide={() => setShowModal(false)}
+          />
+        </div>
+      </MetaplexModal>
       {showModal && (
         <DrawerWrapper
           id={itemId}
