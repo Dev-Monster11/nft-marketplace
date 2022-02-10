@@ -23,7 +23,7 @@ import {
   useUserAccounts,
   StringPublicKey,
   toPublicKey,
-  WalletSigner,
+  // WalletSigner,
   loadPayoutTickets,
   getBidderKeys,
   getPayoutTicket,
@@ -38,6 +38,7 @@ import {
   processVaultData,
   subscribeProgramChanges
 } from '@oyster/common';
+import { WalletSigner } from '../../contexts';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useMeta } from '../../contexts';
 import { Connection } from '@solana/web3.js';

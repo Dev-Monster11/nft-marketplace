@@ -7,7 +7,7 @@ import { useTheme } from '../../contexts/themecontext';
 export const MessageContent = (props: any) => {
   const { theme } = useTheme();
   return (
-    <div key={props.index} className='d-flex' style={{ width: '100%', marginBottom: '1.5rem' }}>
+    <div key={props.key} className='d-flex' style={{ width: '100%', marginBottom: '1.5rem' }}>
       <div className='user-avatar'>
         <Identicon address={props.info.walletAddress} size={35} />
       </div>

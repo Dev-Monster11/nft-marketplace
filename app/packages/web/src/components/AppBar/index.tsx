@@ -141,7 +141,7 @@ export const AppBar = (props: P) => {
         // },
       ];
     } else {
-      const state = menu.filter(m => m.key === 'player');
+      const state = menu.filter(m => m.key === 'verse');
       console.log(state);
       if (state.length) menu.shift();
     }

@@ -10,8 +10,9 @@ import {
   StringPublicKey,
   toPublicKey,
   useConnection,
-  WalletSigner,
+  // WalletSigner,
 } from '@oyster/common';
+import { WalletSigner } from '../../contexts';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection } from '@solana/web3.js';
 import { Badge, Button, ButtonProps, List, Popover } from 'antd';

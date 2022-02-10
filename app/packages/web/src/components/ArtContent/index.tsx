@@ -92,6 +92,7 @@ const VideoArtContent = ({
     likelyVideo &&
     likelyVideo.startsWith('https://watch.videodelivery.net/') ? (
       <Stream
+        // @ts-ignore
         streamRef={(e: any) => playerRef(e)}
         src={likelyVideo.replace('https://watch.videodelivery.net/', '')}
         loop={true}

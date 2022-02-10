@@ -34,7 +34,7 @@ const ExplorerLink_1 = require("../components/ExplorerLink");
 const hooks_1 = require("../hooks");
 const cusper_1 = require("@metaplex-foundation/cusper");
 const config_1 = __importDefault(require("next/config"));
-const cusper = cusper_1.initCusper();
+const cusper = (0, cusper_1.initCusper)();
 const logs = [
     'Program CwrqeMj2U8tFr1Rhkgwc84tpAsqbt9pTt2a4taoTADPr invoke [1]',
     'Program log: Custom program error: 0x07D0',
@@ -48,7 +48,7 @@ function showError(err) {
         console.error(err);
     }
 }
-let nextConfig = config_1.default();
+let nextConfig = (0, config_1.default)();
 const publicRuntimeConfig = nextConfig.publicRuntimeConfig;
 exports.ENDPOINTS = [
     {
@@ -68,12 +68,12 @@ exports.ENDPOINTS = [
     },
     {
         name: 'testnet',
-        endpoint: web3_js_1.clusterApiUrl('testnet'),
+        endpoint: (0, web3_js_1.clusterApiUrl)('testnet'),
         ChainId: spl_token_registry_1.ENV.Testnet,
     },
     {
         name: 'devnet',
-        endpoint: web3_js_1.clusterApiUrl('devnet'),
+        endpoint: (0, web3_js_1.clusterApiUrl)('devnet'),
         ChainId: spl_token_registry_1.ENV.Devnet,
     },
 ];
@@ -91,12 +91,12 @@ const ConnectionContext = react_1.default.createContext({
 });
 function ConnectionProvider({ children }) {
     var _a;
-    const searchParams = hooks_1.useQuerySearch();
+    const searchParams = (0, hooks_1.useQuerySearch)();
     const [networkStorage, setNetworkStorage] = 
     // @ts-ignore
-    utils_2.useLocalStorageState('network', DEFAULT_ENDPOINT.name);
+    (0, utils_2.useLocalStorageState)('network', DEFAULT_ENDPOINT.name);
     const networkParam = searchParams.get('network');
-    const [savedEndpoint, setEndpointMap] = utils_2.useLocalStorageState('connectionEndpoint', exports.ENDPOINTS[0].endpoint);
+    const [savedEndpoint, setEndpointMap] = (0, utils_2.useLocalStorageState)('connectionEndpoint', exports.ENDPOINTS[0].endpoint);
     const setEndpoint = setEndpointMap;
     let maybeEndpoint;
     if (networkParam) {
@@ -113,13 +113,13 @@ function ConnectionProvider({ children }) {
     }
     const endpointMap = maybeEndpoint || DEFAULT_ENDPOINT;
     const endpoint = (maybeEndpoint === null || maybeEndpoint === void 0 ? void 0 : maybeEndpoint.endpoint) || DEFAULT_ENDPOINT.endpoint;
-    const { current: connection } = react_1.useRef(new web3_js_1.Connection(endpointMap.endpoint));
-    const [tokens, setTokens] = react_1.useState(new Map());
-    const [tokenMap, setTokenMap] = react_1.useState(new Map());
+    const { current: connection } = (0, react_1.useRef)(new web3_js_1.Connection(endpointMap.endpoint));
+    const [tokens, setTokens] = (0, react_1.useState)(new Map());
+    const [tokenMap, setTokenMap] = (0, react_1.useState)(new Map());
     const env = ((_a = exports.ENDPOINTS.find(end => end.endpoint === endpointMap.endpoint)) === null || _a === void 0 ? void 0 : _a.name) || exports.ENDPOINTS[0].name;
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         function fetchTokens() {
-            return utils_1.getTokenListContainerPromise().then(container => {
+            return (0, utils_1.getTokenListContainerPromise)().then(container => {
                 const list = container
                     .excludeByTag('nft')
                     .filterByChainId(endpointMap.ChainId)
@@ -135,7 +135,7 @@ function ConnectionProvider({ children }) {
         }
         fetchTokens();
     }, []);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         function updateNetworkInLocalStorageIfNeeded() {
             if (networkStorage !== endpointMap.name) {
                 setNetworkStorage(endpointMap.name);
@@ -147,13 +147,13 @@ function ConnectionProvider({ children }) {
     // is empty after opening for the first time, preventing subsequent
     // subscriptions from receiving responses.
     // This is a hack to prevent the list from ever being empty.
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         const id = connection.onAccountChange(web3_js_1.Keypair.generate().publicKey, () => { });
         return () => {
             connection.removeAccountChangeListener(id);
         };
     }, []);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         const id = connection.onSlotChange(() => null);
         return () => {
             connection.removeSlotChangeListener(id);
@@ -175,11 +175,11 @@ function ConnectionProvider({ children }) {
 }
 exports.ConnectionProvider = ConnectionProvider;
 function useConnection() {
-    return react_1.useContext(ConnectionContext).connection;
+    return (0, react_1.useContext)(ConnectionContext).connection;
 }
 exports.useConnection = useConnection;
 function useConnectionConfig() {
-    const context = react_1.useContext(ConnectionContext);
+    const context = (0, react_1.useContext)(ConnectionContext);
     return {
         setEndpointMap: context.setEndpointMap,
         setEndpoint: context.setEndpoint,
@@ -244,11 +244,11 @@ async function sendTransactionsWithManualRetry(connection, wallet, instructions,
             tries = 0;
         try {
             if (instructions.length === 1) {
-                await exports.sendTransactionWithRetry(connection, wallet, instructions[0], filteredSigners[0], 'single');
+                await (0, exports.sendTransactionWithRetry)(connection, wallet, instructions[0], filteredSigners[0], 'single');
                 stopPoint = 1;
             }
             else {
-                stopPoint = await exports.sendTransactions(connection, wallet, instructions, filteredSigners, SequenceType.StopOnFailure, 'single');
+                stopPoint = await (0, exports.sendTransactions)(connection, wallet, instructions, filteredSigners, SequenceType.StopOnFailure, 'single');
             }
         }
         catch (e) {
@@ -264,10 +264,11 @@ const sendTransactionsInChunks = async (connection, wallet, instructionSet, sign
         throw new wallet_adapter_base_1.WalletNotConnectedError();
     let instructionsChunk = [instructionSet];
     let signersChunk = [signersSet];
-    instructionsChunk = utils_2.chunks(instructionSet, batchSize);
-    signersChunk = utils_2.chunks(signersSet, batchSize);
+    instructionsChunk = (0, utils_2.chunks)(instructionSet, batchSize);
+    signersChunk = (0, utils_2.chunks)(signersSet, batchSize);
     for (let c = 0; c < instructionsChunk.length; c++) {
         const unsignedTxns = [];
+        const signedTxns = [];
         for (let i = 0; i < instructionsChunk[c].length; i++) {
             const instructions = instructionsChunk[c][i];
             const signers = signersChunk[c][i];
@@ -281,18 +282,25 @@ const sendTransactionsInChunks = async (connection, wallet, instructionSet, sign
             instructions.forEach(instruction => console.log(`instruction: ${instruction}`));
             instructions.forEach(instruction => transaction.add(instruction));
             transaction.recentBlockhash = block.blockhash;
-            // signers.forEach(signer => console.log(wallet.publicKey, signer, signer.publicKey));
-            // signers.forEach(signer => transaction.addSignature(wallet.publicKey, signer.publicKey));
             transaction.setSigners(
             // fee payed by the wallet owner
             wallet.publicKey, ...signers.map(s => s.publicKey));
             if (signers.length > 0) {
                 transaction.partialSign(...signers);
+                // transaction.setSigners(
+                //   // fee payed by the wallet owner
+                //   wallet.publicKey,
+                //   ...signers.map(s => s.publicKey),
+                // );
             }
             unsignedTxns.push(transaction);
+            const trxSig = await wallet.sendTransaction(transaction, connection);
+            console.log(`Transaction signature: ${trxSig}`);
+            let isVerifiedSignature = transaction.verifySignatures();
+            console.log(`The signatures were verifed: ${isVerifiedSignature}`);
+            signedTxns.push(transaction);
         }
         console.log(`wallet signer: ${wallet.publicKey}`);
-        const signedTxns = await wallet.signAllTransactions(unsignedTxns);
         const breakEarlyObject = { breakEarly: false, i: 0 };
         console.log('Signed txns length', signedTxns.length, 'vs handed in length', instructionSet.length);
         for (let i = 0; i < signedTxns.length; i++) {
@@ -327,6 +335,7 @@ const sendTransactions = async (connection, wallet, instructionSet, signersSet, 
     if (!wallet.publicKey)
         throw new wallet_adapter_base_1.WalletNotConnectedError();
     const unsignedTxns = [];
+    const signedTxns = [];
     if (!block) {
         block = await connection.getRecentBlockhash(commitment);
     }
@@ -351,8 +360,13 @@ const sendTransactions = async (connection, wallet, instructionSet, signersSet, 
             // );
         }
         unsignedTxns.push(transaction);
+        const trxSig = await wallet.sendTransaction(transaction, connection);
+        console.log(`Transaction signature: ${trxSig}`);
+        let isVerifiedSignature = transaction.verifySignatures();
+        console.log(`The signatures were verifed: ${isVerifiedSignature}`);
+        signedTxns.push(transaction);
     }
-    const signedTxns = await wallet.signAllTransactions(unsignedTxns);
+    // const signedTxns = await wallet.signAllTransactions(unsignedTxns);
     const pendingTxns = [];
     let breakEarlyObject = { breakEarly: false, i: 0 };
     console.log('Signed txns length', signedTxns.length, 'vs handed in length', instructionSet.length);
@@ -400,6 +414,7 @@ const sendTransactionsWithRecentBlock = async (connection, wallet, instructionSe
     if (!wallet.publicKey)
         throw new wallet_adapter_base_1.WalletNotConnectedError();
     const unsignedTxns = [];
+    const signedTxns = [];
     for (let i = 0; i < instructionSet.length; i++) {
         const instructions = instructionSet[i];
         const signers = signersSet[i];
@@ -407,7 +422,7 @@ const sendTransactionsWithRecentBlock = async (connection, wallet, instructionSe
             continue;
         }
         const block = await connection.getRecentBlockhash(commitment);
-        await utils_2.sleep(1200);
+        await (0, utils_2.sleep)(1200);
         const transaction = new web3_js_1.Transaction();
         instructions.forEach(instruction => transaction.add(instruction));
         transaction.recentBlockhash = block.blockhash;
@@ -419,8 +434,13 @@ const sendTransactionsWithRecentBlock = async (connection, wallet, instructionSe
             transaction.partialSign(...signers);
         }
         unsignedTxns.push(transaction);
+        const trxSig = await wallet.sendTransaction(transaction, connection);
+        console.log(`Transaction signature(${i}): ${trxSig}`);
+        let isVerifiedSignature = transaction.verifySignatures();
+        console.log(`The signatures were verifed: ${isVerifiedSignature}`);
+        signedTxns.push(transaction);
     }
-    const signedTxns = await wallet.signAllTransactions(unsignedTxns);
+    // const signedTxns = await wallet.signAllTransactions(unsignedTxns);
     const breakEarlyObject = { breakEarly: false, i: 0 };
     console.log('Signed txns length', signedTxns.length, 'vs handed in length', instructionSet.length);
     for (let i = 0; i < signedTxns.length; i++) {
@@ -472,7 +492,10 @@ const sendTransaction = async (connection, wallet, instructions, signers, awaitC
     }
     if (!includesFeePayer) {
         // transaction.feePayer = wallet.publicKey;
-        transaction = await wallet.signTransaction(transaction);
+        const trxSig = await wallet.sendTransaction(transaction, connection);
+        console.log(`Transaction signature: ${trxSig}`);
+        let isVerifiedSignature = transaction.verifySignatures();
+        console.log(`The signatures were verifed: ${isVerifiedSignature}`);
     }
     const rawTransaction = transaction.serialize();
     let options = {
@@ -488,8 +511,8 @@ const sendTransaction = async (connection, wallet, instructions, signers, awaitC
             throw new Error('Timed out awaiting confirmation on transaction');
         slot = (confirmation === null || confirmation === void 0 ? void 0 : confirmation.slot) || 0;
         if (confirmation === null || confirmation === void 0 ? void 0 : confirmation.err) {
-            const errors = await exports.getErrorForTransaction(connection, txid);
-            notifications_1.notify({
+            const errors = await (0, exports.getErrorForTransaction)(connection, txid);
+            (0, notifications_1.notify)({
                 message: 'Transaction failed...',
                 description: (react_1.default.createElement(react_1.default.Fragment, null,
                     errors.map(err => (react_1.default.createElement("div", null, err))),
@@ -513,7 +536,7 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
     let transaction = new web3_js_1.Transaction({ feePayer: wallet.publicKey });
     instructions.forEach(instruction => transaction.add(instruction));
     transaction.recentBlockhash = (block || (await connection.getRecentBlockhash(commitment))).blockhash;
-    showError();
+    // showError()
     console.log(`signedTransaction2; feePayer: ${transaction.feePayer}`);
     console.log(`signedTransaction2; instructions: ${transaction.instructions}`);
     console.log(`signedTransaction2; nonceInfo: ${transaction.nonceInfo}`);
@@ -522,7 +545,9 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
     if (!includesFeePayer) {
         // console.log(`store paying for transaction?: ${wallet.publicKey}`);
         // transaction.feePayer = wallet.publicKey;
-        transaction = await wallet.signTransaction(transaction);
+        const trxSig = await wallet.sendTransaction(transaction, connection);
+        console.log(`Transaction signature: ${trxSig}`);
+        // transaction.addSignature(wallet.publicKey, signature)
         let isVerifiedSignature = transaction.verifySignatures();
         console.log(`The signatures were verifed: ${isVerifiedSignature}`);
         console.log(`sendTransactionWithRetry; post-sign`);
@@ -573,7 +598,8 @@ exports.sendTransactionWithRetry = sendTransactionWithRetry;
 //     transaction.partialSign(...signers);
 //   }
 //   if (!includesFeePayer) {
-//     transaction = await wallet.signTransaction(transaction);
+// transaction = await wallet.sendTransaction(transaction, connection);
+// const signature = await wallet.sendTransaction(transaction, connection);
 //   }
 //   if (beforeSend) {
 //     beforeSend();
@@ -596,7 +622,7 @@ async function sendSignedTransaction({ signedTransaction, connection, timeout = 
     console.log(`sendSignedTransaction; recentBlockhash: ${signedTransaction.recentBlockhash}`);
     console.log(`sendSignedTransaction; signature: ${signedTransaction.signature}`);
     const rawTransaction = signedTransaction.serialize();
-    const startTime = exports.getUnixTs();
+    const startTime = (0, exports.getUnixTs)();
     let slot = 0;
     const txid = await connection.sendRawTransaction(rawTransaction, {
         skipPreflight: true,
@@ -604,11 +630,11 @@ async function sendSignedTransaction({ signedTransaction, connection, timeout = 
     console.log('Started awaiting confirmation for', txid);
     let done = false;
     (async () => {
-        while (!done && exports.getUnixTs() - startTime < timeout) {
+        while (!done && (0, exports.getUnixTs)() - startTime < timeout) {
             connection.sendRawTransaction(rawTransaction, {
                 skipPreflight: true,
             });
-            await utils_2.sleep(500);
+            await (0, utils_2.sleep)(500);
         }
     })();
     try {
@@ -647,7 +673,7 @@ async function sendSignedTransaction({ signedTransaction, connection, timeout = 
     finally {
         done = true;
     }
-    console.log('Latency', txid, exports.getUnixTs() - startTime);
+    console.log('Latency', txid, (0, exports.getUnixTs)() - startTime);
     return { txid, slot };
 }
 exports.sendSignedTransaction = sendSignedTransaction;
@@ -741,7 +767,7 @@ async function awaitTransactionSignatureConfirmation(txid, timeout, connection, 
                     }
                 }
             })();
-            await utils_2.sleep(2000);
+            await (0, utils_2.sleep)(2000);
         }
     });
     //@ts-ignore

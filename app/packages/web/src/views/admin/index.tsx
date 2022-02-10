@@ -12,7 +12,8 @@ import {
   Divider,
   Progress,
   Space,
-  Menu
+  Menu,
+  Select,
 } from 'antd';
 import { useMeta } from '../../contexts';
 import {
@@ -27,7 +28,7 @@ import {
   useStore,
   useUserAccounts,
   useWalletModal,
-  WalletSigner,
+  // WalletSigner,
   loadCreators,
   loadAuctionManagers,
   loadAuctionsForAuctionManagers,
@@ -36,6 +37,7 @@ import {
   processMetaplexAccounts,
   subscribeProgramChanges,
 } from '@oyster/common';
+import { WalletSigner } from '../../contexts';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection } from '@solana/web3.js';
 import { saveAdmin } from '../../actions/saveAdmin';
@@ -52,7 +54,8 @@ import {
   MenuFoldOutlined,
   WalletOutlined,
   MenuOutlined,
-  NotificationOutlined
+  NotificationOutlined,
+  UsergroupAddOutlined
 } from '@ant-design/icons';
 import { useAuctionManagersToCache, useNotifications } from '../../hooks';
 import Bugsnag from '@bugsnag/browser';
@@ -63,6 +66,7 @@ import { ENDPOINTS, useConnectionConfig } from '@oyster/common';
 const { publicRuntimeConfig } = getConfig();
 
 const { Header, Content, Footer, Sider } = Layout;
+const { Option } = Select;
 
 export const AdminView = () => {
   const { store, whitelistedCreatorsByCreator, isLoading, patchState } =
@@ -470,6 +474,9 @@ function InnerAdminView({
           <Menu.Item key="4" icon={<UserOutlined />}>
             Adminstrator Actions
           </Menu.Item>
+          <Menu.Item key="5" icon={<UsergroupAddOutlined />}>
+            Manage Users
+          </Menu.Item>
         </Menu>
       </Sider>
       <Layout className="site-layout">
@@ -653,8 +660,115 @@ function InnerAdminView({
               </Row>
             </>
           }
+
+          {currentMenu == '5' && <ManageUser />}
         </Content>
       </Layout>
     </Layout>
   );
+}
+
+const ManageUser = () => {
+  interface DataType {
+    key: React.Key;
+    avatar: string;
+    name: string;
+    role: string;
+  }
+
+  const columns = [
+    {
+      title: 'Avatar',
+      dataIndex: 'avatar',
+      key: 'avatar',
+      render: (v: string) => <img className='user-img' src={v} />
+    },
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+      render: (v: string) =>
+        <>
+          <Select defaultValue={v} style={{ width: 170 }} onChange={handleChange}>
+            <Option value="admin">Admin</Option>
+            <Option value="moderators">Moderators</Option>
+            <Option value="artists">Artists</Option>
+            <Option value="users">Users</Option>
+          </Select>
+        </>
+    },
+    {
+      title: 'Message',
+      dataIndex: '',
+      key: 'message',
+      render: (v: string, obj: DataType) =>
+        <>
+          <Button shape='round' className='user-btn' onClick={() => handleMessage(obj)}>Message</Button>
+        </>,
+    },
+    {
+      title: 'Hide / Block',
+      dataIndex: '',
+      key: 'x',
+      render: (v: string, obj: DataType) =>
+        <>
+          <Button shape='round' className='me-2 user-btn' onClick={() => handleHide(obj)}>Hide</Button>
+          <Button shape='round' className='user-btn' onClick={() => handleBlock(obj)}>Block</Button>
+        </>,
+    },
+  ];
+
+  const data = [
+    {
+      key: 1,
+      avatar: '/img/artist1.jpeg',
+      name: 'John Brown',
+      role: 'admin',
+    },
+    {
+      key: 2,
+      avatar: '/img/artist1.jpeg',
+      name: 'Jim Green',
+      role: 'admin',
+    },
+    {
+      key: 3,
+      avatar: '/img/artist1.jpeg',
+      name: 'Not Expandable',
+      role: 'artists',
+    },
+    {
+      key: 4,
+      avatar: '/img/artist1.jpeg',
+      name: 'Joe Black',
+      role: 'users',
+    },
+  ];
+
+  const handleHide = (obj: DataType) => {
+    console.log('hide ', obj)
+  }
+
+  const handleBlock = (obj: DataType) => {
+    console.log('block', obj)
+  } 
+
+  const handleMessage = (obj: DataType) => {
+    console.log('message', obj)
+  }
+
+  const handleChange = (value: string) => {
+    console.log(`selected ${value}`);
+  }
+
+  return (
+    <>
+      <h2>Manage Users</h2>
+      <Table
+        columns={columns}
+        dataSource={data}
+      />
+    </>
+  )
 }

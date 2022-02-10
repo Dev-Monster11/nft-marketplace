@@ -103,7 +103,7 @@ export const MessageView = () => {
             {
               messages && messages.length > 0 && messages.map((m: any, index: number) =>
                 <MessageContent
-                  index={index}
+                  key={index}
                   width={60}
                   info={m}
                 />

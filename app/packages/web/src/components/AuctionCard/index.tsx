@@ -797,6 +797,7 @@ export const AuctionCard = ({
   // Conduct an instant sale
   const instantFiatSaleBtn = (
     <Space
+      style={{ display: 'flex', justifyContent: 'center' }}
       align="center"
       onLoad={canEndInstantSale ? endInstantSale : instantFiatSale}
     >
@@ -946,22 +947,16 @@ export const AuctionCard = ({
               className="metaplex-fullwidth rounded-3"
               type="primary"
               size="large"
+              style={{ fontSize: '1rem' }}
               onClick={() => history.push('/signin')}
             >
-              Connect wallet to{' '}
-              {auctionView.isInstantSale ? 'purchase' : 'place bid'} with Sol
+              {' '}
+              Connect sol before{' '}
+              {auctionView.isInstantSale ? 'purchasing' : 'placing bid'}
             </Button>
           )}
           <hr />
-          <Space
-            className="ant-card"
-            style={{
-              position: 'absolute',
-              top: 68,
-              left: 140,
-              padding: '0 10px 0 10px',
-            }}
-          >
+          <Space className="ant-card pay_with_text">
             {isAuctionManagerAuthorityNotWalletOwner ? (
               <Text>Or pay with card</Text>
             ) : (
