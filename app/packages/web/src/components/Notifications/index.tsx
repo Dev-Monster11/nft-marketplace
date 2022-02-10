@@ -14,7 +14,7 @@ import {
 } from '@oyster/common';
 import { WalletSigner } from '../../contexts';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Connection } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { Badge, Button, ButtonProps, List, Popover } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -119,18 +119,16 @@ export function useCollapseWrappedSol({
   const [showNotification, setShowNotification] = useState(false);
   const fn = async () => {
     const ata = await getPersonalEscrowAta(wallet);
-    if (ata) {  
+    if (ata) {
       try {
         const balance = await connection.getTokenAccountBalance(
           toPublicKey(ata),
         );
-
         if ((balance && balance.value.uiAmount) || 0 > 0) {
           setShowNotification(true);
         }
       } catch (e) {
         const walletPubkey = wallet.publicKey?.toBase58() || '';
-        console.error(`pub_key: ${walletPubkey} ata_key: ${toPublicKey(ata)}: ${e}`);
       }
     }
     setTimeout(fn, 60000);
