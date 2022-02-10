@@ -25,6 +25,7 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { MetaplexModal } from '../components';
 import { notify } from '../utils';
 import { useHistory } from 'react-router-dom';
+import { MyWalletAdapter } from './wallet/MyWalletAdapter'
 const { Panel } = Collapse;
 
 export interface WalletModalContextState {
@@ -214,6 +215,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const wallets = useMemo(
     () => [
+        new MyWalletAdapter({network}),
         new PhantomWalletAdapter(),
         new SolflareWalletAdapter({ network }),
         new LedgerWalletAdapter(),

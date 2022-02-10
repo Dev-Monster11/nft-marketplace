@@ -1,4 +1,3 @@
-/// <reference types="react" />
 export declare const EtherscanLink: (props: {
     address: string;
     type: string;

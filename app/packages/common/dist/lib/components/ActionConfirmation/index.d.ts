@@ -1,4 +1,3 @@
-/// <reference types="react" />
 export declare const ActionConfirmation: (props: {
     onClose: () => void;
 }) => JSX.Element;

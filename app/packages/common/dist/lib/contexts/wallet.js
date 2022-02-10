@@ -28,6 +28,7 @@ const react_1 = __importStar(require("react"));
 const web3_js_1 = require("@solana/web3.js");
 const components_1 = require("../components");
 const utils_1 = require("../utils");
+const MyWalletAdapter_1 = require("./wallet/MyWalletAdapter");
 const { Panel } = antd_1.Collapse;
 exports.WalletModalContext = (0, react_1.createContext)({});
 function useWalletModal() {
@@ -121,6 +122,7 @@ const WalletProvider = ({ children }) => {
     // You can also provide a custom RPC endpoint.
     const endpoint = (0, react_1.useMemo)(() => (0, web3_js_1.clusterApiUrl)(network), [network]);
     const wallets = (0, react_1.useMemo)(() => [
+        new MyWalletAdapter_1.MyWalletAdapter({ network }),
         new wallet_adapter_wallets_1.PhantomWalletAdapter(),
         new wallet_adapter_wallets_1.SolflareWalletAdapter({ network }),
         new wallet_adapter_wallets_1.LedgerWalletAdapter(),
