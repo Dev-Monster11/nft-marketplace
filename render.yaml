@@ -11,8 +11,9 @@ services:
   dockerCommand: yarn dev
   numInstances: 1
   healthCheckPath: /
+  startCommand
   domains:
-      - test.queendom.live
+    - test.queendom.live
   user: node
   envVars:
     - key: WEBSITE_HOSTNAME
@@ -55,8 +56,8 @@ services:
   numInstances: 1
   healthCheckPath: /
   # domains:
-  #     - test0.render.com
-  #     - test1.render.com
+    #  - test0.render.com
+    #  - test1.render.com
   envVars:
     - key: MONGODB_CONNSTRING
       fromDatabase:
