@@ -1,4 +1,99 @@
 services:
 # An NFT marketplace Application
 - type: web
-  name: marketplace
+  name: marketplace_app
+  env: docker
+  region: frankfurt
+  plan: standard
+  branch: stg
+  dockerfilePath: ./app/Dockerfile.stg
+  dockerContext: ./app/.
+  dockerCommand: yarn dev
+  numInstances: 1
+  healthCheckPath: /
+  domains:
+      - test.queendom.live
+  user: node
+  envVars:
+    - key: WEBSITE_HOSTNAME
+      value: test.queendom.live
+    - key: NODE_VERSION
+      value: 14.17.6
+    - key: NEXT_NFT_STORAGE_UPLOAD_ENDPOINT
+      value: https://www.holaplex.com/api/ipfs/upload
+    - key: NEXT_PUBLIC_SOLANA_NETWORK
+      value: devnet
+    - key: NEXT_PUBLIC_SOLANA_RPC_HOST
+      value: https://explorer-api.devnet.solana.com
+    - key: NEXT_PUBLIC_ARWEAVE_CDN
+      value: https://arweave.cache.holaplex.dev
+    - key: NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
+      value: G-HLNC4C2YKN
+    - key: NEXT_PUBLIC_STORE_ADDRESS
+      value: CBr3mDvvj5xEF2bAKhRo3GoBdHAzwc6ojQogTXmDrpMS
+    - key: NEXT_PUBLIC_STORE_OWNER_ADDRESS
+      value: GChKNh3XybQS9jSpEWLcyKSjSA2ViSNW49dRWp4WA5Qe
+    - key: NEXT_ENABLE_NFT_PACKS
+      value: false
+    - key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      value: pk_test_51KAM5FJSrWpQVbhlHiLvidslxcmefhBtvGaRtNhPROXAaMN1HVcqOE2DgrAP4K4KULKsPiwY14skB6htNFbV4GeP00EvdJB0Uh
+    - key: STRIPE_SECRET_KEY
+      value: sk_test_51KAM5FJSrWpQVbhlykbwmLndSvrs57ADbt3MA2KD3fyp4Y2OQKbvZWDJiE9QW6CWCNWa5WOC97RCAKG9vbD2GujQ00BYFVgaBL
+    - key: STRIPE_PAYMENT_DESCRIPTION
+      value: Software development services
+    - key: STRIPE_WEBHOOK_SECRET
+      value: whsec_1234
+- type: web
+  name: marketplace_backend
+  env: docker
+  region: frankfurt
+  plan: standard
+  branch: stg
+  dockerfilePath: ./backend/Dockerfile.stg
+  dockerContext: ./backend/.
+  dockerCommand: yarn dev
+  numInstances: 1
+  healthCheckPath: /
+  # domains:
+  #     - test0.render.com
+  #     - test1.render.com
+  envVars:
+    - key: MONGODB_CONNSTRING
+      fromDatabase:
+        name: marketplace_db
+        property: connectionString
+    #  value: mongodb://nft_market:${MONGODB_PASSWORD?err}@backend_data
+
+#- type: pserv
+  # name: mongodb
+  # env: docker
+  # user: nft_market
+  # password:
+  # disk:
+  #   name: backend_data
+  #   mountPath: /data/db
+  #   sizeGB: 10
+
+databases:
+  - name: marketplace_db
+    databaseName: marketplace
+    user: marketplace
+
+
+# databases:
+#   - name: backend-staging
+#   # db 2
+#   - name: backend-prod
+#     region: frankfurt
+#     plan: standard
+#     databaseName: prod_app
+#     user: marketplace_user
+
+
+        
+        
+        
+        
+        
+        
+        
