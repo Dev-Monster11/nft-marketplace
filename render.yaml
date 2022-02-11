@@ -11,8 +11,8 @@ services:
   dockerCommand: yarn dev
   numInstances: 1
   healthCheckPath: /
-  domains:
-    - test.queendom.live
+  # domains:
+  #   - test.queendom.live
   user: node
   envVars:
     - key: WEBSITE_HOSTNAME
