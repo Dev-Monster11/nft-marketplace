@@ -11,7 +11,6 @@ services:
   dockerCommand: yarn dev
   numInstances: 1
   healthCheckPath: /
-  startCommand
   domains:
     - test.queendom.live
   user: node
