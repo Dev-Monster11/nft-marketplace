@@ -38,6 +38,7 @@ import {
   useMint,
   PriceFloorType,
 } from '@oyster/common';
+import VirtualIcon from '../../components/svgs/Virtual';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { ArtType } from '../../types';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -65,6 +66,14 @@ interface Props {
   id: string;
   mobile?: boolean;
 }
+
+const DISPLAY_CAPTIONS =
+  ' You will receive a HQ PNG file to show the world the asset you own by displaying it in your physical or virtual space. Maybe at your gallery in Queendom? :)';
+
+const GAME_OUTFIT_CAPTIONS =
+  'You will receive an FBX file that can be imported to most metaverse platforms and be worn on your compatible avatars like the interoperable & inclusive avatars that Queendom is creating';
+
+const VIRTUAL_TRY_CAPTIONS = 'Coming soon';
 
 const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
   const { publicRuntimeConfig } = getConfig();
@@ -430,9 +439,17 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             onClick={() => setCaptureShow(!captureShow)}
           >
             <h4>
-              <CameraOutlined />
+              <img
+                style={{ width: 'auto' }}
+                src={
+                  theme === Theme.Light
+                    ? 'Logo/displayDark.png'
+                    : 'Logo/displayLight.png'
+                }
+                alt=""
+              />
             </h4>
-            <h4>Capture it</h4>
+            <h4>Display</h4>
             <div>
               <h4>
                 <CaretDownOutlined
@@ -442,7 +459,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             </div>
           </Row>
           <div hidden={captureShow}>
-            <h5>Capture Captions</h5>
+            <h5>{DISPLAY_CAPTIONS}</h5>
           </div>
           <hr />
           <Row
@@ -451,9 +468,17 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             onClick={() => setShowcaseShow(!showcaseShow)}
           >
             <h4>
-              <FundProjectionScreenOutlined />
+              <img
+                style={{ width: '9px' }}
+                src={
+                  theme === Theme.Light
+                    ? 'Logo/outfitDark.png'
+                    : 'Logo/outfitLight.png'
+                }
+                alt=""
+              />
             </h4>
-            <h4>Showcase it</h4>
+            <h4>Metaverse Outfit</h4>
             <div>
               <h4>
                 <CaretDownOutlined
@@ -463,7 +488,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             </div>
           </Row>
           <div hidden={showcaseShow}>
-            <h5>Showcase Captions</h5>
+            <h5>{GAME_OUTFIT_CAPTIONS}</h5>
           </div>
           <hr />
           <Row
@@ -472,9 +497,17 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             onClick={() => setTryShow(!tryShow)}
           >
             <h4>
-              <ThunderboltOutlined />
+              <img
+                style={{ width: 'auto' }}
+                src={
+                  theme === Theme.Light
+                    ? 'Logo/vtonDark.png'
+                    : 'Logo/vtonLight.png'
+                }
+                alt=""
+              />
             </h4>
-            <h4>Try it on</h4>
+            <h4>Virtual Try On</h4>
             <div>
               <h4>
                 <CaretDownOutlined className={tryShow ? '' : 'rotate_button'} />
@@ -482,7 +515,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             </div>
           </Row>
           <div hidden={tryShow}>
-            <h5>Try it Captions</h5>
+            <h5>{VIRTUAL_TRY_CAPTIONS}</h5>
           </div>
           <hr />
           <Row
@@ -555,9 +588,17 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             onClick={() => setCaptureShow(!captureShow)}
           >
             <h4>
-              <CameraOutlined />
+              <img
+                style={{ width: 'auto' }}
+                src={
+                  theme === Theme.Light
+                    ? 'Logo/displayDark.png'
+                    : 'Logo/displayLight.png'
+                }
+                alt=""
+              />
             </h4>
-            <h4 style={{ marginRight: '250px' }}>Capture it</h4>
+            <h4 style={{ marginRight: '270px' }}>Display</h4>
             <div>
               <h4>
                 <CaretDownOutlined
@@ -567,7 +608,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             </div>
           </Row>
           <div hidden={captureShow}>
-            <h5>Capture Captions</h5>
+            <h5>{DISPLAY_CAPTIONS}</h5>
           </div>
           <hr />
           <Row
@@ -576,9 +617,17 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             onClick={() => setShowcaseShow(!showcaseShow)}
           >
             <h4>
-              <FundProjectionScreenOutlined />
+              <img
+                style={{ width: '9px' }}
+                src={
+                  theme === Theme.Light
+                    ? 'Logo/outfitDark.png'
+                    : 'Logo/outfitLight.png'
+                }
+                alt=""
+              />
             </h4>
-            <h4 style={{ marginRight: '240px' }}>Showcase it</h4>
+            <h4 style={{ marginRight: '195px' }}>Metaverse Outfit</h4>
             <div>
               <h4>
                 <CaretDownOutlined
@@ -588,7 +637,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             </div>
           </Row>
           <div hidden={showcaseShow}>
-            <h5>Showcase Captions</h5>
+            <h5>{GAME_OUTFIT_CAPTIONS}</h5>
           </div>
           <hr />
           <Row
@@ -597,9 +646,17 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             onClick={() => setTryShow(!tryShow)}
           >
             <h4>
-              <ThunderboltOutlined />
+              <img
+                style={{ width: 'auto' }}
+                src={
+                  theme === Theme.Light
+                    ? 'Logo/vtonDark.png'
+                    : 'Logo/vtonLight.png'
+                }
+                alt=""
+              />
             </h4>
-            <h4 style={{ marginRight: '270px' }}>Try it on</h4>
+            <h4 style={{ marginRight: '220px' }}>Virtual Try On</h4>
             <div>
               <h4>
                 <CaretDownOutlined className={tryShow ? '' : 'rotate_button'} />
@@ -607,7 +664,7 @@ const CheckOutModal: React.FC<Props> = ({ show, hide, id, mobile }: Props) => {
             </div>
           </Row>
           <div hidden={tryShow}>
-            <h5>Try it Captions</h5>
+            <h5>{VIRTUAL_TRY_CAPTIONS}</h5>
           </div>
           <hr />
           <Row
