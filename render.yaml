@@ -68,19 +68,4 @@ services:
   disk:
     name: backend_data
     mountPath: /data/db
-    sizeGB: 10
-
-# databases:
-#   - name: marketplace_db
-#     databaseName: marketplace
-#     user: marketplace
-
-
-
-        
-        
-        
-        
-        
-        
-        
+    sizeGB: 10    
