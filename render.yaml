@@ -59,35 +59,26 @@ services:
     #  - test1.render.com
   envVars:
     - key: MONGODB_CONNSTRING
-      fromDatabase:
+      fromService:
         name: marketplace_db
+        type: pserv
         property: connectionString
     #  value: mongodb://nft_market:${MONGODB_PASSWORD?err}@backend_data
-
-#- type: pserv
-  # name: mongodb
-  # env: docker
-  # user: nft_market
-  # password:
-  # disk:
-  #   name: backend_data
-  #   mountPath: /data/db
-  #   sizeGB: 10
-
-databases:
-  - name: marketplace_db
-    databaseName: marketplace
-    user: marketplace
-
+# Backend Database service
+- type: pserv
+  name: mongodb
+  env: docker
+  user: nft_market
+  disk:
+    name: backend_data
+    mountPath: /data/db
+    sizeGB: 10
 
 # databases:
-#   - name: backend-staging
-#   # db 2
-#   - name: backend-prod
-#     region: frankfurt
-#     plan: standard
-#     databaseName: prod_app
-#     user: marketplace_user
+#   - name: marketplace_db
+#     databaseName: marketplace
+#     user: marketplace
+
 
 
         
