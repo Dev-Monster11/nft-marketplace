@@ -59,11 +59,7 @@ services:
     #  - test1.render.com
   envVars:
     - key: MONGODB_CONNSTRING
-      fromService:
-        name: marketplace_db
-        type: pserv
-        property: connectionString
-    #  value: mongodb://nft_market:${MONGODB_PASSWORD?err}@backend_data
+      value: mongodb://backend_data
 # Backend Database service
 - type: pserv
   name: mongodb
