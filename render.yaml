@@ -1,0 +1,4 @@
+services:
+# An NFT marketplace Application
+- type: web
+  name: marketplace
