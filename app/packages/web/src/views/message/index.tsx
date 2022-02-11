@@ -4,14 +4,15 @@ import { SendOutlined } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import io from 'socket.io-client';
 import PixelStreamer from '../../components/PixelStreamer';
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from 'react-router-dom';
 import { fetchJson } from '../../utils';
 import { ArrowDownOutlined } from '@ant-design/icons';
 import { useTheme } from '../../contexts/themecontext';
 import { notify } from '../../components/util/notification';
 import { MessageContent } from '../../components/Message';
+import ReactPlayer from 'react-player';
 
-const serverHost = 'http://localhost:8080/api'
+const serverHost = 'http://localhost:8080/api';
 
 export const MessageView = () => {
   const [offset, setOffset] = useState(0);
@@ -19,7 +20,7 @@ export const MessageView = () => {
   const [scrollbtn, setScrollbtn] = useState(false);
   const [btnStatus, setBtnStatus] = useState(false);
   const [address, setAddress] = useState('');
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const [focus, setFocus] = useState(false);
   const [loading, setLoading] = useState(true);
   const { theme } = useTheme();
@@ -30,13 +31,18 @@ export const MessageView = () => {
   const input: any = useRef<HTMLHeadingElement>(null);
   const socket = io(`http://localhost:8889`);
   const [nmsg, setNmsg] = useState(null);
+
+  const location: any = useLocation();
+  let fromRPM = false;
+  location.state && location.state.fromRPM && (fromRPM = true);
+
   useEffect(() => {
     if (publicKey?.toString()) {
       fetchJson(`${serverHost}/message/${offset}`).then(res => {
         if (res.type === 'success') {
           setMessages(res.data.reverse());
         }
-      })
+      });
       socket.on('message-receive', (res: any) => {
         if (res.type === 'success') {
           setNmsg(res.data);
@@ -65,7 +71,7 @@ export const MessageView = () => {
     console.log(1111);
     socket.emit('message-send', {
       text: input.current.value,
-      walletAddress: publicKey?.toString()
+      walletAddress: publicKey?.toString(),
     });
   };
   const scrollToBottom = () => {
@@ -89,52 +95,95 @@ export const MessageView = () => {
           setOffset(1 + offset);
           setScrollH(scrollHeight);
         }
-      })
+      });
     }
   };
   return (
     <React.Fragment>
-      <div className='message'>
-        <div className='message_content'>
-          <div className='background-stream'>
-            <PixelStreamer focus={focus} activeFocus={() => input.current.focus()} strConfig={setLoading} />
-          </div>
-          <div className={`message-body ${theme === 'Light' ? 'message-body-light' : 'message-body-dark'}`} ref={scrollDiv} onScroll={handleScroll} style={loading ? { zIndex: -1 } : { zIndex: 0 }}>
-            {
-              messages && messages.length > 0 && messages.map((m: any, index: number) =>
-                <MessageContent
-                  key={index}
-                  width={60}
-                  info={m}
+      <div className="message">
+        <div className="message_content">
+          {loading &&
+            (fromRPM ? (
+              <div className="intro-video">
+                <ReactPlayer
+                  loop
+                  playing
+                  url="MVFW.mp4"
+                  width="100%"
+                  height="100%"
                 />
-              )
-            }
+              </div>
+            ) : (
+              <div className="background-stream">
+                <PixelStreamer focus={focus} activeFocus={() => input.current.focus()} strConfig={setLoading} />
+              </div>
+            ))}
+
+          {!loading && (
+            <div className="background-stream">
+              <PixelStreamer focus={focus} activeFocus={() => input.current.focus()} strConfig={setLoading} />
+            </div>
+          )}
+
+          <div
+            className={`message-body ${
+              theme === 'Light' ? 'message-body-light' : 'message-body-dark'
+            }`}
+            ref={scrollDiv}
+            onScroll={handleScroll}
+            style={loading ? { zIndex: -1 } : { zIndex: 0 }}
+          >
+            {messages &&
+              messages.length > 0 &&
+              messages.map((m: any, index: number) => (
+                <MessageContent key={index} width={60} info={m} />
+              ))}
           </div>
-          <div className='message-send' style={loading ? { zIndex: -1 } : { zIndex: 0 }}>
+          <div
+            className="message-send"
+            style={loading ? { zIndex: -1 } : { zIndex: 0 }}
+          >
             <input
               ref={input}
               type="text"
               onFocus={() => setFocus(true)}
               onBlur={() => setFocus(false)}
-              className={`message-insert ${theme === 'Light' ? 'message-insert-light' : 'message-insert-dark'}`}
+              className={`message-insert ${
+                theme === 'Light'
+                  ? 'message-insert-light'
+                  : 'message-insert-dark'
+              }`}
               placeholder="Type a message"
               // value={text}
-              style={theme === 'Light' ? { color: 'black', borderColor: 'black' } : { color: 'white', borderColor: 'white', outline: 'none' }}
-              onChange={(e) => e.target.value ? setBtnStatus(true) : setBtnStatus(false)}
-              onKeyPress={(e) => e.which === 13 && input.current.value && handleMessage()}
+              style={
+                theme === 'Light'
+                  ? { color: 'black', borderColor: 'black' }
+                  : { color: 'white', borderColor: 'white', outline: 'none' }
+              }
+              onChange={e =>
+                e.target.value ? setBtnStatus(true) : setBtnStatus(false)
+              }
+              onKeyPress={e =>
+                e.which === 13 && input.current.value && handleMessage()
+              }
             />
-            {
-              btnStatus && <button onClick={handleMessage} type="button" className="btn-send"><SendOutlined style={{ fontSize: 26 }} /></button>
-            }
+            {btnStatus && (
+              <button
+                onClick={handleMessage}
+                type="button"
+                className="btn-send"
+              >
+                <SendOutlined style={{ fontSize: 26 }} />
+              </button>
+            )}
           </div>
-          {
-            scrollbtn &&
+          {scrollbtn && (
             <div
               style={{
                 position: 'absolute',
                 right: 15,
                 bottom: 85,
-                display: 'flex'
+                display: 'flex',
               }}
             >
               <button
@@ -142,20 +191,25 @@ export const MessageView = () => {
                   borderRadius: '50%',
                   border: 'none',
                   textAlign: 'center',
-                  backgroundColor: `${theme === 'Light' ? 'rgb(200,200,200)' : 'rgb(75,75,75)'}`,
-                  padding: "8px 12px"
+                  backgroundColor: `${
+                    theme === 'Light' ? 'rgb(200,200,200)' : 'rgb(75,75,75)'
+                  }`,
+                  padding: '8px 12px',
                 }}
                 onClick={() => {
                   const scrollHeight = scrollDiv.current.scrollHeight;
                   const height = scrollDiv.current.clientHeight;
                   const maxScrollTop = scrollHeight - height;
-                  scrollDiv.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+                  scrollDiv.current.scrollTop =
+                    maxScrollTop > 0 ? maxScrollTop : 0;
                 }}
               >
-                <ArrowDownOutlined style={{ color: `${theme === 'Light' ? 'black' : 'white'}` }} />
+                <ArrowDownOutlined
+                  style={{ color: `${theme === 'Light' ? 'black' : 'white'}` }}
+                />
               </button>
             </div>
-          }
+          )}
         </div>
       </div>
     </React.Fragment>
