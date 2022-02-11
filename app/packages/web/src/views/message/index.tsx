@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 // import 'bootstrap/dist/css/bootstrap.min.css'; // messed up the GUI
-import { SendOutlined } from '@ant-design/icons';
+import { SendOutlined, RightOutlined } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import io from 'socket.io-client';
 import PixelStreamer from '../../components/PixelStreamer';
@@ -32,11 +32,11 @@ export const MessageView = () => {
   const socket = io(`http://localhost:8889`);
   const [nmsg, setNmsg] = useState(null);
 
+  const [fromRPM, setFromRPM] = useState(false)
   const location: any = useLocation();
-  let fromRPM = false;
-  location.state && location.state.fromRPM && (fromRPM = true);
 
   useEffect(() => {
+    location.state && location.state.fromRPM && setFromRPM(true)
     if (publicKey?.toString()) {
       fetchJson(`${serverHost}/message/${offset}`).then(res => {
         if (res.type === 'success') {
@@ -75,6 +75,8 @@ export const MessageView = () => {
     });
   };
   const scrollToBottom = () => {
+    if (fromRPM) 
+      return
     const scrollHeight = scrollDiv.current.scrollHeight - scrollH;
     const height = scrollDiv.current.clientHeight;
     const maxScrollTop = scrollHeight - height;
@@ -98,33 +100,32 @@ export const MessageView = () => {
       });
     }
   };
+  const skipMovie = () => {
+    setFromRPM(false)
+  }
+
+  if (fromRPM) {
+    return (
+      <div className="intro-video">
+        <ReactPlayer loop playing url="MVFW.mp4" width="100%" height="100%" />
+        <div className='skip-button' onClick={skipMovie}>
+          <span className='me-2'>Skip</span><RightOutlined />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <React.Fragment>
       <div className="message">
         <div className="message_content">
-          {loading &&
-            (fromRPM ? (
-              <div className="intro-video">
-                <ReactPlayer
-                  loop
-                  playing
-                  url="MVFW.mp4"
-                  width="100%"
-                  height="100%"
-                />
-              </div>
-            ) : (
-              <div className="background-stream">
-                <PixelStreamer focus={focus} activeFocus={() => input.current.focus()} strConfig={setLoading} />
-              </div>
-            ))}
-
-          {!loading && (
-            <div className="background-stream">
-              <PixelStreamer focus={focus} activeFocus={() => input.current.focus()} strConfig={setLoading} />
-            </div>
-          )}
-
+          <div className="background-stream">
+            <PixelStreamer
+              focus={focus}
+              activeFocus={() => input.current.focus()}
+              strConfig={setLoading}
+            />
+          </div>
           <div
             className={`message-body ${
               theme === 'Light' ? 'message-body-light' : 'message-body-dark'
