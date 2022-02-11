@@ -1,5 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Button, ButtonProps, Popover, PopoverProps, Divider, Row, Col, Layout, Input, Form, Space } from 'antd';
+import {
+  Button,
+  ButtonProps,
+  Popover,
+  PopoverProps,
+  Divider,
+  Row,
+  Col,
+  Layout,
+  Input,
+  Form,
+  Space,
+} from 'antd';
 // import { MetaplexOverlay, MetaplexModal, ConnectButton } from '@oyster/common';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { WalletName } from '@solana/wallet-adapter-base';
@@ -10,16 +22,25 @@ import * as Bip39 from 'bip39';
 import { useTheme } from '../../contexts/themecontext';
 import { useWalletModal } from '../../contexts/walletProvider';
 import bs58 from 'bs58';
+import { MetaplexModal, MetaplexOverlay } from '@oyster/common';
 
 const COINBASE =
   'https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet';
 
 export const SignInView = () => {
+  const [showPopup, setsShowPopup] = useState<boolean>(false);
+  console.log(showPopup);
+
+  useEffect(() => {
+    const myTimer = setTimeout(() => {
+      setsShowPopup(true);
+    }, 2000);
+    return () => clearTimeout(myTimer);
+  }, []);
   const { theme, setTheme } = useTheme();
   const { connection } = useConnection();
   const { connected, publicKey, select } = useWallet();
   const history = useHistory();
-  
 
   console.log('sign in = ', connected, publicKey);
   connected && history.push('/signinconfirm');
@@ -38,8 +59,8 @@ export const SignInView = () => {
 
     // console.log("seed", importedAccount.publicKey.toString());
     if (public_key == importedAccount.publicKey.toString()) {
-      localStorage.setItem("secretkey", encode_private_key);
-      select("My Wallet" as WalletName)
+      localStorage.setItem('secretkey', encode_private_key);
+      select('My Wallet' as WalletName);
       history.push({
         pathname: '/profile',
         state: {
@@ -79,7 +100,9 @@ export const SignInView = () => {
     const encodeGeneratedMnemonic = bs58.encode(Buffer.from(generatedMnemonic));
 
     // // decode pharse key
-    const decodeGeneratedMnemonic = bs58.decode(encodeGeneratedMnemonic).toString();
+    const decodeGeneratedMnemonic = bs58
+      .decode(encodeGeneratedMnemonic)
+      .toString();
     const inputMnemonic = decodeGeneratedMnemonic.trim().toLowerCase();
     // // seed with the pharse key
     const seed = Bip39.mnemonicToSeedSync(inputMnemonic).slice(0, 32);
@@ -140,109 +163,177 @@ export const SignInView = () => {
   return (
     // <MetaplexOverlay visible centered closable width="100vw">
     <Layout>
+      <MetaplexOverlay
+        width={800}
+        centered
+        visible={showPopup}
+        closable={false}
+      >
+        <div className="signin_popup">
+          <h5 className="fw-normal">Hi, please read carefully!</h5>
+          <h5 className="fw-normal">
+            To enter, make sure to register via
+            <a
+              href=" https://www.eventbrite.com/e/metaverse-fashion-show-and-immersive-
+            nft-fashion-experience-tickets-251415920787?ref=eios"
+            >
+              {' '}
+              https://www.eventbrite.com/e/metaverse-fashion-show-and-immersive-
+              nft-fashion-experience-tickets-251415920787?ref=eios
+            </a>
+          </h5>
+          <h5 className="fw-normal">
+            Please note that you will be able to access the event only during
+            the time that you have registered for, but can access our
+            marketplace anytime after the event to browse and purchase more
+            items.
+          </h5>
+          <h5 className="fw-normal">
+            We highly recommend using a{' '}
+            <span className="fw-bold">desktop browser</span> to access the
+            event.
+          </h5>
+          <h5 className="fw-normal">
+            During the event, as with any other service over the internet, you
+            may get disconnected; in that case, please try to log back in during
+            the session you registered for.
+          </h5>
+          <h5 className="fw-normal">
+            If you have any other questions or need support, email us at
+            <a href="mailto:support@queendom.io" className="fw-bold">
+              {' '}
+              support@queendom.io
+            </a>{' '}
+            or <span className="fw-bold">live chat</span> with us at{' '}
+            <a href="https://www.queendom.io" className="fw-bold">
+              www.queendom.io
+            </a>
+            .
+          </h5>
+          <h5 className="fw-normal">
+            Last but not least, we are a bootstrapped mighty team of 3 aiming to
+            give you the best experience we can. Please be{' '}
+            <span className="fw-bold">patient</span> with us as this is our very
+            first event, but beginning of the great journey of empowering
+            underrepresented communities in the future of the internet.
+          </h5>
+          <Button
+            onClick={() => setsShowPopup(false)}
+            type="primary"
+            className="m-auto my-2"
+          >
+            I Understand
+          </Button>
+        </div>
+      </MetaplexOverlay>
       <div style={{ height: '80vh', display: 'flex', position: 'relative' }}>
         <div className="title_container">
-          <Row justify="center">
+          <Row justify="center" style={{ width: '100%' }}>
             <Col span={24}>
-              <h1 className="bold_text title_text">Welcome! Let's begin.</h1>
+              {/* <h5 className="text-start fw-bold pb-2">This will be your ...</h5> */}
+
+              <h1 className="fw-bold title_text">WELCOME!</h1>
 
               <div className="mt-2">
-                <h4 className="fw-bold">Your Queendom Account</h4>
-                <h6>
-                  This will be your personal Blockchain profile which you will
-                  hold your NFTs. Just pick an icon and enter your email. Then
-                  you will receive a magic link to that address. Please note
-                  this means you do not need a log-in or password.
+                <h3 className="fw-bold mb-5">Let's Create an Account</h3>
+                <Form
+                  className="fw-bold"
+                  name="create_account"
+                  onFinish={createAccount}
+                  autoComplete="off"
+                  wrapperCol={{
+                    span: 24,
+                  }}
+                >
+                  <Form.Item
+                    className="my-2"
+                    name="username"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please input your username correctly!',
+                      },
+                    ]}
+                  >
+                    <Input
+                      className={
+                        theme === 'Light'
+                          ? 'elements-style input_form_black'
+                          : ' elements-style input_form_white'
+                      }
+                      placeholder="Your Name"
+                      type="text"
+                      onChange={setName}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    className="my-3 "
+                    name="email"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please input your email correctly!',
+                      },
+                    ]}
+                  >
+                    <Input
+                      className={
+                        theme === 'Light'
+                          ? 'elements-style input_form_black'
+                          : ' elements-style input_form_white'
+                      }
+                      placeholder="Your e-mail"
+                      type="email"
+                      onChange={setEmail}
+                    />
+                  </Form.Item>
+
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="fw-bold p-1 mb-2"
+                    style={{ width: '100%', height: '40px' }}
+                  >
+                    Create a Solana Wallet
+                  </Button>
+                </Form>
+                <a
+                  onClick={() => setShowForm(false)}
+                  className="text-decoration-underline"
+                >
+                  Already have a solana wallet? Connect your wallet.
+                </a>
+                <ConnectButton
+                  hidden={showForm}
+                  className="fw-bold"
+                  type="primary"
+                  style={{ width: '100%', height: '32px' }}
+                  allowWalletChange={false}
+                />
+                <h6 className="fw-bold mt-3">
+                  Your account in this web3 platform is created via a
+                  cryptocurrency wallet.
+                  <br />
+                  Queendom™ is built on Solana blockchain, one of the most
+                  environmentally-friendly chains.
+                  <br />
+                  No worries if you don't have a Solana wallet, we will help you
+                  create one in one click!
                 </h6>
               </div>
               <div
-                className={
-                  !showForm ? 'bold_text invisible' : 'bold_text visible'
-                }
+                className={!showForm ? 'fw-bold invisible' : 'fw-bold visible'}
                 style={{ margin: '10px' }}
               >
-                <a
+                {/* <a
                   onClick={() => {
                     setShowForm(false);
                   }}
                 >
                   First time setting up a wallet?
-                </a>
+                </a> */}
               </div>
-              <Divider />
-              <h5 className="text-start fw-bold pb-2">This will be your ...</h5>
-              <Form
-                className="bold_text"
-                name="create_account"
-                onFinish={createAccount}
-                autoComplete="off"
-                wrapperCol={{
-                  span: 24,
-                }}
-              >
-                <Form.Item
-                  className="my-2"
-                  name="username"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input your username correctly!',
-                    },
-                  ]}
-                >
-                  <Input
-                    className={
-                      theme === 'Light'
-                        ? 'elements-style input_form_black'
-                        : ' elements-style input_form_white'
-                    }
-                    placeholder="Your Name"
-                    type="text"
-                    onChange={setName}
-                  />
-                </Form.Item>
-                <Form.Item
-                  className="my-3 "
-                  name="email"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input your email correctly!',
-                    },
-                  ]}
-                >
-                  <Input
-                    className={
-                      theme === 'Light'
-                        ? 'elements-style input_form_black'
-                        : ' elements-style input_form_white'
-                    }
-                    placeholder="Your e-mail"
-                    type="email"
-                    onChange={setEmail}
-                  />
-                </Form.Item>
-
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="fw-bold p-1"
-                  style={{ width: '100%' }}
-                >
-                  Create Account
-                </Button>
-              </Form>
             </Col>
-            <a onClick={() => setShowForm(false)} className="my-2">
-              I already have an account
-            </a>
-            <ConnectButton
-              hidden={showForm}
-              className="bold_text"
-              type="primary"
-              style={{ width: '100%', height: '32px' }}
-              allowWalletChange={false}
-            />
           </Row>
         </div>
       </div>
@@ -284,7 +375,7 @@ export const ConnectButton = ({
         onClick={e => {
           onClick && onClick(e);
           handleClick();
-          localStorage.setItem('click-signin', 'yes')
+          localStorage.setItem('click-signin', 'yes');
         }}
         disabled={connected && disabled}
       >

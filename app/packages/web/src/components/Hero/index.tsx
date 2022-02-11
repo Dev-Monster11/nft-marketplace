@@ -20,7 +20,7 @@ const Hero = function () {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Button type="primary">
           {/* <Link to='/client'>Connect</Link> */}
-          <Link to="/chat" className="bold_text">
+          <Link to="/chat" className="fw-bold">
             Enter
           </Link>
         </Button>
