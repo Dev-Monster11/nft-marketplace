@@ -59,12 +59,13 @@ services:
     #  - test1.render.com
   envVars:
     - key: MONGODB_CONNSTRING
-      value: mongodb://mongodb
+      value: mongodb://marketplace_data:27017
 # Backend Database service
 - type: pserv
-  name: mongodb
+  name: marketplace_data
   env: docker
+  repo: https://github.com/render-examples/mongodb
   disk:
     name: data
     mountPath: /data/db
-    sizeGB: 10    
+    sizeGB: 10
