@@ -49,18 +49,21 @@ import { Link } from 'react-router-dom';
 import { SetupVariables } from '../../components/SetupVariables';
 import { cacheAllAuctions } from '../../actions';
 import {
-  LoadingOutlined, UploadOutlined, UserOutlined, VideoCameraOutlined,
+  LoadingOutlined,
+  UploadOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   WalletOutlined,
   MenuOutlined,
   NotificationOutlined,
-  UsergroupAddOutlined
+  UsergroupAddOutlined,
 } from '@ant-design/icons';
 import { useAuctionManagersToCache, useNotifications } from '../../hooks';
 import Bugsnag from '@bugsnag/browser';
 import getConfig from 'next/config';
-
+import { fetchJson } from '../../utils';
 import { ENDPOINTS, useConnectionConfig } from '@oyster/common';
 
 const { publicRuntimeConfig } = getConfig();
@@ -448,20 +451,29 @@ function InnerAdminView({
     return finalResult;
   }
 
-  const [collapsed, setCollaped] = useState(false)
-  const [currentMenu, setCurrentMenu] = useState('1')
+  const [collapsed, setCollaped] = useState(false);
+  const [currentMenu, setCurrentMenu] = useState('1');
 
   return (
-    <Layout className='admin-layout'>
+    <Layout className="admin-layout">
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className='sidebar-toggle'>
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-            className: 'trigger',
-            onClick: () => { setCollaped(!collapsed) },
-          })}
+        <div className="sidebar-toggle">
+          {React.createElement(
+            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+            {
+              className: 'trigger',
+              onClick: () => {
+                setCollaped(!collapsed);
+              },
+            },
+          )}
         </div>
 
-        <Menu mode="inline" onClick={(e) => setCurrentMenu(e.key)} selectedKeys={[currentMenu]}>
+        <Menu
+          mode="inline"
+          onClick={e => setCurrentMenu(e.key)}
+          selectedKeys={[currentMenu]}
+        >
           <Menu.Item key="1" icon={<WalletOutlined />}>
             Metaplex
           </Menu.Item>
@@ -481,14 +493,17 @@ function InnerAdminView({
       </Sider>
       <Layout className="site-layout">
         <Content className="site-layout-background">
-          {currentMenu == '1' &&
+          {currentMenu == '1' && (
             <>
               <h2>Metaplex</h2>
               <Row>
                 {!store.info.public && (
                   <Col xs={24} md={24}>
                     <p>Storefront Values</p>
-                    <Table columns={configColumns} dataSource={storeConfigData} />
+                    <Table
+                      columns={configColumns}
+                      dataSource={storeConfigData}
+                    />
                     <p>Public Environment Variables</p>
                     <Table
                       columns={configColumns}
@@ -502,9 +517,9 @@ function InnerAdminView({
                 )}
               </Row>
             </>
-          }
+          )}
 
-          {currentMenu == '2' &&
+          {currentMenu == '2' && (
             <>
               <Row>
                 <h2>Whitelisted Creators</h2>
@@ -556,22 +571,26 @@ function InnerAdminView({
                 <Col span={24}>
                   <Table
                     columns={columns}
-                    dataSource={Object.keys(uniqueCreatorsWithUpdates).map(key => ({
-                      key,
-                      address: uniqueCreatorsWithUpdates[key].address,
-                      activated: uniqueCreatorsWithUpdates[key].activated,
-                      name:
-                        uniqueCreatorsWithUpdates[key].name ||
-                        shortenAddress(uniqueCreatorsWithUpdates[key].address),
-                      image: uniqueCreatorsWithUpdates[key].image,
-                    }))}
+                    dataSource={Object.keys(uniqueCreatorsWithUpdates).map(
+                      key => ({
+                        key,
+                        address: uniqueCreatorsWithUpdates[key].address,
+                        activated: uniqueCreatorsWithUpdates[key].activated,
+                        name:
+                          uniqueCreatorsWithUpdates[key].name ||
+                          shortenAddress(
+                            uniqueCreatorsWithUpdates[key].address,
+                          ),
+                        image: uniqueCreatorsWithUpdates[key].image,
+                      }),
+                    )}
                   />
                 </Col>
               </Row>
             </>
-          }
+          )}
 
-          {currentMenu == '3' &&
+          {currentMenu == '3' && (
             <>
               <h2>Listing Notifications</h2>
               <Table
@@ -590,9 +609,10 @@ function InnerAdminView({
                     key: 'action',
                     title: 'Action',
                     render: ({ action, callToAction }) => {
-                      const [status, setStatus] = useState<ListingNotificationStatus>(
-                        ListingNotificationStatus.Ready,
-                      );
+                      const [status, setStatus] =
+                        useState<ListingNotificationStatus>(
+                          ListingNotificationStatus.Ready,
+                        );
 
                       const onSubmit = async () => {
                         try {
@@ -604,12 +624,15 @@ function InnerAdminView({
                           setStatus(ListingNotificationStatus.Error);
                         }
                       };
-                      const isComplete = status === ListingNotificationStatus.Complete;
+                      const isComplete =
+                        status === ListingNotificationStatus.Complete;
 
                       const label = isComplete ? 'Done' : callToAction;
                       return (
                         <Button
-                          loading={status === ListingNotificationStatus.Submitting}
+                          loading={
+                            status === ListingNotificationStatus.Submitting
+                          }
                           disabled={isComplete}
                           onClick={onSubmit}
                         >
@@ -622,9 +645,9 @@ function InnerAdminView({
                 dataSource={notifications}
               />
             </>
-          }
+          )}
 
-          {currentMenu == '4' &&
+          {currentMenu == '4' && (
             <>
               <h2>Adminstrator Actions</h2>
               <Row>
@@ -632,8 +655,8 @@ function InnerAdminView({
                   <Col xs={24} md={12}>
                     <h3>Convert Master Editions</h3>
                     <p>
-                      You have {filteredMetadata?.available.length} MasterEditionV1s
-                      that can be converted right now and{' '}
+                      You have {filteredMetadata?.available.length}{' '}
+                      MasterEditionV1s that can be converted right now and{' '}
                       {filteredMetadata?.unavailable.length} still in unfinished
                       auctions that cannot be converted yet.
                     </p>
@@ -659,7 +682,7 @@ function InnerAdminView({
                 )}
               </Row>
             </>
-          }
+          )}
 
           {currentMenu == '5' && <ManageUser />}
         </Content>
@@ -667,6 +690,8 @@ function InnerAdminView({
     </Layout>
   );
 }
+
+const serverHost = 'http://localhost:8080/api';
 
 const ManageUser = () => {
   interface DataType {
@@ -676,99 +701,124 @@ const ManageUser = () => {
     role: string;
   }
 
+  const [loading, setLoading] = useState<boolean>(true);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    console.log('manage user = ');
+
+    fetchJson(`${serverHost}/users`).then(res => {
+      if (res.data) {
+        console.log('users = ', res.data);
+        setData(res.data.map((e: any, index: React.Key) => {
+          return {
+            key: index,
+            avatar: e.image,
+            name: e.name,
+            role: e.roles[0]
+          }
+        }))
+        setLoading(false)
+      }
+    });
+  }, []);
+
   const columns = [
     {
       title: 'Avatar',
       dataIndex: 'avatar',
       key: 'avatar',
-      render: (v: string) => <img className='user-img' src={v} />
+      render: (v: string) => <img className="user-img" src={v} />,
     },
     { title: 'Name', dataIndex: 'name', key: 'name' },
     {
       title: 'Role',
       dataIndex: 'role',
       key: 'role',
-      render: (v: string) =>
+      render: (v: string) => (
         <>
-          <Select defaultValue={v} style={{ width: 170 }} onChange={handleChange}>
+          <Select
+            defaultValue={v}
+            style={{ width: 170 }}
+            onChange={handleChange}
+          >
             <Option value="admin">Admin</Option>
             <Option value="moderators">Moderators</Option>
             <Option value="artists">Artists</Option>
             <Option value="users">Users</Option>
           </Select>
         </>
+      ),
     },
     {
       title: 'Message',
       dataIndex: '',
       key: 'message',
-      render: (v: string, obj: DataType) =>
+      render: (v: string, obj: DataType) => (
         <>
-          <Button shape='round' className='user-btn' onClick={() => handleMessage(obj)}>Message</Button>
-        </>,
+          <Button
+            shape="round"
+            className="user-btn"
+            onClick={() => handleMessage(obj)}
+          >
+            Message
+          </Button>
+        </>
+      ),
     },
     {
       title: 'Hide / Block',
       dataIndex: '',
       key: 'x',
-      render: (v: string, obj: DataType) =>
+      render: (v: string, obj: DataType) => (
         <>
-          <Button shape='round' className='me-2 user-btn' onClick={() => handleHide(obj)}>Hide</Button>
-          <Button shape='round' className='user-btn' onClick={() => handleBlock(obj)}>Block</Button>
-        </>,
-    },
-  ];
-
-  const data = [
-    {
-      key: 1,
-      avatar: '/img/artist1.jpeg',
-      name: 'John Brown',
-      role: 'admin',
-    },
-    {
-      key: 2,
-      avatar: '/img/artist1.jpeg',
-      name: 'Jim Green',
-      role: 'admin',
-    },
-    {
-      key: 3,
-      avatar: '/img/artist1.jpeg',
-      name: 'Not Expandable',
-      role: 'artists',
-    },
-    {
-      key: 4,
-      avatar: '/img/artist1.jpeg',
-      name: 'Joe Black',
-      role: 'users',
+          <Button
+            shape="round"
+            className="me-2 user-btn"
+            onClick={() => handleHide(obj)}
+          >
+            Hide
+          </Button>
+          <Button
+            shape="round"
+            className="user-btn"
+            onClick={() => handleBlock(obj)}
+          >
+            Block
+          </Button>
+        </>
+      ),
     },
   ];
 
   const handleHide = (obj: DataType) => {
-    console.log('hide ', obj)
-  }
+    console.log('hide ', obj);
+  };
 
   const handleBlock = (obj: DataType) => {
-    console.log('block', obj)
-  } 
+    console.log('block', obj);
+  };
 
   const handleMessage = (obj: DataType) => {
-    console.log('message', obj)
-  }
+    console.log('message', obj);
+  };
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
-  }
+  };
 
-  return (
-    <>
-      <h2>Manage Users</h2>
-      <Table
-        columns={columns}
-        dataSource={data}
-      />
-    </>
-  )
-}
+  if (loading) {
+    return (
+      <div className="app-section--loading" style={{ marginTop: '350px' }}>
+        <Spin indicator={<LoadingOutlined />} />
+      </div>
+    );
+  } else {
+    return (
+      <>
+        <h2>Manage Users</h2>
+        <Table columns={columns} dataSource={data} />
+      </>
+    );
+  }
+};
