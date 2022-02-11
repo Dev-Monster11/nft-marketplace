@@ -64,7 +64,6 @@ services:
 - type: pserv
   name: mongodb
   env: docker
-  user: nft_market
   disk:
     name: backend_data
     mountPath: /data/db
