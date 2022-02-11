@@ -308,22 +308,27 @@ h6 {
 }
 
 //SigninModal
-
-.bold_text {
-  font-weight: bold;
+.signin_popup {
+  padding: 20px;
+  background: white;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  h5 {
+    color: black;
+  }
 }
-
 .title_text {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
 }
 
 .title_container {
   margin: auto;
   display: flex;
-  width: 50vw;
+  width: 40vw;
   text-align: center;
   @media screen and (min-width: 1024px) {
-    width: 35vw;
+    width: 30vw;
   }
 }
 
@@ -351,9 +356,40 @@ h6 {
 
 //Cookie consent
 
-
 .skip-button {
   color: var(--color-text, white);
   text-align: right;
   cursor: pointer;
+
+//Timer
+.timer_indication {
+  transform: translatey(-45px);
+}
+.timer_title {
+  transform: translatey(10px);
+}
+
+.countdown-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.time-section {
+  padding: 0px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.time {
+  margin: 0;
+  font-size: 60px !important;
+  font-weight: 800 !important;
+}
+
+.small {
+  font-size: 18px !important;
+
 }

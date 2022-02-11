@@ -23,7 +23,7 @@ import {
   MessageView,
   SettingView,
   ClientPageView,
-  TempView
+  // TempView
 } from './views';
 import { AdminView } from './views/admin';
 import { BillingView } from './views/auction/billing';
@@ -75,7 +75,7 @@ export function Routes({ storefront }: RoutesProps) {
             {/* <Route path='/checkout' component={() => <CheckoutPageView />} /> */}
             {/* <Route path='/cart' component={() => <CartPageView />} /> */}
             {/* <Route path='/result/:sessionId' component={() => <ResultPageView />} /> */}
-            <Route path="/temp" component={() => <TempView />} />
+            {/* <Route path="/temp" component={() => <TempView />} /> */}
             <Route path="/about" component={() => <StaticPageView />} />
             <Route path="/explore" component={() => <HomeView />} />
             {/* <Route path='/learn' component={() => <LearnPageView />} /> */}

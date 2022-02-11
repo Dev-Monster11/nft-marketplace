@@ -15,7 +15,7 @@ export const LoaderProvider: FC = ({ children }) => {
           style={{ width: '200px', marginBottom: '10px' }}
         />
         <div id="metaplex-loading-text">
-          <h4 className="bold_text">Loading</h4>
+          <h4 className="fw-bold">Loading</h4>
         </div>
         <Spinner />
       </div>

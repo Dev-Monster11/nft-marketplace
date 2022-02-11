@@ -10,6 +10,8 @@ import {
   SolflareWalletAdapter,
   SolletWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
+
+import { MyWalletAdapter } from "./wallet/MyWalletAdapter"
 import { Button, Collapse } from 'antd';
 import React, {
   createContext,
@@ -52,22 +54,10 @@ export const WalletModal: FC = () => {
   const phatomWallet = useMemo(() => new PhantomWalletAdapter(), []);
 
   return (
-    <MetaplexModal title="Connect Wallet" visible={visible} onCancel={close}>
-      <span
-        style={{
-          color: 'rgba(255, 255, 255, 0.75)',
-          fontSize: '14px',
-          lineHeight: '14px',
-          fontFamily: 'GraphikWeb',
-          letterSpacing: '0.02em',
-          marginBottom: 14,
-        }}
-      >
-        RECOMMENDED
-      </span>
-
+    <MetaplexModal centered visible={visible} onCancel={close} closable={false}>
+      <h4 className="mb-3">Pick a wallet to conneect to Queendom</h4>
       <Button
-        className="phantom-button metaplex-button"
+        className="metaplex-button-jumbo d-flex"
         onClick={() => {
           console.log(phatomWallet.name);
           select(phatomWallet.name);
@@ -85,15 +75,15 @@ export const WalletModal: FC = () => {
               width="20"
               height="20"
               viewBox="0 0 20 20"
-              fill="none"
+              fill="gray"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 d="M15 7.5L10 12.5L5 7.5"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                stroke="gray"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           ) : (
@@ -101,36 +91,21 @@ export const WalletModal: FC = () => {
               width="20"
               height="20"
               viewBox="0 0 20 20"
-              fill="none"
+              fill="gray"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 d="M7.5 5L12.5 10L7.5 15"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                stroke="gray"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           )
         }
       >
-        <Panel
-          header={
-            <span
-              style={{
-                fontWeight: 600,
-                fontSize: '16px',
-                lineHeight: '16px',
-                letterSpacing: '-0.01em',
-                color: 'rgba(255, 255, 255, 255)',
-              }}
-            >
-              Other Wallets
-            </span>
-          }
-          key="1"
-        >
+        <Panel header={<strong className="ms-4">Other Wallet</strong>} key="1">
           {wallets.map((wallet, idx) => {
             if (wallet.adapter === phatomWallet) return null;
 
@@ -175,8 +150,8 @@ export const WalletModalProvider: FC<{ children: ReactNode }> = ({
           : base58;
 
       notify({
-        message: 'Wallet update',
-        description: 'Connected to wallet ' + keyToDisplay,
+        message: 'Connected',
+        description: <h5 className="fw-bold">{keyToDisplay}</h5>,
       });
     }
   }, [publicKey]);
@@ -184,8 +159,8 @@ export const WalletModalProvider: FC<{ children: ReactNode }> = ({
   useEffect(() => {
     if (!publicKey && connected) {
       notify({
-        message: 'Wallet update',
-        description: 'Disconnected from wallet',
+        message: 'Disconnected',
+        description: '',
       });
     }
     setConnected(!!publicKey);
@@ -214,6 +189,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
+      new MyWalletAdapter({ network }),
       new SolflareWalletAdapter({ network }),
       new LedgerWalletAdapter(),
       new SolletWalletAdapter({ network }),
