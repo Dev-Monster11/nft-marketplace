@@ -59,12 +59,12 @@ services:
     #  - test1.render.com
   envVars:
     - key: MONGODB_CONNSTRING
-      value: mongodb://backend_data
+      value: mongodb://mongodb
 # Backend Database service
 - type: pserv
   name: mongodb
   env: docker
   disk:
-    name: backend_data
+    name: data
     mountPath: /data/db
     sizeGB: 10    
