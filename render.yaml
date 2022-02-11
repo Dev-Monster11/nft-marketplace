@@ -13,7 +13,7 @@ services:
   healthCheckPath: /
   # domains:
   #   - test.queendom.live
-  user: node
+  # user: node
   envVars:
     - key: WEBSITE_HOSTNAME
       value: test.queendom.live
