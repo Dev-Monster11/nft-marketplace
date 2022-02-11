@@ -51,7 +51,7 @@ const Owned = () => {
         </Button>
       </div>
       <Row>
-        {owned.map((e, i) => (
+        {/* {owned.map((e, i) => (
           <Col
             xs={24}
             sm={12}
@@ -86,7 +86,7 @@ const Owned = () => {
               </div>
             </Card>
           </Col>
-        ))}
+        ))} */}
       </Row>
     </>
   );
@@ -135,18 +135,19 @@ export const ProfileView = () => {
         <div className="follow">
           <span className="followSpan mr20">
             <InfoCircleFilled className="infoIcon" />
-            followers
+            followers<span className='ms-2'>0</span>
           </span>
           <span className="followSpan">
             <InfoCircleFilled className="infoIcon" />
-            following{' '}
+            following{' '}<span className='ms-2'>0</span>
           </span>
         </div>
         <div className="infoButtons">
           <Button
             className="editBtn"
             onClick={() => {
-              history.push('/editProfile');
+              if (location.state && location.state.publicKey) history.push('/');
+              else history.push('/editProfile');
             }}
           >
             Edit profile
@@ -165,13 +166,12 @@ export const ProfileView = () => {
       <div className="tabContainer">
         <Tabs defaultActiveKey="2" centered>
           <TabPane tab="On sale" key="1">
-            On sale
           </TabPane>
           <TabPane
             tab={
               <>
                 <span>Owned</span>
-                <span className="ownedBadge">4</span>
+                <span className="ownedBadge">0</span>
               </>
             }
             key="2"
@@ -179,13 +179,11 @@ export const ProfileView = () => {
             <Owned></Owned>
           </TabPane>
           <TabPane tab="Created" key="3">
-            Created
           </TabPane>
           <TabPane tab="Collections" key="4">
             <ArtworksView />
           </TabPane>
           <TabPane tab="Activity" key="5">
-            Activity
           </TabPane>
         </Tabs>
       </div>
