@@ -15,6 +15,8 @@ import {
   TransactionSignature,
   Blockhash,
   FeeCalculator,
+  PublicKey,
+  SystemProgram
 } from '@solana/web3.js';
 import nacl from "tweetnacl";
 import { chunks, sleep, useLocalStorageState } from '../utils/utils';
@@ -24,6 +26,7 @@ import { useQuerySearch } from '../hooks';
 import { WalletSigner } from './wallet';
 import { initCusper } from '@metaplex-foundation/cusper'
 import getConfig from 'next/config';
+import { WalletContextState } from '@solana/wallet-adapter-react';
 
 const cusper = initCusper()
 const logs = [
@@ -290,7 +293,7 @@ export enum SequenceType {
 
 export async function sendTransactionsWithManualRetry(
   connection: Connection,
-  wallet: WalletSigner,
+  wallet: WalletContextState,
   instructions: TransactionInstruction[][],
   signers: Keypair[][],
 ) {
@@ -352,7 +355,7 @@ export async function sendTransactionsWithManualRetry(
 
 export const sendTransactionsInChunks = async (
   connection: Connection,
-  wallet: WalletSigner,
+  wallet: WalletContextState,
   instructionSet: TransactionInstruction[][],
   signersSet: Keypair[][],
   sequenceType: SequenceType = SequenceType.Parallel,
@@ -446,7 +449,7 @@ export const sendTransactionsInChunks = async (
 
 export const sendTransactions = async (
   connection: Connection,
-  wallet: WalletSigner,
+  wallet: WalletContextState,
   instructionSet: TransactionInstruction[][],
   signersSet: Keypair[][],
   sequenceType: SequenceType = SequenceType.Parallel,
@@ -553,7 +556,7 @@ export const sendTransactions = async (
 
 export const sendTransactionsWithRecentBlock = async (
   connection: Connection,
-  wallet: WalletSigner,
+  wallet: WalletContextState,
   instructionSet: TransactionInstruction[][],
   signersSet: Keypair[][],
   commitment: Commitment = 'singleGossip',
@@ -633,7 +636,7 @@ export const sendTransactionsWithRecentBlock = async (
 
 export const sendTransaction = async (
   connection: Connection,
-  wallet: WalletSigner,
+  wallet: WalletContextState,
   instructions: TransactionInstruction[],
   signers: Keypair[],
   awaitConfirmation = true,
@@ -725,7 +728,7 @@ export const sendTransaction = async (
 
 export const sendTransactionWithRetry = async (
   connection: Connection,
-  wallet: WalletSigner,
+  wallet: WalletContextState,
   instructions: TransactionInstruction[],
   signers: Keypair[],
   commitment: Commitment = 'singleGossip',
@@ -733,7 +736,10 @@ export const sendTransactionWithRetry = async (
   block?: BlockhashAndFeeCalculator,
   beforeSend?: () => void,
 ) => {
+  if (!wallet) throw new WalletNotConnectedError();
   if (!wallet.publicKey) throw new WalletNotConnectedError();
+
+  console.log({signers})
 
   console.log(`sendTransactionWithRetry; wallet: ${wallet.publicKey}`)
   console.log(`sendTransactionWithRetry; instructions: ${instructions}`)
@@ -743,7 +749,19 @@ export const sendTransactionWithRetry = async (
 
 
   let transaction = new Transaction({ feePayer: wallet.publicKey});
+  // transaction.add(instructions[1]);
+  console.log(wallet.publicKey)
+  console.log("instructions[0]&&&&&&&&&&&", instructions[1]);
+  console.log(transaction);
   instructions.forEach(instruction => transaction.add(instruction));
+  // transaction.add(
+  //   SystemProgram.transfer({
+  //     fromPubkey: wallet.publicKey,
+  //     toPubkey: new PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
+  //     lamports: 1000,
+  //   })   
+  // );
+
   transaction.recentBlockhash = (
     block || (await connection.getRecentBlockhash(commitment))
   ).blockhash;
@@ -758,13 +776,28 @@ export const sendTransactionWithRetry = async (
   console.log(`signedTransaction2; recentBlockhash: ${transaction.recentBlockhash}`);
   console.log(`signedTransaction2; signature: ${transaction.signature}`);
 
+  if (includesFeePayer) {
+    transaction.setSigners(...signers.map(s => s.publicKey));
+  } else {
+    transaction.setSigners(
+      // fee payed by the wallet owner
+      wallet.publicKey,
+      ...signers.map(s => s.publicKey),
+    );
+  }
+
+  if (signers.length > 0) {
+    transaction.partialSign(...signers);
+  }
+
+  let trx:Transaction = transaction;
   if (!includesFeePayer) {
     // console.log(`store paying for transaction?: ${wallet.publicKey}`);
     // transaction.feePayer = wallet.publicKey;
-    const trxSig = await wallet.sendTransaction(transaction, connection);
-    console.log(`Transaction signature: ${trxSig}`);
-
-    // transaction.addSignature(wallet.publicKey, signature)
+    if(!wallet.signTransaction) return;
+    transaction = await wallet.signTransaction(transaction);
+    console.log(`Transaction signature: ${trx.signature}`);
+    console.log(trx.signatures);
 
     let isVerifiedSignature = transaction.verifySignatures();
     console.log(`The signatures were verifed: ${isVerifiedSignature}`)
@@ -777,6 +810,9 @@ export const sendTransactionWithRetry = async (
     console.log(`sendTransactionWithRetry; pre-beforeSend`)
     beforeSend();
   }
+  // if(!trx.signature) return;
+  // let sgn = await connection.sendRawTransaction(trx.serialize());
+  // const res =  await connection.confirmTransaction(sgn);
   const { txid, slot } = await sendSignedTransaction({
     connection,
     signedTransaction: transaction,
@@ -785,9 +821,8 @@ export const sendTransactionWithRetry = async (
   //   connection,
   //   signedTransaction: transaction,
   // });
-  console.log(`sendTransactionWithRetry; txid: ${txid}`)
 
-  return { txid, slot };
+  return { txid, slot};
 };
 
 // export const sendTransactionWithRetry = async (
