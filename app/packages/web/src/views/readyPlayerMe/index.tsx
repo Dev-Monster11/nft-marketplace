@@ -35,7 +35,7 @@ export const ReadyPlayerMeView = () => {
         if (result) {
           notify({
             message: 'Avatar is saved',
-            description: '',
+            description: `${url}`,
           });
 
           history.push({

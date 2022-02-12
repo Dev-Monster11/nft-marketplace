@@ -4,6 +4,7 @@ module.exports = (mongoose) => {
       name: String,
       // image: {type: String, default: 'https://pbs.twimg.com/profile_images/1393399819213983746/2a8l5muc_400x400.png'}, //@TODO set this via an environment variable
       image: { type: String }, //@TODO set this via an environment variable
+      avatar: String,
       published: Boolean,
       background: String,
       walletAddress: String,

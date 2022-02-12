@@ -15,4 +15,8 @@ router.get('/:id', userController.findOne);
 
 router.get('/bywallet/:walletAddress', userController.findOneByWalletAddress);
 
+router.post('/upload', userController.upload);
+
+router.post('/udpateAvatar', userController.updateAvatar);
+
 module.exports = router;

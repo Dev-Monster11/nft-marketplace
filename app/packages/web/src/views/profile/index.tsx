@@ -20,7 +20,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ArtworksView } from '..';
 import { Link } from 'react-router-dom';
-import { findOneUser } from '../../utils/api';
+import { findOneUser, uploadImage } from '../../utils/api';
 
 const { TabPane } = Tabs;
 
@@ -108,6 +108,7 @@ export const ProfileView = () => {
   const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
+  const [avatarUrl, setAvatarUrl] = useState(null)
 
   const _handleImageChange = (e: any) => {
     e.preventDefault();
@@ -121,7 +122,7 @@ export const ProfileView = () => {
         typeof reader.result == 'string' &&
         setImagePreviewUrl(reader.result);
     };
-
+    uploadImage(selected, publicKey)
     reader.readAsDataURL(selected);
   };
 
@@ -145,6 +146,7 @@ export const ProfileView = () => {
     async function getUser(key) {
       console.log('key = ', key)
       const user = await findOneUser(key)
+      user.avatar && setAvatarUrl(user.avatar)
       if (!user.image && localStorage.getItem('registeration')) history.push('/ready-player-me')
     }
 
@@ -177,7 +179,10 @@ export const ProfileView = () => {
             onChange={e => _handleImageChange(e)}
           />
 
-          {!imagePreviewUrl && <div className="userAvatar"></div>}
+          {!imagePreviewUrl && !avatarUrl && <div className="userAvatar"></div>}
+          
+          {!imagePreviewUrl && avatarUrl && <img src={avatarUrl} className="userAvatar" />}
+
           {imagePreviewUrl && (
             <img src={imagePreviewUrl} className="userAvatar" />
           )}

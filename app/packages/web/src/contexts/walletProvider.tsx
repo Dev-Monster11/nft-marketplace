@@ -142,8 +142,6 @@ export const WalletModalProvider: FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     async function userFunc() {
-      console.log('-----------------------------------------------------------')
-
         const name = localStorage.getItem('name')
         const email = localStorage.getItem('email')
         console.log('create user = ', name, email, publicKey?.toBase58())
@@ -156,7 +154,6 @@ export const WalletModalProvider: FC<{ children: ReactNode }> = ({
 
     if (publicKey) {
       if (localStorage.getItem('click-signin') == 'yes') {
-        console.log('*******************************88')
         userFunc()
       } else {
         disconnect()

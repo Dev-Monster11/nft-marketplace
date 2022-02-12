@@ -18,11 +18,17 @@ export const createUser = async (
 
 export const findOneUser = async (address: string) => {
   const response = await fetch(`${serverHost}/users/bywallet/${address}`);
-  const data = await response.json();
 
   if (response.ok) {
-    return data;
+    try {
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      console.log('rege error', e);
+      return null;
+    }
   }
+  return null;
 };
 
 export const updateUserImage = async (address: string, image: string) => {
@@ -39,9 +45,42 @@ export const updateUserImage = async (address: string, image: string) => {
 
 export const getRegisteration = async (email: string) => {
   const response = await fetch(`${serverHost}/registeration/${email}`);
-  const data = await response.json();
+  console.log('rege email = ', response);
 
   if (response.ok) {
-    return data;
+    try {
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      console.log('rege error', e);
+      return null;
+    }
+  }
+  return null;
+};
+
+export const uploadImage = async (file: any, address: string) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const options = {
+    method: 'POST',
+    body: formData,
+  };
+
+  const rawResponse = await fetch(`${serverHost}/users/upload`, options);
+
+  if (rawResponse.ok) {
+    const data = await rawResponse.json();
+    const avatar = data.path;
+    const avatarRes = await fetch(`${serverHost}/users/udpateAvatar`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ avatar: avatar, walletAddress: address }),
+    });
+    console.log('save avatar = ', avatarRes);
   }
 };

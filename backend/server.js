@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const busboy = require('connect-busboy')
+
 const app = express();
 
 const corsOptions = {
@@ -7,10 +9,13 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(busboy());
 
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is deprecated */
+
+app.use(express.static('public'));
 
 const db = require("./models");
 const message = require("./events/message");
