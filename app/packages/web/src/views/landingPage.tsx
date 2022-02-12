@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { useRouter } from 'next/router';
-import { ConnectButton, metadataByMintUpdater, useStore } from '@oyster/common';
+import {
+  ConnectButton,
+  metadataByMintUpdater,
+  MetaplexOverlay,
+  useStore,
+} from '@oyster/common';
 import { Link } from 'react-router-dom';
 import { InstructionsModal } from '../components/InstructionsModal';
 import { useInfiniteScrollAuctions } from '../hooks';
@@ -98,6 +103,26 @@ export const LandingPageView = () => {
             }
           `}
         </style>
+        <MetaplexOverlay centered visible>
+          <div className="comming_soon_modal">
+            <div className="comming_soon_text">
+              <h1 className="comming_soon_title">Starting soon...</h1>
+              <h4>We are doing final touch ups, you will be entering soon.</h4>
+              <h4>
+                Your 1 hour registration will hold valid, you can come in even
+                after, as soon as we start.
+              </h4>
+              <h4>
+                If you have work or errands to take care in the meantime, please
+                do, we will email you as soon as the event starts.
+              </h4>
+              <h4>
+                Thank you sooo much again for being so patient with a
+                bootstrapped minority founded team.
+              </h4>
+            </div>
+          </div>
+        </MetaplexOverlay>
         <div
           className={`landing-page overflow-hidden`}
           style={{ height: '75vh' }}
