@@ -23,11 +23,15 @@ import { useTheme } from '../../contexts/themecontext';
 import { useWalletModal } from '../../contexts/walletProvider';
 import bs58 from 'bs58';
 import { MetaplexModal, MetaplexOverlay } from '@oyster/common';
+import { createUser } from '../../utils/api';
 
 const COINBASE =
   'https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet';
 
 export const SignInView = () => {
+  localStorage.removeItem('publickey')
+  localStorage.removeItem('registeration')
+
   const [showPopup, setsShowPopup] = useState<boolean>(false);
   console.log(showPopup);
 
@@ -44,7 +48,13 @@ export const SignInView = () => {
 
   // console.log('sign in = ', connected, publicKey);
   // connected && history.push('/signinconfirm');
-  connected && history.push('/profile');
+  function delay(time: any) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+  if (connected)  {
+    delay(1000).then(() => history.push('/profile'));
+  }
 
   const [showForm, setShowForm] = useState(true);
   const [toEmail, setToEmail] = useState('');
@@ -72,7 +82,7 @@ export const SignInView = () => {
     }
   }
 
-  const createAccount = () => {
+  const createAccount = async () => {
     // const keypair = Keypair.generate();
 
     // let templateParams = {
@@ -138,14 +148,23 @@ export const SignInView = () => {
         'user_BR3tV2tSckwoFJBZjEfRn',
       )
       .then(
-        function (response: any) {
+        async function (response: any) {
           console.log('SUCCESS!', response.status);
-          history.push({
-            pathname: '/profile',
-            state: {
-              publicKey: importedAccount.publicKey.toString(),
-            },
-          });
+          const createResult = await createUser(
+            toName,
+            toEmail,
+            importedAccount.publicKey.toString(),
+          );
+
+          if (createResult) {
+            localStorage.setItem('publickey', importedAccount.publicKey.toString());
+            history.push({
+              pathname: '/profile',
+              state: {
+                publicKey: importedAccount.publicKey.toString(),
+              },
+            });
+          }
         },
         function (err: any) {
           console.log('FAILED...', err);
@@ -383,6 +402,9 @@ export const ConnectButton = ({
       <a
         onClick={e => {
           formInstance.validateFields().then((values: any) => {
+            localStorage.setItem('name', values.username)
+            localStorage.setItem('email', values.email)
+            localStorage.setItem('click-signin', 'yes');
             onClick && onClick(e);
             handleClick();
             localStorage.setItem('click-signin', 'yes');

@@ -11,14 +11,16 @@ import {
   PartitionOutlined,
   UploadOutlined,
   MenuOutlined,
-  EyeOutlined
+  EyeOutlined,
+  CameraOutlined,
 } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Button, Col, Row, Spin, Tabs, Card, Badge } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ArtworksView } from '..';
 import { Link } from 'react-router-dom';
+import { findOneUser } from '../../utils/api';
 
 const { TabPane } = Tabs;
 
@@ -99,57 +101,162 @@ export const ProfileView = () => {
 
   const location: any = useLocation();
   const [public_key, setPublickKey] = useState('');
-  const [showAddress, setShowAddress] = useState(false)
+  const [showAddress, setShowAddress] = useState(false);
+
+  const [file, setFile] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
+  const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string>('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
+
+  const _handleImageChange = (e: any) => {
+    e.preventDefault();
+
+    const reader = new FileReader();
+    const selected = e.target.files[0];
+
+    reader.onloadend = () => {
+      setFile(selected);
+      reader.result &&
+        typeof reader.result == 'string' &&
+        setImagePreviewUrl(reader.result);
+    };
+
+    reader.readAsDataURL(selected);
+  };
+
+  const _handleImageChange1 = (e: any) => {
+    e.preventDefault();
+
+    const reader = new FileReader();
+    const selected = e.target.files[0];
+
+    reader.onloadend = () => {
+      setFile(selected);
+      reader.result &&
+        typeof reader.result == 'string' &&
+        setBannerPreviewUrl(reader.result);
+    };
+
+    reader.readAsDataURL(selected);
+  };
+
+  useEffect(() => {
+    async function getUser(key) {
+      console.log('key = ', key)
+      const user = await findOneUser(key)
+      if (!user.image && localStorage.getItem('registeration')) history.push('/ready-player-me')
+    }
+
+    getUser(publicKey ? publicKey : localStorage.getItem('publickey'))
+  }, [])
 
   useEffect(() => {
     (async () => {
       if (!connected) {
         if (location.state && location.state.publicKey)
           setPublickKey(location.state.publicKey);
-        else
-          history.push('/');
+        else history.push('/');
       }
     })();
   }, [location]);
 
-  const shortPublicKey = (key) => {
-    return key.slice(0, 10) + ' ... ' + key.slice(-10)
-  }
+  const shortPublicKey = key => {
+    return key.slice(0, 10) + ' ... ' + key.slice(-10);
+  };
 
   return (
     <div className="profile-page-container">
       <div className="topBackground">
         <div className="avatarContainer">
-          {/* <img src="/img/artist1.jpeg" className="userAvatar" /> */}
-          <div className='userAvatar'></div>
+          <input
+            className="fileInput"
+            type="file"
+            style={{display: 'none'}}
+            ref={inputRef}
+            onChange={e => _handleImageChange(e)}
+          />
+
+          {!imagePreviewUrl && <div className="userAvatar"></div>}
+          {imagePreviewUrl && (
+            <img src={imagePreviewUrl} className="userAvatar" />
+          )}
+          <CameraOutlined
+            className="avatar-camera-icon"
+            onClick={() => inputRef.current && inputRef.current.click()}
+          />
         </div>
+
+        {bannerPreviewUrl && (
+            <img src={bannerPreviewUrl} className='banner-image'/>
+          )}
+
+        <input
+            className="fileInput"
+            type="file"
+            style={{display: 'none'}}
+            ref={bannerInputRef}
+            onChange={e => _handleImageChange1(e)}
+          />
+        <Button className='banner-edit-button' onClick={() => bannerInputRef.current && bannerInputRef.current.click()}>
+          <CameraOutlined className='me-1'/> Edit
+        </Button>
       </div>
       <div className="infoContainer">
-        <div className='user-name'> 
-          User Names
-        </div>
+        <div className="user-name">User Names</div>
 
         <div className="address desktop-show">
-
-          {showAddress ? <><img src="/sol.svg" />
-          <span className='publickey'>{publicKey?.toBase58() ? publicKey?.toBase58() : public_key}</span></> : <span style={{fontSize: '14px', marginRight: '5px'}}>WalletAddress ....</span>}
-          {!showAddress && <EyeOutlined onClick={() => setShowAddress(true)} className='eye-icon'/>}
+          {showAddress ? (
+            <>
+              <img src="/sol.svg" />
+              <span className="publickey">
+                {publicKey?.toBase58() ? publicKey?.toBase58() : public_key}
+              </span>
+            </>
+          ) : (
+            <span style={{ fontSize: '14px', marginRight: '5px' }}>
+              WalletAddress ....
+            </span>
+          )}
+          {!showAddress && (
+            <EyeOutlined
+              onClick={() => setShowAddress(true)}
+              className="eye-icon"
+            />
+          )}
         </div>
 
         <div className="address mobile-show">
-          {showAddress ? <><img src="/sol.svg" />
-          <span className='publickey'>{publicKey?.toBase58() ? shortPublicKey(publicKey?.toBase58()) : shortPublicKey(public_key)}</span></>: <span style={{fontSize: '14px', marginRight: '5px'}}>WalletAddress ....</span>}
-          {!showAddress && <EyeOutlined onClick={() => setShowAddress(true)} className='eye-icon'/>}
+          {showAddress ? (
+            <>
+              <img src="/sol.svg" />
+              <span className="publickey">
+                {publicKey?.toBase58()
+                  ? shortPublicKey(publicKey?.toBase58())
+                  : shortPublicKey(public_key)}
+              </span>
+            </>
+          ) : (
+            <span style={{ fontSize: '14px', marginRight: '5px' }}>
+              WalletAddress ....
+            </span>
+          )}
+          {!showAddress && (
+            <EyeOutlined
+              onClick={() => setShowAddress(true)}
+              className="eye-icon"
+            />
+          )}
         </div>
 
         <div className="follow">
           <span className="followSpan mr20">
             {/* <InfoCircleFilled className="infoIcon" /> */}
-            followers<span className='ms-2'>0</span>
+            followers<span className="ms-2">0</span>
           </span>
           <span className="followSpan">
             {/* <InfoCircleFilled className="infoIcon" /> */}
-            following{' '}<span className='ms-2'>0</span>
+            following <span className="ms-2">0</span>
           </span>
         </div>
         <div className="infoButtons">
@@ -188,8 +295,7 @@ export const ProfileView = () => {
           >
             <Owned></Owned>
           </TabPane> */}
-          <TabPane tab="Created" key="3">
-          </TabPane>
+          <TabPane tab="Created" key="3"></TabPane>
           <TabPane tab="Collections" key="4">
             <ArtworksView />
           </TabPane>

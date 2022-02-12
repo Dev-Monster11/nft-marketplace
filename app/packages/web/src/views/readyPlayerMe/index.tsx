@@ -2,12 +2,15 @@
 
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { updateUserImage } from '../../utils/api';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export const ReadyPlayerMeView = () => {
   const history = useHistory();
+  const { publicKey } = useWallet();
 
   useEffect(() => {
-    function receiveMessage(event) {
+    async function receiveMessage(event) {
       // Check if the received message is a string and a glb url
       // if not ignore it, and print details to the console
       if (
@@ -18,17 +21,21 @@ export const ReadyPlayerMeView = () => {
         const url = event.data;
 
         console.log(`Avatar URL: ${url}`);
-        
+
         /**
          * TODO
          * Implement save avatar url to db code here
          * After success redirect to chat page
          */
-        history.push({
-          pathname: "/chat",
-          state: { fromRPM: true }
-        });
+        console.log(localStorage.getItem('publckey'), url);
+        const address = publicKey ? publicKey : localStorage.getItem('publckey')
+        const result = updateUserImage(address, url);
 
+        result &&
+          history.push({
+            pathname: '/chat',
+            state: { fromRPM: true },
+          });
       } else {
         console.log(`Received message from unknown source: ${event.data}`);
       }
