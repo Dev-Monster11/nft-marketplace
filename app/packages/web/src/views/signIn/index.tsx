@@ -42,8 +42,9 @@ export const SignInView = () => {
   const { connected, publicKey, select } = useWallet();
   const history = useHistory();
 
-  console.log('sign in = ', connected, publicKey);
-  connected && history.push('/signinconfirm');
+  // console.log('sign in = ', connected, publicKey);
+  // connected && history.push('/signinconfirm');
+  connected && history.push('/profile');
 
   const [showForm, setShowForm] = useState(true);
   const [toEmail, setToEmail] = useState('');
