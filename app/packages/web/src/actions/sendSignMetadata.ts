@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, Connection, TransactionInstruction } from '@solana/web3.js';
 import {
   sendTransactionWithRetry,
@@ -21,6 +23,7 @@ export async function sendSignMetadata(
 
   const { txid } = await sendTransactionWithRetry(
     connection,
+    // @ts-ignore
     wallet,
     instructions,
     signers,

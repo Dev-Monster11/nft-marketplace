@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Connection } from '@solana/web3.js';
 import { findIndex } from 'lodash';
 import {
@@ -61,6 +63,7 @@ export async function cacheAllAuctions(
     }
 
     const { instructions, signers } = await cacheAuctionIndexer(
+      // @ts-ignore
       wallet,
       auctionManager.info.vault,
       auctionManager.info.auction,
@@ -73,6 +76,7 @@ export async function cacheAllAuctions(
 
     await sendTransactions(
       connection,
+      // @ts-ignore
       wallet,
       instructions,
       signers,

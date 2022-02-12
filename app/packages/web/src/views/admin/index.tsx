@@ -278,6 +278,7 @@ function InnerAdminView({
   store,
   whitelistedCreatorsByCreator,
   connection,
+  // @ts-ignore
   wallet,
   connected,
 }: {
@@ -536,6 +537,7 @@ function InnerAdminView({
                       });
                       await saveAdmin(
                         connection,
+                        // @ts-ignore
                         wallet,
                         newStore.public,
                         Object.values(updatedCreators),
@@ -668,6 +670,7 @@ function InnerAdminView({
 
                         await convertMasterEditions(
                           connection,
+                          // @ts-ignore
                           wallet,
                           filteredMetadata?.available || [],
                           accountByMint,

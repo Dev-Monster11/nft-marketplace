@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { PublicKey } from '@solana/web3.js';
 import { KnownTokenMap } from '../../utils';
 export declare const TokenIcon: ({ mintAddress, size, tokenMap, }: {

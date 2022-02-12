@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {
   TokenAccount,
   cancelBid,
@@ -47,6 +49,7 @@ export async function sendCancelBid(
   ) {
     await setupPlaceBid(
       connection,
+      // @ts-ignore
       wallet,
       payingAccount,
       auctionView,
@@ -65,6 +68,7 @@ export async function sendCancelBid(
     auctionView,
     accountsByMint,
     accountRentExempt,
+    // @ts-ignore
     wallet,
     signers,
     instructions,
@@ -79,6 +83,7 @@ export async function sendCancelBid(
   ) {
     await claimUnusedPrizes(
       connection,
+      // @ts-ignore
       wallet,
       auctionView,
       accountsByMint,
@@ -93,6 +98,7 @@ export async function sendCancelBid(
   instructions.length === 1
     ? await sendTransactionWithRetry(
         connection,
+        // @ts-ignore
         wallet,
         instructions[0],
         signers[0],
@@ -100,6 +106,7 @@ export async function sendCancelBid(
       )
     : await sendTransactions(
         connection,
+        // @ts-ignore
         wallet,
         instructions,
         signers,

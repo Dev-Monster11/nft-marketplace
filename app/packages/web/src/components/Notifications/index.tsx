@@ -109,6 +109,7 @@ export async function getPersonalEscrowAta(
 
 export function useCollapseWrappedSol({
   connection,
+  // @ts-ignore
   wallet,
   notifications,
 }: {

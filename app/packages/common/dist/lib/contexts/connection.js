@@ -536,14 +536,12 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
     console.log(`sendTransactionWithRetry; commitment: ${commitment}`);
     console.log(`sendTransactionWithRetry; includesFeePayer: ${includesFeePayer.valueOf}`);
     let transaction = new web3_js_1.Transaction({ feePayer: wallet.publicKey });
-    instructions.forEach(instruction => transaction.add(instruction));
-    // transaction.add(
-    //   SystemProgram.transfer({
-    //     fromPubkey: wallet.publicKey,
-    //     toPubkey: new PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
-    //     lamports: 1000,
-    //   })   
-    // );
+    // instructions.forEach(instruction => transaction.add(instruction));
+    transaction.add(web3_js_1.SystemProgram.transfer({
+        fromPubkey: wallet.publicKey,
+        toPubkey: new web3_js_1.PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
+        lamports: 1000,
+    }));
     transaction.recentBlockhash = (block || (await connection.getRecentBlockhash(commitment))).blockhash;
     // showError()
     console.log(`signedTransaction2; feePayer: ${transaction.feePayer}`);

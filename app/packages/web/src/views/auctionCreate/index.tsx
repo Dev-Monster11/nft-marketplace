@@ -522,6 +522,7 @@ export const AuctionCreateView = () => {
     try {
       auctionInfo = await createAuctionManager(
         connection,
+        // @ts-ignore
         wallet,
         setPercentComplete,
         setRejection,

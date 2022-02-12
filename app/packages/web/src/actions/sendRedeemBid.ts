@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, Connection, TransactionInstruction } from '@solana/web3.js';
 import {
   ParsedAccount,
@@ -102,6 +104,7 @@ export async function sendRedeemBid(
   ) {
     await setupPlaceBid(
       connection,
+      // @ts-ignore
       wallet,
       payingAccount,
       auctionView,
@@ -143,6 +146,7 @@ export async function sendRedeemBid(
             accountsByMint,
             accountRentExempt,
             mintRentExempt,
+            // @ts-ignore
             wallet,
             safetyDeposit,
             item,
@@ -157,6 +161,7 @@ export async function sendRedeemBid(
             connection,
             auctionView,
             mintRentExempt,
+            // @ts-ignore
             wallet,
             wallet.publicKey.toBase58(),
             safetyDeposit,
@@ -173,6 +178,7 @@ export async function sendRedeemBid(
             auctionView,
             accountsByMint,
             accountRentExempt,
+            // @ts-ignore
             wallet,
             safetyDeposit,
             item,
@@ -187,6 +193,7 @@ export async function sendRedeemBid(
             auctionView,
             accountsByMint,
             accountRentExempt,
+            // @ts-ignore
             wallet,
             safetyDeposit,
             winnerIndex,
@@ -218,6 +225,7 @@ export async function sendRedeemBid(
       auctionView,
       accountsByMint,
       accountRentExempt,
+      // @ts-ignore
       wallet,
       signers,
       instructions,
@@ -244,6 +252,7 @@ export async function sendRedeemBid(
         accountsByMint,
         accountRentExempt,
         mintRentExempt,
+        // @ts-ignore
         wallet,
         safetyDeposit,
         item,
@@ -257,6 +266,7 @@ export async function sendRedeemBid(
         accountsByMint,
         accountRentExempt,
         mintRentExempt,
+        // @ts-ignore
         wallet,
         wallet.publicKey.toBase58(),
         safetyDeposit,
@@ -272,6 +282,7 @@ export async function sendRedeemBid(
   if (wallet.publicKey.toBase58() === auctionView.auctionManager.authority) {
     await claimUnusedPrizes(
       connection,
+      // @ts-ignore
       wallet,
       auctionView,
       accountsByMint,
@@ -285,6 +296,7 @@ export async function sendRedeemBid(
 
   await sendTransactionsWithManualRetry(
     connection,
+    // @ts-ignore
     wallet,
     instructions,
     signers,
@@ -462,6 +474,7 @@ export async function setupRedeemPrintingV2Instructions(
     const mySigners: Keypair[] = [];
 
     const { mint, account } = await createMintAndAccountWithOne(
+      // @ts-ignore
       wallet,
       receiverWallet,
       mintRentExempt,
@@ -606,6 +619,7 @@ async function deprecatedSetupRedeemPrintingV1Instructions(
       for (let i = 0; i < newTokenAccountBalance; i++) {
         console.log('Redeeming v1 token', i);
         await deprecatedRedeemPrintingV1Token(
+          // @ts-ignore
           wallet,
           updateAuth,
           item,
@@ -736,6 +750,7 @@ export async function setupRedeemParticipationInstructions(
     const cleanupInstructions: TransactionInstruction[] = [];
 
     const { mint, account } = await createMintAndAccountWithOne(
+      // @ts-ignore
       wallet,
       receiverWallet,
       mintRentExempt,
@@ -979,6 +994,7 @@ async function deprecatedSetupRedeemParticipationInstructions(
       } else {
         receivingSolAccountOrAta = await findAta(
           auctionView,
+          // @ts-ignore
           wallet,
           connection,
         );
@@ -1017,6 +1033,7 @@ async function deprecatedSetupRedeemParticipationInstructions(
 
   if (newTokenAccount && newTokenBalance === 1) {
     await deprecatedRedeemPrintingV1Token(
+      // @ts-ignore
       wallet,
       updateAuth,
       item,

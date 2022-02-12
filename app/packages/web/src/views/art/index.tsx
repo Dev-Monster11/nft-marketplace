@@ -135,6 +135,7 @@ export const ArtView = () => {
                               try {
                                 const txid = await sendSignMetadata(
                                   connection,
+                                  // @ts-ignore
                                   wallet,
                                   id,
                                 );
