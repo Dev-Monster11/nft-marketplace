@@ -203,7 +203,7 @@ export const ProfileView = () => {
         </Button>
       </div>
       <div className="infoContainer">
-        <div className="user-name">User Names</div>
+        <div className="user-name">{localStorage.getItem('name')}</div>
 
         <div className="address desktop-show">
           {showAddress ? (

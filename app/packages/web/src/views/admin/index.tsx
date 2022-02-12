@@ -714,11 +714,13 @@ const ManageUser = () => {
       if (res.data) {
         console.log('users = ', res.data);
         setData(res.data.map((e: any, index: React.Key) => {
+          let role = ''
+          if (e.roles && e.roles.length > 0) role = e.roles[0]
           return {
             key: index,
             avatar: e.image,
             name: e.name,
-            role: e.roles[0]
+            role: role
           }
         }))
         setLoading(false)
