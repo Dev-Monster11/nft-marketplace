@@ -11,6 +11,7 @@ import {
   PartitionOutlined,
   UploadOutlined,
   MenuOutlined,
+  EyeOutlined
 } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Button, Col, Row, Spin, Tabs, Card, Badge } from 'antd';
@@ -98,6 +99,7 @@ export const ProfileView = () => {
 
   const location: any = useLocation();
   const [public_key, setPublickKey] = useState('');
+  const [showAddress, setShowAddress] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -118,27 +120,35 @@ export const ProfileView = () => {
     <div className="profile-page-container">
       <div className="topBackground">
         <div className="avatarContainer">
-          <img src="/img/artist1.jpeg" className="userAvatar" />
+          {/* <img src="/img/artist1.jpeg" className="userAvatar" /> */}
+          <div className='userAvatar'></div>
         </div>
       </div>
       <div className="infoContainer">
+        <div className='user-name'> 
+          User Names
+        </div>
+
         <div className="address desktop-show">
-          <img src="/Ethereum-Logo.svg" />
-          {publicKey?.toBase58() ? publicKey?.toBase58() : public_key}
+
+          {showAddress ? <><img src="/sol.svg" />
+          <span className='publickey'>{publicKey?.toBase58() ? publicKey?.toBase58() : public_key}</span></> : <span style={{fontSize: '14px', marginRight: '5px'}}>WalletAddress ....</span>}
+          {!showAddress && <EyeOutlined onClick={() => setShowAddress(true)} className='eye-icon'/>}
         </div>
 
         <div className="address mobile-show">
-          <img src="/Ethereum-Logo.svg" />
-          {publicKey?.toBase58() ? shortPublicKey(publicKey?.toBase58()) : shortPublicKey(public_key)}
+          {showAddress ? <><img src="/sol.svg" />
+          <span className='publickey'>{publicKey?.toBase58() ? shortPublicKey(publicKey?.toBase58()) : shortPublicKey(public_key)}</span></>: <span style={{fontSize: '14px', marginRight: '5px'}}>WalletAddress ....</span>}
+          {!showAddress && <EyeOutlined onClick={() => setShowAddress(true)} className='eye-icon'/>}
         </div>
 
         <div className="follow">
           <span className="followSpan mr20">
-            <InfoCircleFilled className="infoIcon" />
+            {/* <InfoCircleFilled className="infoIcon" /> */}
             followers<span className='ms-2'>0</span>
           </span>
           <span className="followSpan">
-            <InfoCircleFilled className="infoIcon" />
+            {/* <InfoCircleFilled className="infoIcon" /> */}
             following{' '}<span className='ms-2'>0</span>
           </span>
         </div>
@@ -152,7 +162,7 @@ export const ProfileView = () => {
           >
             Edit profile
           </Button>
-          <Button className="infoBtn">
+          {/* <Button className="infoBtn">
             <UploadOutlined />
           </Button>
           <Button className="infoBtn">
@@ -160,12 +170,12 @@ export const ProfileView = () => {
           </Button>
           <Button className="editBtn">
             <Link to="/auction/create/0">Sell NFT</Link>
-          </Button>
+          </Button> */}
         </div>
       </div>
       <div className="tabContainer">
         <Tabs defaultActiveKey="2" centered>
-          <TabPane tab="On sale" key="1">
+          {/* <TabPane tab="On sale" key="1">
           </TabPane>
           <TabPane
             tab={
@@ -177,14 +187,14 @@ export const ProfileView = () => {
             key="2"
           >
             <Owned></Owned>
-          </TabPane>
+          </TabPane> */}
           <TabPane tab="Created" key="3">
           </TabPane>
           <TabPane tab="Collections" key="4">
             <ArtworksView />
           </TabPane>
-          <TabPane tab="Activity" key="5">
-          </TabPane>
+          {/* <TabPane tab="Activity" key="5">
+          </TabPane> */}
         </Tabs>
       </div>
     </div>

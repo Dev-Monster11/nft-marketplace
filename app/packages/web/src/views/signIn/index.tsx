@@ -42,14 +42,16 @@ export const SignInView = () => {
   const { connected, publicKey, select } = useWallet();
   const history = useHistory();
 
-  console.log('sign in = ', connected, publicKey);
-  connected && history.push('/signinconfirm');
+  // console.log('sign in = ', connected, publicKey);
+  // connected && history.push('/signinconfirm');
+  connected && history.push('/profile');
 
   const [showForm, setShowForm] = useState(true);
   const [toEmail, setToEmail] = useState('');
   const [toName, setToName] = useState('');
   const { encode_private_key } = useParams<{ encode_private_key: string }>();
   const { public_key } = useParams<{ public_key: string }>();
+  const [form] = Form.useForm()
 
   if (encode_private_key && public_key) {
     const decode_private_key = bs58.decode(encode_private_key).toString();
@@ -244,6 +246,7 @@ export const SignInView = () => {
                   wrapperCol={{
                     span: 24,
                   }}
+                  form={form}
                 >
                   <Form.Item
                     className="my-2"
@@ -302,10 +305,10 @@ export const SignInView = () => {
                   </Button>
                 </Form>
                 {/* <a
-                  onClick={() => {setShowForm(false)}}
+                  onClick={() => form.validateFields()}
                   className="text-decoration-underline"
                 >
-                  Already have a solana wallet? Connect your wallet.
+                  Already have a solana wallet? Connect your wallet.--------
                 </a> */}
                 <ConnectButton
                   hidden={showForm}
@@ -313,6 +316,7 @@ export const SignInView = () => {
                   type="primary"
                   style={{ width: '100%', height: '32px' }}
                   allowWalletChange={false}
+                  formInstance={form}
                 />
               </div>
               <div
@@ -348,6 +352,7 @@ export interface ConnectButtonProps
     React.RefAttributes<HTMLElement> {
   popoverPlacement?: PopoverProps['placement'];
   allowWalletChange?: boolean;
+  formInstance: any;
 }
 
 export const ConnectButton = ({
@@ -356,6 +361,7 @@ export const ConnectButton = ({
   disabled,
   allowWalletChange,
   popoverPlacement,
+  formInstance,
   ...rest
 }: ConnectButtonProps) => {
   const { wallet, connect, connected } = useWallet();
@@ -373,14 +379,17 @@ export const ConnectButton = ({
     return (
       <a
         onClick={e => {
-          onClick && onClick(e);
-          handleClick();
-          localStorage.setItem('click-signin', 'yes');
+          formInstance.validateFields().then((values: any) => {
+            onClick && onClick(e);
+            handleClick();
+            localStorage.setItem('click-signin', 'yes');
+          })
         }}
         style={{textDecoration: 'underline'}}
       >
         {/* {connected ? children : 'Select A Wallet'} */}
-        Already have a solana wallet? Connect your wallet.
+        {/* Already have a solana wallet? Connect your wallet. */}
+        Already have a solana wallet? Connect.
       </a>
     );
   }
