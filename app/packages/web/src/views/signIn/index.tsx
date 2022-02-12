@@ -23,11 +23,15 @@ import { useTheme } from '../../contexts/themecontext';
 import { useWalletModal } from '../../contexts/walletProvider';
 import bs58 from 'bs58';
 import { MetaplexModal, MetaplexOverlay } from '@oyster/common';
+import { createUser } from '../../utils/api';
 
 const COINBASE =
   'https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet';
 
 export const SignInView = () => {
+  localStorage.removeItem('publickey')
+  localStorage.removeItem('registeration')
+
   const [showPopup, setsShowPopup] = useState<boolean>(false);
   console.log(showPopup);
 
@@ -44,14 +48,20 @@ export const SignInView = () => {
 
   // console.log('sign in = ', connected, publicKey);
   // connected && history.push('/signinconfirm');
-  connected && history.push('/profile');
+  function delay(time: any) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+  if (connected)  {
+    delay(1000).then(() => history.push('/profile'));
+  }
 
   const [showForm, setShowForm] = useState(true);
   const [toEmail, setToEmail] = useState('');
   const [toName, setToName] = useState('');
   const { encode_private_key } = useParams<{ encode_private_key: string }>();
   const { public_key } = useParams<{ public_key: string }>();
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
 
   if (encode_private_key && public_key) {
     const decode_private_key = bs58.decode(encode_private_key).toString();
@@ -72,7 +82,7 @@ export const SignInView = () => {
     }
   }
 
-  const createAccount = () => {
+  const createAccount = async () => {
     // const keypair = Keypair.generate();
 
     // let templateParams = {
@@ -138,14 +148,23 @@ export const SignInView = () => {
         'user_BR3tV2tSckwoFJBZjEfRn',
       )
       .then(
-        function (response: any) {
+        async function (response: any) {
           console.log('SUCCESS!', response.status);
-          history.push({
-            pathname: '/profile',
-            state: {
-              publicKey: importedAccount.publicKey.toString(),
-            },
-          });
+          const createResult = await createUser(
+            toName,
+            toEmail,
+            importedAccount.publicKey.toString(),
+          );
+
+          if (createResult) {
+            localStorage.setItem('publickey', importedAccount.publicKey.toString());
+            history.push({
+              pathname: '/profile',
+              state: {
+                publicKey: importedAccount.publicKey.toString(),
+              },
+            });
+          }
         },
         function (err: any) {
           console.log('FAILED...', err);
@@ -259,11 +278,11 @@ export const SignInView = () => {
                     ]}
                   >
                     <Input
-                      className={
-                        `${theme === 'Light'
+                      className={`${
+                        theme === 'Light'
                           ? 'elements-style input_form_black'
-                          : ' elements-style input_form_white'} signin-input`
-                      }
+                          : ' elements-style input_form_white'
+                      } signin-input`}
                       placeholder="Name"
                       type="text"
                       onChange={setName}
@@ -284,11 +303,11 @@ export const SignInView = () => {
                     ]}
                   >
                     <Input
-                      className={
-                        `${theme === 'Light'
+                      className={`${
+                        theme === 'Light'
                           ? 'elements-style input_form_black'
-                          : ' elements-style input_form_white'} signin-input`
-                      }
+                          : ' elements-style input_form_white'
+                      } signin-input`}
                       placeholder="Email"
                       type="email"
                       onChange={setEmail}
@@ -335,11 +354,14 @@ export const SignInView = () => {
           </Row>
         </div>
         <h6 className="fw-bold mt-3 text-center">
-          Your account in this web3 platform is created via a cryptocurrency wallet.
+          Your account in this web3 platform is created via a cryptocurrency
+          wallet.
           <br />
-          Queendom™ is built on Solana blockchain, one of the most environmentally-friendly chains.
+          Queendom™ is built on Solana blockchain, one of the most
+          environmentally-friendly chains.
           <br />
-          No worries if you don't have a Solana wallet, we will help you create one in one click!
+          No worries if you don't have a Solana wallet, we will help you create
+          one in one click!
         </h6>
       </div>
     </Layout>
@@ -380,12 +402,14 @@ export const ConnectButton = ({
       <a
         onClick={e => {
           formInstance.validateFields().then((values: any) => {
+            localStorage.setItem('name', values.username)
+            localStorage.setItem('email', values.email)
+            localStorage.setItem('click-signin', 'yes');
             onClick && onClick(e);
             handleClick();
-            localStorage.setItem('click-signin', 'yes');
-          })
+          });
         }}
-        style={{textDecoration: 'underline'}}
+        style={{ textDecoration: 'underline' }}
       >
         {/* {connected ? children : 'Select A Wallet'} */}
         {/* Already have a solana wallet? Connect your wallet. */}

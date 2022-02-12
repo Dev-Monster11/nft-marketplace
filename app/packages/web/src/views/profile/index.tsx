@@ -20,6 +20,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ArtworksView } from '..';
 import { Link } from 'react-router-dom';
+import { findOneUser } from '../../utils/api';
 
 const { TabPane } = Tabs;
 
@@ -141,6 +142,16 @@ export const ProfileView = () => {
   };
 
   useEffect(() => {
+    async function getUser(key) {
+      console.log('key = ', key)
+      const user = await findOneUser(key)
+      if (!user.image && localStorage.getItem('registeration')) history.push('/ready-player-me')
+    }
+
+    getUser(publicKey ? publicKey : localStorage.getItem('publickey'))
+  }, [])
+
+  useEffect(() => {
     (async () => {
       if (!connected) {
         if (location.state && location.state.publicKey)
@@ -158,8 +169,6 @@ export const ProfileView = () => {
     <div className="profile-page-container">
       <div className="topBackground">
         <div className="avatarContainer">
-          {/* <img src="/img/artist1.jpeg" className="userAvatar" /> */}
-          {/* <div className='userAvatar'></div> */}
           <input
             className="fileInput"
             type="file"

@@ -27,6 +27,8 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { MetaplexModal } from '@oyster/common';
 import { notify } from '@oyster/common';
 import { useHistory } from 'react-router-dom';
+import { createUser, getRegisteration } from '../utils/api';
+
 const { Panel } = Collapse;
 
 export interface WalletModalContextState {
@@ -134,13 +136,33 @@ export const WalletModal: FC = () => {
 export const WalletModalProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const { publicKey } = useWallet();
+  const { publicKey, disconnect } = useWallet();
   const [connected, setConnected] = useState(!!publicKey);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    async function userFunc() {
+      console.log('-----------------------------------------------------------')
+
+        const name = localStorage.getItem('name')
+        const email = localStorage.getItem('email')
+        console.log('create user = ', name, email, publicKey?.toBase58())
+
+        await createUser(name ? name : '', email ? email : '', publicKey ? publicKey.toBase58() : '')
+        const rege = await getRegisteration(email ? email : '')
+        console.log('registeration =           ', rege)
+        rege && localStorage.setItem('registeration', 'yes')
+    }
+
     if (publicKey) {
+      if (localStorage.getItem('click-signin') == 'yes') {
+        console.log('*******************************88')
+        userFunc()
+      } else {
+        disconnect()
+      }
       const base58 = publicKey.toBase58();
+
       const keyToDisplay =
         base58.length > 20
           ? `${base58.substring(0, 7)}.....${base58.substring(
@@ -225,8 +247,8 @@ export const WalletProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, []);
 
   return (
-    // <BaseWalletProvider wallets={wallets} onError={onError} autoConnect={false}>
-    <BaseWalletProvider wallets={wallets} onError={onError} autoConnect>
+    <BaseWalletProvider wallets={wallets} onError={onError} autoConnect={false}>
+     {/* <BaseWalletProvider wallets={wallets} onError={onError} autoConnect> */}
       <WalletModalProvider>{children}</WalletModalProvider>
     </BaseWalletProvider>
   );
