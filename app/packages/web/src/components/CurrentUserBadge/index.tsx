@@ -174,6 +174,7 @@ export const CurrentUserBadge = (props: {
 }) => {
   const history = useHistory();
 
+  const [visible, setVisible] = useState(false);
   const { wallet, publicKey, disconnect } = useWallet();
   const { account } = useNativeAccount();
   const solPrice = useSolPrice();
@@ -206,6 +207,8 @@ export const CurrentUserBadge = (props: {
       <Popover
         trigger="click"
         placement="bottomRight"
+        visible={visible}
+        onVisibleChange={setVisible}
         content={
           // <Settings
           //   additionalSettings={
@@ -231,19 +234,19 @@ export const CurrentUserBadge = (props: {
           // />
           <div className="signin-dropdown">
             {publicKey?.toBase58() === ownerAddress && <div className="my-2">
-              <a href="#/admin">Admin</a>
+              <a href="#/admin" onClick={() => setVisible(false)}>Admin</a>
             </div>}
             <div className="my-2">
-              <a href="#/profile">Profile</a>
+              <a href="#/profile" onClick={() => setVisible(false)}>Profile</a>
             </div>
             <div className="my-2">
-              <a href="#/dashboard">Dashboard</a>
+              <a href="#/dashboard" onClick={() => setVisible(false)}>Dashboard</a>
             </div>
             {/* <div className='my-2'>
               <a href="#/collection">Collection</a>
             </div> */}
             <div className="my-2">
-              <a href="#/setting">Settings</a>
+              <a href="#/setting" onClick={() => setVisible(false)}>Settings</a>
             </div>
             <div className="settingDivider" />
             <span
@@ -251,6 +254,7 @@ export const CurrentUserBadge = (props: {
               onClick={() => {
                 disconnect();
                 history.push('/');
+                setVisible(false);
               }}
             >
               Sign Out
