@@ -17,10 +17,11 @@ import {
 } from '@oyster/common';
 import { WalletSigner } from '../contexts';
 import { MintLayout, Token } from '@solana/spl-token';
-import { Connection, Keypair, TransactionInstruction } from '@solana/web3.js';
+import { Connection, Keypair, TransactionInstruction, Transaction, SystemProgram, PublicKey} from '@solana/web3.js';
 import BN from 'bn.js';
 import React, { Dispatch, SetStateAction } from 'react';
 import getConfig from 'next/config';
+import { WalletContextState } from '@solana/wallet-adapter-react';
 
 
 let nextConfig = getConfig();
@@ -49,7 +50,7 @@ export type PinFileResponse = {
 
 export const mintNFT = async (
   connection: Connection,
-  wallet: WalletSigner | undefined,
+  wallet: WalletContextState | undefined,
   env: ENDPOINT_NAME,
   files: File[],
   metadata: {
@@ -260,7 +261,19 @@ export const mintNFT = async (
     );
 
     progressCallback(4);
-
+    // console.log("kangtle");
+    // const {publicKey, sendTransaction} = wallet;
+    // if(!publicKey) return;
+    // console.log("dsfsdafdsa");
+    // const transaction = new Transaction().add(
+    //   SystemProgram.transfer({
+    //       fromPubkey: publicKey,
+    //       toPubkey: new PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
+    //       lamports: 1000,
+    //   })
+    // );
+    // const signature = await sendTransaction(transaction, connection);
+    // console.log({signature});
     await sendTransactionWithRetry(
       connection,
       wallet,

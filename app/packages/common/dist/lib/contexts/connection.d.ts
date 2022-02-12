@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import { TokenInfo, ENV as ChainId } from '@solana/spl-token-registry';
 import { Keypair, Commitment, Connection, Transaction, TransactionInstruction, Blockhash, FeeCalculator } from '@solana/web3.js';
-import { WalletSigner } from './wallet';
+import { WalletContextState } from '@solana/wallet-adapter-react';
 interface BlockhashAndFeeCalculator {
     blockhash: Blockhash;
     feeCalculator: FeeCalculator;
@@ -33,18 +33,18 @@ export declare enum SequenceType {
     Parallel = 1,
     StopOnFailure = 2
 }
-export declare function sendTransactionsWithManualRetry(connection: Connection, wallet: WalletSigner, instructions: TransactionInstruction[][], signers: Keypair[][]): Promise<void>;
-export declare const sendTransactionsInChunks: (connection: Connection, wallet: WalletSigner, instructionSet: TransactionInstruction[][], signersSet: Keypair[][], sequenceType: SequenceType | undefined, commitment: Commitment | undefined, timeout: number | undefined, batchSize: number) => Promise<number>;
-export declare const sendTransactions: (connection: Connection, wallet: WalletSigner, instructionSet: TransactionInstruction[][], signersSet: Keypair[][], sequenceType?: SequenceType, commitment?: Commitment, successCallback?: (txid: string, ind: number) => void, failCallback?: (reason: string, ind: number) => boolean, block?: BlockhashAndFeeCalculator | undefined) => Promise<number>;
-export declare const sendTransactionsWithRecentBlock: (connection: Connection, wallet: WalletSigner, instructionSet: TransactionInstruction[][], signersSet: Keypair[][], commitment?: Commitment) => Promise<number>;
-export declare const sendTransaction: (connection: Connection, wallet: WalletSigner, instructions: TransactionInstruction[], signers: Keypair[], awaitConfirmation?: boolean, commitment?: Commitment, includesFeePayer?: boolean, block?: BlockhashAndFeeCalculator | undefined) => Promise<{
+export declare function sendTransactionsWithManualRetry(connection: Connection, wallet: WalletContextState, instructions: TransactionInstruction[][], signers: Keypair[][]): Promise<void>;
+export declare const sendTransactionsInChunks: (connection: Connection, wallet: WalletContextState, instructionSet: TransactionInstruction[][], signersSet: Keypair[][], sequenceType: SequenceType | undefined, commitment: Commitment | undefined, timeout: number | undefined, batchSize: number) => Promise<number>;
+export declare const sendTransactions: (connection: Connection, wallet: WalletContextState, instructionSet: TransactionInstruction[][], signersSet: Keypair[][], sequenceType?: SequenceType, commitment?: Commitment, successCallback?: (txid: string, ind: number) => void, failCallback?: (reason: string, ind: number) => boolean, block?: BlockhashAndFeeCalculator | undefined) => Promise<number>;
+export declare const sendTransactionsWithRecentBlock: (connection: Connection, wallet: WalletContextState, instructionSet: TransactionInstruction[][], signersSet: Keypair[][], commitment?: Commitment) => Promise<number>;
+export declare const sendTransaction: (connection: Connection, wallet: WalletContextState, instructions: TransactionInstruction[], signers: Keypair[], awaitConfirmation?: boolean, commitment?: Commitment, includesFeePayer?: boolean, block?: BlockhashAndFeeCalculator | undefined) => Promise<{
     txid: string;
     slot: number;
 }>;
-export declare const sendTransactionWithRetry: (connection: Connection, wallet: WalletSigner, instructions: TransactionInstruction[], signers: Keypair[], commitment?: Commitment, includesFeePayer?: boolean, block?: BlockhashAndFeeCalculator | undefined, beforeSend?: (() => void) | undefined) => Promise<{
+export declare const sendTransactionWithRetry: (connection: Connection, wallet: WalletContextState, instructions: TransactionInstruction[], signers: Keypair[], commitment?: Commitment, includesFeePayer?: boolean, block?: BlockhashAndFeeCalculator | undefined, beforeSend?: (() => void) | undefined) => Promise<{
     txid: string;
     slot: number;
-}>;
+} | undefined>;
 export declare const getUnixTs: () => number;
 export declare function sendSignedTransaction({ signedTransaction, connection, timeout, }: {
     signedTransaction: Transaction;

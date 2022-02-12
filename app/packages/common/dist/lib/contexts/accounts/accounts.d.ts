@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { ReactNode } from 'react';
 import { AccountInfo, PublicKey } from '@solana/web3.js';
 import { MintInfo } from '@solana/spl-token';
