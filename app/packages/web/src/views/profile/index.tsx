@@ -146,8 +146,8 @@ export const ProfileView = () => {
     async function getUser(key) {
       console.log('key = ', key)
       const user = await findOneUser(key)
-      user.avatar && setAvatarUrl(user.avatar)
-      if (!user.image && localStorage.getItem('registeration')) history.push('/ready-player-me')
+      user && user.avatar && setAvatarUrl(user.avatar)
+      if ((user && !user.image) && localStorage.getItem('registeration')) history.push('/ready-player-me')
     }
 
     getUser(publicKey ? publicKey : localStorage.getItem('publickey'))
