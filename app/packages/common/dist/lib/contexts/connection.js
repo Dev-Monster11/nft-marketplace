@@ -335,7 +335,6 @@ const sendTransactions = async (connection, wallet, instructionSet, signersSet, 
     if (!wallet.publicKey)
         throw new wallet_adapter_base_1.WalletNotConnectedError();
     const unsignedTxns = [];
-    const signedTxns = [];
     if (!block) {
         block = await connection.getRecentBlockhash(commitment);
     }
@@ -345,7 +344,7 @@ const sendTransactions = async (connection, wallet, instructionSet, signersSet, 
         if (instructions.length === 0) {
             continue;
         }
-        let transaction = new web3_js_1.Transaction();
+        const transaction = new web3_js_1.Transaction();
         instructions.forEach(instruction => transaction.add(instruction));
         transaction.recentBlockhash = block.blockhash;
         transaction.setSigners(
@@ -353,20 +352,12 @@ const sendTransactions = async (connection, wallet, instructionSet, signersSet, 
         wallet.publicKey, ...signers.map(s => s.publicKey));
         if (signers.length > 0) {
             transaction.partialSign(...signers);
-            // transaction.setSigners(
-            //   // fee payed by the wallet owner
-            //   wallet.publicKey,
-            //   ...signers.map(s => s.publicKey),
-            // );
         }
         unsignedTxns.push(transaction);
-        const trxSig = await wallet.sendTransaction(transaction, connection);
-        console.log(`Transaction signature: ${trxSig}`);
-        let isVerifiedSignature = transaction.verifySignatures();
-        console.log(`The signatures were verifed: ${isVerifiedSignature}`);
-        signedTxns.push(transaction);
     }
-    // const signedTxns = await wallet.signAllTransactions(unsignedTxns);
+    if (!wallet.signAllTransactions)
+        return -1;
+    const signedTxns = await wallet.signAllTransactions(unsignedTxns);
     const pendingTxns = [];
     let breakEarlyObject = { breakEarly: false, i: 0 };
     console.log('Signed txns length', signedTxns.length, 'vs handed in length', instructionSet.length);
@@ -549,20 +540,15 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
     //   })   
     // );
     transaction.recentBlockhash = (block || (await connection.getRecentBlockhash(commitment))).blockhash;
-    // showError()
-    console.log(`signedTransaction2; feePayer: ${transaction.feePayer}`);
-    console.log(`signedTransaction2; instructions: ${transaction.instructions}`);
-    console.log(`signedTransaction2; nonceInfo: ${transaction.nonceInfo}`);
-    console.log(`signedTransaction2; recentBlockhash: ${transaction.recentBlockhash}`);
-    console.log(`signedTransaction2; signature: ${transaction.signature}`);
-    if (includesFeePayer) {
-        transaction.setSigners(...signers.map(s => s.publicKey));
-    }
-    else {
-        transaction.setSigners(
-        // fee payed by the wallet owner
-        wallet.publicKey, ...signers.map(s => s.publicKey));
-    }
+    // if (includesFeePayer) {
+    //   transaction.setSigners(...signers.map(s => s.publicKey));
+    // } else {
+    //   transaction.setSigners(
+    //     // fee payed by the wallet owner
+    //     wallet.publicKey,
+    //     ...signers.map(s => s.publicKey),
+    //   );
+    // }
     if (signers.length > 0) {
         transaction.partialSign(...signers);
     }

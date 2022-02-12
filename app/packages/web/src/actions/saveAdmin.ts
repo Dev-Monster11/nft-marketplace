@@ -52,7 +52,6 @@ export async function saveAdmin(
     signers.push(wcSigners);
     instructions.push(wcInstructions);
   }
-
   instructions.length === 1
     ? await sendTransactionWithRetry(
         connection,

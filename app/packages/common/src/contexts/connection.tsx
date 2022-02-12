@@ -461,7 +461,6 @@ export const sendTransactions = async (
   if (!wallet.publicKey) throw new WalletNotConnectedError();
 
   const unsignedTxns: Transaction[] = [];
-  const signedTxns: Transaction[] = [];
 
   if (!block) {
     block = await connection.getRecentBlockhash(commitment);
@@ -475,7 +474,7 @@ export const sendTransactions = async (
       continue;
     }
 
-    let transaction = new Transaction();
+    const transaction = new Transaction();
     instructions.forEach(instruction => transaction.add(instruction));
     transaction.recentBlockhash = block.blockhash;
     transaction.setSigners(
@@ -486,22 +485,13 @@ export const sendTransactions = async (
 
     if (signers.length > 0) {
       transaction.partialSign(...signers);
-      // transaction.setSigners(
-      //   // fee payed by the wallet owner
-      //   wallet.publicKey,
-      //   ...signers.map(s => s.publicKey),
-      // );
     }
 
     unsignedTxns.push(transaction);
-    const trxSig = await wallet.sendTransaction(transaction, connection);
-    console.log(`Transaction signature: ${trxSig}`);
-    let isVerifiedSignature = transaction.verifySignatures();
-    console.log(`The signatures were verifed: ${isVerifiedSignature}`)
-    signedTxns.push(transaction)
   }
 
-  // const signedTxns = await wallet.signAllTransactions(unsignedTxns);
+  if(!wallet.signAllTransactions) return -1;
+  const signedTxns = await wallet.signAllTransactions(unsignedTxns);
 
   const pendingTxns: Promise<{ txid: string; slot: number }>[] = [];
 
@@ -764,24 +754,15 @@ export const sendTransactionWithRetry = async (
     block || (await connection.getRecentBlockhash(commitment))
   ).blockhash;
 
-  
-  // showError()
-
-
-  console.log(`signedTransaction2; feePayer: ${transaction.feePayer}`);
-  console.log(`signedTransaction2; instructions: ${transaction.instructions}`);
-  console.log(`signedTransaction2; nonceInfo: ${transaction.nonceInfo}`);
-  console.log(`signedTransaction2; recentBlockhash: ${transaction.recentBlockhash}`);
-  console.log(`signedTransaction2; signature: ${transaction.signature}`);
-  if (includesFeePayer) {
-    transaction.setSigners(...signers.map(s => s.publicKey));
-  } else {
-    transaction.setSigners(
-      // fee payed by the wallet owner
-      wallet.publicKey,
-      ...signers.map(s => s.publicKey),
-    );
-  }
+  // if (includesFeePayer) {
+  //   transaction.setSigners(...signers.map(s => s.publicKey));
+  // } else {
+  //   transaction.setSigners(
+  //     // fee payed by the wallet owner
+  //     wallet.publicKey,
+  //     ...signers.map(s => s.publicKey),
+  //   );
+  // }
   if (signers.length > 0) {
     transaction.partialSign(...signers);
   }
