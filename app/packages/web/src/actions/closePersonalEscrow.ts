@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Connection, Keypair, TransactionInstruction } from '@solana/web3.js';
 import {
   utils,
@@ -37,6 +39,7 @@ export async function closePersonalEscrow(
 
   await sendTransactionWithRetry(
     connection,
+    // @ts-ignore
     wallet,
     instructions,
     signers,

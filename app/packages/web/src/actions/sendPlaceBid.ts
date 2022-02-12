@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {
   Keypair,
   Connection,
@@ -50,6 +52,7 @@ export async function sendPlaceBid(
   console.log(`sendPlaceBid; In instructions: ${instructions}`);
   const bid = await setupPlaceBid(
     connection,
+    // @ts-ignore
     wallet,
     bidderTokenAccount,
     auctionView,
@@ -63,6 +66,7 @@ export async function sendPlaceBid(
 
   const { txid } = await sendTransactionWithRetry(
     connection,
+    // @ts-ignore
     wallet,
     instructions[0],
     signers[0],
@@ -135,6 +139,7 @@ export async function setupPlaceBid(
         auctionView,
         accountsByMint,
         accountRentExempt,
+        // @ts-ignore
         wallet,
         cancelSigners,
         cancelInstr,

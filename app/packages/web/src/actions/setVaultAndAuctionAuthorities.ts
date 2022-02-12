@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import {
   setAuctionAuthority,

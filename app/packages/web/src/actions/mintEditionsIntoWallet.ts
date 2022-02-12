@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import BN from 'bn.js';
 import { Connection, Keypair, TransactionInstruction } from '@solana/web3.js';
 import {
@@ -41,6 +43,7 @@ export async function mintEditionsToWallet(
     console.log('Minting', i);
     await setupMintEditionIntoWalletInstructions(
       art,
+      // @ts-ignore
       wallet,
       connection,
       mintTokenAccount,
@@ -87,6 +90,7 @@ export async function mintEditionsToWallet(
       // Pump em through!
       await sendTransactions(
         connection,
+        // @ts-ignore
         wallet,
         instructionBatch,
         signerBatch,
@@ -96,6 +100,7 @@ export async function mintEditionsToWallet(
     else
       await sendTransactionWithRetry(
         connection,
+        // @ts-ignore
         wallet,
         instructionBatch[0],
         signerBatch[0],

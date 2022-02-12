@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, Connection, TransactionInstruction } from '@solana/web3.js';
 import {
   ParsedAccount,
@@ -42,6 +44,7 @@ export async function settle(
 
     await setupPlaceBid(
       connection,
+      // @ts-ignore
       wallet,
       payingAccount,
       auctionView,
@@ -53,6 +56,7 @@ export async function settle(
 
     await sendTransactionWithRetry(
       connection,
+      // @ts-ignore
       wallet,
       instructions[0],
       signers[0],
@@ -191,6 +195,7 @@ async function emptyPaymentAccountForAllTokens(
       // Pump em through!
       await sendTransactions(
         connection,
+        // @ts-ignore
         wallet,
         instructionBatch,
         signerBatch,
@@ -200,6 +205,7 @@ async function emptyPaymentAccountForAllTokens(
     else
       await sendTransactionWithRetry(
         connection,
+        // @ts-ignore
         wallet,
         instructionBatch[0],
         signerBatch[0],
@@ -276,6 +282,7 @@ async function claimAllBids(
       // Pump em through!
       await sendTransactions(
         connection,
+        // @ts-ignore
         wallet,
         instructionBatch,
         signerBatch,
@@ -285,6 +292,7 @@ async function claimAllBids(
     else
       await sendTransactionWithRetry(
         connection,
+        // @ts-ignore
         wallet,
         instructionBatch[0],
         signerBatch[0],

@@ -35,6 +35,7 @@ export async function endSale({
   bids,
   bidRedemptions,
   prizeTrackingTickets,
+  // @ts-ignore
   wallet,
 }: EndSaleParams) {
   const { vault, auctionManager } = auctionView;
@@ -50,6 +51,7 @@ export async function endSale({
   const claimSigners: Keypair[][] = [];
   await claimUnusedPrizes(
     connection,
+    // @ts-ignore
     wallet,
     auctionView,
     accountByMint,
@@ -65,6 +67,7 @@ export async function endSale({
 
   return sendTransactions(
     connection,
+    // @ts-ignore
     wallet,
     instructions,
     signers,

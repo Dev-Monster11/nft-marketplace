@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, Connection, TransactionInstruction } from '@solana/web3.js';
 import {
   ParsedAccount,
@@ -248,6 +250,7 @@ export async function convertMasterEditions(
       // Pump em through!
       await sendTransactions(
         connection,
+        // @ts-ignore
         wallet,
         instructionBatch,
         signerBatch,
@@ -257,6 +260,7 @@ export async function convertMasterEditions(
     else
       await sendTransactionWithRetry(
         connection,
+        // @ts-ignore
         wallet,
         instructionBatch[0],
         signerBatch[0],

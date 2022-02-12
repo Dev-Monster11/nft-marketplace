@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, Connection, TransactionInstruction } from '@solana/web3.js';
 import {
   Vault,
@@ -51,6 +53,7 @@ export async function unwindVault(
       const { instructions: cvInstructions, signers: cvSigners } =
         await closeVault(
           connection,
+          // @ts-ignore
           wallet,
           vault.pubkey,
           vault.info.fractionMint,
@@ -134,6 +137,7 @@ export async function unwindVault(
 
   await sendTransactionsWithManualRetry(
     connection,
+    // @ts-ignore
     wallet,
     instructions,
     signers,
