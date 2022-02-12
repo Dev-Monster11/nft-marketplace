@@ -122,7 +122,7 @@ function getMatchmakerPort(matchmakerPort = '') {
 
 module.exports = withPlugins(plugins, {
   assetPrefix,
-  reactStrictMode: true,
+  reactStrictMode: false, // temporary fix, change back to true and debug
   eslint: {
     ignoreDuringBuilds: true,
   },

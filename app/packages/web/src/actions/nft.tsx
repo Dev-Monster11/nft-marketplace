@@ -276,6 +276,7 @@ export const mintNFT = async (
     // );
     // const signature = await sendTransaction(transaction, connection);
     // console.log({signature});
+    console.log('send via web')
     await sendTransactionWithRetry(
       connection,
       wallet,

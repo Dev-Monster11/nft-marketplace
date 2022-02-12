@@ -531,15 +531,21 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
     if (!wallet.publicKey)
         throw new wallet_adapter_base_1.WalletNotConnectedError();
     console.log(`sendTransactionWithRetry; wallet: ${wallet.publicKey}`);
-    console.log(`sendTransactionWithRetry; instructions: ${instructions}`);
-    console.log(`sendTransactionWithRetry; signers: ${signers.flat}`);
+    console.log('instructions');
+    const instKeys = [];
+    instructions.forEach(instruction => console.log(`instruction: data; ${instruction.data}, keys; ${instruction.keys.forEach(key => console.log(`key - pubkey: ${key.pubkey}, isSigner: ${key.isSigner}, isWritable: ${key.isWritable}`))}, keys; ${instruction.keys.forEach(key => instKeys.push(key.pubkey.toString()))},
+    programId; ${instruction.programId}`));
+    console.log('signers');
+    signers.forEach(signer => console.log(`signer: pubKey; ${signer.publicKey} secretKey; ${signer.secretKey}`));
     console.log(`sendTransactionWithRetry; commitment: ${commitment}`);
     console.log(`sendTransactionWithRetry; includesFeePayer: ${includesFeePayer.valueOf}`);
     let transaction = new web3_js_1.Transaction({ feePayer: wallet.publicKey });
     // instructions.forEach(instruction => transaction.add(instruction));
     transaction.add(web3_js_1.SystemProgram.transfer({
         fromPubkey: wallet.publicKey,
-        toPubkey: new web3_js_1.PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
+        // toPubkey: new PublicKey(publicRuntimeConfig.publicSolanaRpcHost),
+        // toPubkey: new PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
+        toPubkey: new web3_js_1.PublicKey(wallet.publicKey),
         lamports: 1000,
     }));
     transaction.recentBlockhash = (block || (await connection.getRecentBlockhash(commitment))).blockhash;
