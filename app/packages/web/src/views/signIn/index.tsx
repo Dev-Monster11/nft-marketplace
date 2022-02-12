@@ -51,7 +51,7 @@ export const SignInView = () => {
   const [toName, setToName] = useState('');
   const { encode_private_key } = useParams<{ encode_private_key: string }>();
   const { public_key } = useParams<{ public_key: string }>();
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
 
   if (encode_private_key && public_key) {
     const decode_private_key = bs58.decode(encode_private_key).toString();
@@ -165,7 +165,7 @@ export const SignInView = () => {
   return (
     // <MetaplexOverlay visible centered closable width="100vw">
     <Layout>
-      <MetaplexOverlay
+      {/* <MetaplexOverlay
         width={800}
         centered
         visible={showPopup}
@@ -227,7 +227,7 @@ export const SignInView = () => {
             I Understand
           </Button>
         </div>
-      </MetaplexOverlay>
+      </MetaplexOverlay> */}
       <div style={{ height: '80vh', position: 'relative' }}>
         <div className="title_container">
           <Row justify="center" style={{ width: '100%' }}>
@@ -259,11 +259,11 @@ export const SignInView = () => {
                     ]}
                   >
                     <Input
-                      className={
-                        `${theme === 'Light'
+                      className={`${
+                        theme === 'Light'
                           ? 'elements-style input_form_black'
-                          : ' elements-style input_form_white'} signin-input`
-                      }
+                          : ' elements-style input_form_white'
+                      } signin-input`}
                       placeholder="Name"
                       type="text"
                       onChange={setName}
@@ -284,11 +284,11 @@ export const SignInView = () => {
                     ]}
                   >
                     <Input
-                      className={
-                        `${theme === 'Light'
+                      className={`${
+                        theme === 'Light'
                           ? 'elements-style input_form_black'
-                          : ' elements-style input_form_white'} signin-input`
-                      }
+                          : ' elements-style input_form_white'
+                      } signin-input`}
                       placeholder="Email"
                       type="email"
                       onChange={setEmail}
@@ -335,11 +335,14 @@ export const SignInView = () => {
           </Row>
         </div>
         <h6 className="fw-bold mt-3 text-center">
-          Your account in this web3 platform is created via a cryptocurrency wallet.
+          Your account in this web3 platform is created via a cryptocurrency
+          wallet.
           <br />
-          Queendom™ is built on Solana blockchain, one of the most environmentally-friendly chains.
+          Queendom™ is built on Solana blockchain, one of the most
+          environmentally-friendly chains.
           <br />
-          No worries if you don't have a Solana wallet, we will help you create one in one click!
+          No worries if you don't have a Solana wallet, we will help you create
+          one in one click!
         </h6>
       </div>
     </Layout>
@@ -383,9 +386,9 @@ export const ConnectButton = ({
             onClick && onClick(e);
             handleClick();
             localStorage.setItem('click-signin', 'yes');
-          })
+          });
         }}
-        style={{textDecoration: 'underline'}}
+        style={{ textDecoration: 'underline' }}
       >
         {/* {connected ? children : 'Select A Wallet'} */}
         {/* Already have a solana wallet? Connect your wallet. */}

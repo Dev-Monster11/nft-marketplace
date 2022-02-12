@@ -43,7 +43,7 @@ export const AppLayout = React.memo(function AppLayout(props: {
             flexDirection: 'row',
             backgroundColor: theme === Theme.Light ? '#211f1fff' : '#e7e7e7ff',
             position: 'fixed',
-            transform: 'translate(40px,-20px)',
+            transform: 'translate(40px,-80px)',
           }}
         >
           <p
