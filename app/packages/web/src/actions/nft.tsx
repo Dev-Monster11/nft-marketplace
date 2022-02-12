@@ -199,7 +199,7 @@ export const mintNFT = async (
     toPublicKey(payerPublicKey),
     signers,
   ).toBase58();
-
+  console.log({signers})
   const recipientKey = (
     await findProgramAddress(
       [
@@ -233,7 +233,7 @@ export const mintNFT = async (
     instructions,
     wallet.publicKey.toBase58(),
   );
-
+    
   if (uploadedMetaDataPin && wallet.publicKey) {
     const updateInstructions: TransactionInstruction[] = instructions;
     const updateSigners: Keypair[] = signers;
@@ -276,7 +276,6 @@ export const mintNFT = async (
     // );
     // const signature = await sendTransaction(transaction, connection);
     // console.log({signature});
-    console.log('send via web')
     await sendTransactionWithRetry(
       connection,
       wallet,

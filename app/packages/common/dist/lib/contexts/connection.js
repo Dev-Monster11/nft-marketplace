@@ -530,6 +530,7 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
         throw new wallet_adapter_base_1.WalletNotConnectedError();
     if (!wallet.publicKey)
         throw new wallet_adapter_base_1.WalletNotConnectedError();
+    console.log({ signers });
     console.log(`sendTransactionWithRetry; wallet: ${wallet.publicKey}`);
     console.log('instructions');
     const instKeys = [];
@@ -538,6 +539,10 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
     console.log(`sendTransactionWithRetry; commitment: ${commitment}`);
     console.log(`sendTransactionWithRetry; includesFeePayer: ${includesFeePayer.valueOf}`);
     let transaction = new web3_js_1.Transaction({ feePayer: wallet.publicKey });
+    // transaction.add(instructions[1]);
+    console.log(wallet.publicKey);
+    console.log("instructions[0]&&&&&&&&&&&", instructions[1]);
+    console.log(transaction);
     instructions.forEach(instruction => transaction.add(instruction));
     // transaction.add(
     //   SystemProgram.transfer({
@@ -572,9 +577,10 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
         // transaction.feePayer = wallet.publicKey;
         if (!wallet.signTransaction)
             return;
-        trx = await wallet.signTransaction(transaction);
+        transaction = await wallet.signTransaction(transaction);
         console.log(`Transaction signature: ${trx.signature}`);
-        let isVerifiedSignature = trx.verifySignatures();
+        console.log(trx.signatures);
+        let isVerifiedSignature = transaction.verifySignatures();
         console.log(`The signatures were verifed: ${isVerifiedSignature}`);
         console.log(`sendTransactionWithRetry; post-sign`);
     }
@@ -583,15 +589,17 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
         console.log(`sendTransactionWithRetry; pre-beforeSend`);
         beforeSend();
     }
+    // if(!trx.signature) return;
+    // let sgn = await connection.sendRawTransaction(trx.serialize());
+    // const res =  await connection.confirmTransaction(sgn);
     const { txid, slot } = await sendSignedTransaction({
         connection,
-        signedTransaction: trx,
+        signedTransaction: transaction,
     });
     // const { txid, slot } = await sendSignedTransaction({
     //   connection,
     //   signedTransaction: transaction,
     // });
-    console.log(`sendTransactionWithRetry; txid: ${txid}`);
     return { txid, slot };
 };
 exports.sendTransactionWithRetry = sendTransactionWithRetry;
