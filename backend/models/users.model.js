@@ -1,12 +1,14 @@
-module.exports = mongoose => {
+module.exports = (mongoose) => {
   var schema = mongoose.Schema(
     {
       name: String,
-      image: {type: String, default: 'https://pbs.twimg.com/profile_images/1393399819213983746/2a8l5muc_400x400.png'}, //@TODO set this via an environment variable
+      // image: {type: String, default: 'https://pbs.twimg.com/profile_images/1393399819213983746/2a8l5muc_400x400.png'}, //@TODO set this via an environment variable
+      image: { type: String }, //@TODO set this via an environment variable
       published: Boolean,
       background: String,
       walletAddress: String,
-      roles: {type : [String], default: 'user'}
+      email: { type: String, unique: true },
+      roles: { type: [String], default: "user" },
     },
     { timestamps: true }
   );

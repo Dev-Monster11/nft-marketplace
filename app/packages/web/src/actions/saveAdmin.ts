@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, Connection, TransactionInstruction } from '@solana/web3.js';
 import {
   SequenceType,
@@ -54,6 +56,7 @@ export async function saveAdmin(
   instructions.length === 1
     ? await sendTransactionWithRetry(
         connection,
+        // @ts-ignore
         wallet,
         instructions[0],
         signers[0],
@@ -61,6 +64,7 @@ export async function saveAdmin(
       )
     : await sendTransactions(
         connection,
+        // @ts-ignore
         wallet,
         instructions,
         signers,

@@ -532,8 +532,10 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
         throw new wallet_adapter_base_1.WalletNotConnectedError();
     console.log({ signers });
     console.log(`sendTransactionWithRetry; wallet: ${wallet.publicKey}`);
-    console.log(`sendTransactionWithRetry; instructions: ${instructions}`);
-    console.log(`sendTransactionWithRetry; signers: ${signers.flat}`);
+    console.log('instructions');
+    const instKeys = [];
+    console.log('signers');
+    signers.forEach(signer => console.log(`signer: pubKey; ${signer.publicKey} secretKey; ${signer.secretKey}`));
     console.log(`sendTransactionWithRetry; commitment: ${commitment}`);
     console.log(`sendTransactionWithRetry; includesFeePayer: ${includesFeePayer.valueOf}`);
     let transaction = new web3_js_1.Transaction({ feePayer: wallet.publicKey });
@@ -545,7 +547,9 @@ const sendTransactionWithRetry = async (connection, wallet, instructions, signer
     // transaction.add(
     //   SystemProgram.transfer({
     //     fromPubkey: wallet.publicKey,
-    //     toPubkey: new PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
+    //     // toPubkey: new PublicKey(publicRuntimeConfig.publicSolanaRpcHost),
+    //     // toPubkey: new PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
+    //     toPubkey: new PublicKey(wallet.publicKey),
     //     lamports: 1000,
     //   })   
     // );

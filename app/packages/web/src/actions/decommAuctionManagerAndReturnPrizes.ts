@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, Connection, TransactionInstruction } from '@solana/web3.js';
 import {
   sendTransactionsWithManualRetry,
@@ -57,6 +59,7 @@ export async function decommAuctionManagerAndReturnPrizes(
 
   await sendTransactionsWithManualRetry(
     connection,
+    // @ts-ignore
     wallet,
     instructions,
     signers,

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {
   Keypair,
   Connection,
@@ -149,6 +151,7 @@ export async function createAuctionManager(
 
   const safetyDepositConfigsWithPotentiallyUnsetTokens =
     await buildSafetyDepositArray(
+      // @ts-ignore
       wallet,
       safetyDepositDrafts,
       participationSafetyDepositDraft,
@@ -161,6 +164,7 @@ export async function createAuctionManager(
     safetyDepositConfigs,
   } = await deprecatedPopulatePrintingTokens(
     connection,
+    // @ts-ignore
     wallet,
     safetyDepositConfigsWithPotentiallyUnsetTokens,
   );
@@ -170,6 +174,7 @@ export async function createAuctionManager(
     signers: auctionManagerSigners,
     auctionManager,
   } = await setupAuctionManagerInstructions(
+    // @ts-ignore
     wallet,
     vault,
     paymentMint,
@@ -189,6 +194,7 @@ export async function createAuctionManager(
     instructions: createReservationInstructions,
     signers: createReservationSigners,
   } = await deprecatedCreateReservationListForTokens(
+    // @ts-ignore
     wallet,
     auctionManager,
     safetyDepositConfigs,
@@ -196,6 +202,7 @@ export async function createAuctionManager(
 
   const lookup: byType = {
     markItemsThatArentMineAsSold: await markItemsThatArentMineAsSold(
+      // @ts-ignore
       wallet,
       safetyDepositDrafts,
     ),
@@ -209,6 +216,7 @@ export async function createAuctionManager(
     },
     closeVault: await closeVault(
       connection,
+      // @ts-ignore
       wallet,
       vault,
       fractionalMint,
@@ -231,6 +239,7 @@ export async function createAuctionManager(
       signers: auctionManagerSigners,
     },
     setVaultAndAuctionAuthorities: await setVaultAndAuctionAuthorities(
+      // @ts-ignore
       wallet,
       vault,
       auction,
@@ -239,6 +248,7 @@ export async function createAuctionManager(
     startAuction: await setupStartAuction(wallet, vault),
     deprecatedValidateParticipation: participationSafetyDepositDraft
       ? await deprecatedValidateParticipationHelper(
+          // @ts-ignore
           wallet,
           auctionManager,
           whitelistedCreatorsByCreator,
@@ -252,6 +262,7 @@ export async function createAuctionManager(
       participationSafetyDepositDraft
         ? await deprecatedBuildAndPopulateOneTimeAuthorizationAccount(
             connection,
+            // @ts-ignore
             wallet,
             (
               participationSafetyDepositDraft?.masterEdition as ParsedAccount<MasterEditionV1>
@@ -259,6 +270,7 @@ export async function createAuctionManager(
           )
         : undefined,
     validateBoxes: await validateBoxes(
+      // @ts-ignore
       wallet,
       whitelistedCreatorsByCreator,
       vault,
@@ -281,6 +293,7 @@ export async function createAuctionManager(
       signers: populateSigners,
     },
     cacheAuctionIndexer: await cacheAuctionIndexer(
+      // @ts-ignore
       wallet,
       vault,
       auction,
@@ -340,6 +353,7 @@ export async function createAuctionManager(
   if (instructions.length === 1) {
     await sendTransactionWithRetry(
       connection,
+      // @ts-ignore
       wallet,
       instructions[0],
       filteredSigners[0],
@@ -348,12 +362,13 @@ export async function createAuctionManager(
   } else {
     await sendTransactions(
       connection,
+      // @ts-ignore
       wallet,
       instructions,
       filteredSigners,
       SequenceType.StopOnFailure,
       'confirmed',
-      (_, index) => {
+      (_: any, index: any) => {
         const step = index + 1;
         const total = instructions.length;
 

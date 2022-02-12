@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Connection } from '@solana/web3.js';
 import { MintLayout } from '@solana/spl-token';
 import BN from 'bn.js';
@@ -37,6 +39,7 @@ export async function setupMintEditionIntoWalletInstructions(
     MintLayout.span,
   );
   const { mint: newMint } = await createMintAndAccountWithOne(
+    // @ts-ignore
     wallet,
     mintDestination,
     mintRentExempt,

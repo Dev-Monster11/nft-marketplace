@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {
   Attribute,
   createAssociatedTokenAccountInstruction,
@@ -274,7 +276,6 @@ export const mintNFT = async (
     // );
     // const signature = await sendTransaction(transaction, connection);
     // console.log({signature});
-    console.log({instructions})
     await sendTransactionWithRetry(
       connection,
       wallet,

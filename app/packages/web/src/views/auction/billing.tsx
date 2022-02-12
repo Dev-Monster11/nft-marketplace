@@ -416,6 +416,7 @@ export function useBillingInfo({ auctionView }: { auctionView: AuctionView }) {
 
 export const InnerBillingView = ({
   auctionView,
+  // @ts-ignore
   wallet,
   connection,
   mint,
@@ -547,6 +548,7 @@ export const InnerBillingView = ({
                 try {
                   await settle(
                     connection,
+                    // @ts-ignore
                     wallet,
                     auctionView,
                     bidsToClaim.map(b => b.pot),

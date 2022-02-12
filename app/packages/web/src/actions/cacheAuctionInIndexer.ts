@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { ParsedAccount, StringPublicKey, WalletSigner } from '@oyster/common';
@@ -35,6 +37,7 @@ export async function cacheAuctionIndexer(
     instructions: createAuctionCacheInstructions,
     signers: createAuctionCacheSigners,
   } = await createAuctionCache(
+    // @ts-ignore
     wallet,
     vault,
     auction,

@@ -124,6 +124,7 @@ export const ArtCreateView = () => {
     try {
       const _nft = await mintNFT(
         connection,
+        // @ts-ignore
         wallet,
         env,
         files,

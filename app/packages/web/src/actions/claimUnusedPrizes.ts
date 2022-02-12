@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Keypair, Connection, TransactionInstruction } from '@solana/web3.js';
 import {
   ParsedAccount,
@@ -119,6 +121,7 @@ export async function claimUnusedPrizes(
               accountsByMint,
               accountRentExempt,
               mintRentExempt,
+              // @ts-ignore
               wallet,
               p.bid.info.bidderPubkey,
               auctionView.participationItem.safetyDeposit,
@@ -134,6 +137,7 @@ export async function claimUnusedPrizes(
       await setupWithdrawMasterEditionInstructions(
         connection,
         auctionView,
+        // @ts-ignore
         wallet,
         auctionView.participationItem.safetyDeposit,
         auctionView.participationItem,
@@ -180,6 +184,7 @@ export async function claimUnusedPrizes(
             auctionView,
             accountsByMint,
             accountRentExempt,
+            // @ts-ignore
             wallet,
             safetyDeposit,
             item,
@@ -201,6 +206,7 @@ export async function claimUnusedPrizes(
                 connection,
                 auctionView,
                 mintRentExempt,
+                // @ts-ignore
                 wallet,
                 winningBidder,
                 item.safetyDeposit,
@@ -221,6 +227,7 @@ export async function claimUnusedPrizes(
             auctionView,
             accountsByMint,
             accountRentExempt,
+            // @ts-ignore
             wallet,
             safetyDeposit,
             item,
@@ -235,6 +242,7 @@ export async function claimUnusedPrizes(
             auctionView,
             accountsByMint,
             accountRentExempt,
+            // @ts-ignore
             wallet,
             safetyDeposit,
             signers,
@@ -252,6 +260,7 @@ export async function claimUnusedPrizes(
     await setupWithdrawMasterEditionInstructions(
       connection,
       auctionView,
+      // @ts-ignore
       wallet,
       item.safetyDeposit,
       item,
