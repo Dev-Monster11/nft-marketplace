@@ -239,7 +239,6 @@ export const AppBar = (props: P) => {
               visible={showMenu}
               placement="bottom"
               mask={true}
-              maskStyle={{ opacity: '0%' }}
               onClose={() => setShowMenu(false)}
               closable={false}
             >
@@ -249,7 +248,7 @@ export const AppBar = (props: P) => {
                 selectedKeys={activeItems}
               >
                 {menuItems}
-                <Menu.Item key={"about"}>
+                <Menu.Item key={'about'}>
                   <a href="https://www.queendom.io/">About</a>
                 </Menu.Item>
                 <div style={{ marginTop: '50px' }}>
@@ -267,7 +266,7 @@ export const AppBar = (props: P) => {
           <Menu theme="dark" mode="horizontal" selectedKeys={activeItems}>
             {menuItems}
 
-            <Menu.Item key={"about"}>
+            <Menu.Item key={'about'}>
               <a href="https://www.queendom.io/">About</a>
             </Menu.Item>
           </Menu>

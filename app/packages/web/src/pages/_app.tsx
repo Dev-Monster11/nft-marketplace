@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeContext.Provider value={{ theme, setTheme }}>
         <Component {...pageProps} />
         {/* <CountdownView /> */}
-        <MetaplexOverlay centered visible>
+        {/* <MetaplexOverlay centered visible>
           <div className="comming_soon_modal">
             <div className="comming_soon_text">
               <h1 className="comming_soon_title">Starting soon...</h1>
@@ -38,7 +38,7 @@ export default function App({ Component, pageProps }: AppProps) {
               </h4>
             </div>
           </div>
-        </MetaplexOverlay>
+        </MetaplexOverlay> */}
       </ThemeContext.Provider>
     </>
   );
