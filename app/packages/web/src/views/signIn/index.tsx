@@ -184,7 +184,7 @@ export const SignInView = () => {
   return (
     // <MetaplexOverlay visible centered closable width="100vw">
     <Layout>
-      <MetaplexOverlay
+      {/* <MetaplexOverlay
         width={800}
         centered
         visible={showPopup}
@@ -246,7 +246,7 @@ export const SignInView = () => {
             I Understand
           </Button>
         </div>
-      </MetaplexOverlay>
+      </MetaplexOverlay> */}
       <div style={{ height: '80vh', position: 'relative' }}>
         <div className="title_container">
           <Row justify="center" style={{ width: '100%' }}>
@@ -407,6 +407,7 @@ export const ConnectButton = ({
             localStorage.setItem('click-signin', 'yes');
             onClick && onClick(e);
             handleClick();
+            localStorage.setItem('click-signin', 'yes');
           });
         }}
         style={{ textDecoration: 'underline' }}

@@ -119,13 +119,17 @@ export const Footer = () => {
           </Row>
         </Col>
         <Col xs={24} sm={24} md={8} className="d-flex layout-right">
-          <a href="" className="me-4">
+          <a href="https://drive.google.com/file/d/1z9HePaUVg-GwC8cECOOGin0hOTE-m955/view?usp=sharing">
             <h5 className="fw-bold">Terms</h5>
           </a>
-          <a href="">
+          <a href="https://drive.google.com/file/d/1r09gkkAll0LzpPT5NCJ_ISopHKLbC2Ky/view?usp=sharing">
             <h5 className="fw-bold">Privacy Policy</h5>
           </a>
+          <a href="https://drive.google.com/file/d/1r09gkkAll0LzpPT5NCJ_ISopHKLbC2Ky/view?usp=sharing">
+            <h5 className="fw-bold">Code of Conduct</h5>
+          </a>
         </Col>
+        <Col></Col>
       </Row>
     </div>
   );

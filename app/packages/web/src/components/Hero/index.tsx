@@ -18,7 +18,7 @@ const Hero = function () {
         Real-Time 3D Streaming for Limitless Experiences
       </h3> */}
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button type="primary">
+        <Button type="primary" className="hero_button">
           {/* <Link to='/client'>Connect</Link> */}
           <Link to="/chat" className="fw-bold">
             Enter
