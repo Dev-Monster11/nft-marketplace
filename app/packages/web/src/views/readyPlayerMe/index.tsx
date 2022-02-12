@@ -28,14 +28,21 @@ export const ReadyPlayerMeView = () => {
          * After success redirect to chat page
          */
         console.log(localStorage.getItem('publckey'), url);
-        const address = publicKey ? publicKey : localStorage.getItem('publckey')
+        const address = publicKey
+          ? publicKey
+          : localStorage.getItem('publckey');
         const result = updateUserImage(address, url);
+        if (result) {
+          notify({
+            message: 'Avatar is saved',
+            description: '',
+          });
 
-        result &&
           history.push({
             pathname: '/chat',
             state: { fromRPM: true },
           });
+        }
       } else {
         console.log(`Received message from unknown source: ${event.data}`);
       }
