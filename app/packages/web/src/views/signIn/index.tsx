@@ -226,7 +226,7 @@ export const SignInView = () => {
           </Button>
         </div>
       </MetaplexOverlay>
-      <div style={{ height: '80vh', display: 'flex', position: 'relative' }}>
+      <div style={{ height: '80vh', position: 'relative' }}>
         <div className="title_container">
           <Row justify="center" style={{ width: '100%' }}>
             <Col span={24}>
@@ -251,17 +251,17 @@ export const SignInView = () => {
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your username correctly!',
+                        message: 'Enter Name',
                       },
                     ]}
                   >
                     <Input
                       className={
-                        theme === 'Light'
+                        `${theme === 'Light'
                           ? 'elements-style input_form_black'
-                          : ' elements-style input_form_white'
+                          : ' elements-style input_form_white'} signin-input`
                       }
-                      placeholder="Your Name"
+                      placeholder="Name"
                       type="text"
                       onChange={setName}
                     />
@@ -271,18 +271,22 @@ export const SignInView = () => {
                     name="email"
                     rules={[
                       {
+                        type: 'email',
+                        message: 'Enter Email',
+                      },
+                      {
                         required: true,
-                        message: 'Please input your email correctly!',
+                        message: 'Enter Email',
                       },
                     ]}
                   >
                     <Input
                       className={
-                        theme === 'Light'
+                        `${theme === 'Light'
                           ? 'elements-style input_form_black'
-                          : ' elements-style input_form_white'
+                          : ' elements-style input_form_white'} signin-input`
                       }
-                      placeholder="Your e-mail"
+                      placeholder="Email"
                       type="email"
                       onChange={setEmail}
                     />
@@ -297,12 +301,12 @@ export const SignInView = () => {
                     Create a Solana Wallet
                   </Button>
                 </Form>
-                <a
-                  onClick={() => setShowForm(false)}
+                {/* <a
+                  onClick={() => {setShowForm(false)}}
                   className="text-decoration-underline"
                 >
                   Already have a solana wallet? Connect your wallet.
-                </a>
+                </a> */}
                 <ConnectButton
                   hidden={showForm}
                   className="fw-bold"
@@ -310,16 +314,6 @@ export const SignInView = () => {
                   style={{ width: '100%', height: '32px' }}
                   allowWalletChange={false}
                 />
-                <h6 className="fw-bold mt-3">
-                  Your account in this web3 platform is created via a
-                  cryptocurrency wallet.
-                  <br />
-                  Queendom™ is built on Solana blockchain, one of the most
-                  environmentally-friendly chains.
-                  <br />
-                  No worries if you don't have a Solana wallet, we will help you
-                  create one in one click!
-                </h6>
               </div>
               <div
                 className={!showForm ? 'fw-bold invisible' : 'fw-bold visible'}
@@ -336,6 +330,13 @@ export const SignInView = () => {
             </Col>
           </Row>
         </div>
+        <h6 className="fw-bold mt-3 text-center">
+          Your account in this web3 platform is created via a cryptocurrency wallet.
+          <br />
+          Queendom™ is built on Solana blockchain, one of the most environmentally-friendly chains.
+          <br />
+          No worries if you don't have a Solana wallet, we will help you create one in one click!
+        </h6>
       </div>
     </Layout>
     // </MetaplexOverlay>
@@ -370,17 +371,17 @@ export const ConnectButton = ({
 
   if (!wallet || !allowWalletChange) {
     return (
-      <Button
-        {...rest}
+      <a
         onClick={e => {
           onClick && onClick(e);
           handleClick();
           localStorage.setItem('click-signin', 'yes');
         }}
-        disabled={connected && disabled}
+        style={{textDecoration: 'underline'}}
       >
-        {connected ? children : 'Select A Wallet'}
-      </Button>
+        {/* {connected ? children : 'Select A Wallet'} */}
+        Already have a solana wallet? Connect your wallet.
+      </a>
     );
   }
 

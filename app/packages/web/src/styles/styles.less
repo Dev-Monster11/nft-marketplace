@@ -325,9 +325,9 @@ h6 {
 .title_container {
   margin: auto;
   display: flex;
-  width: 40vw;
   text-align: center;
-  @media screen and (min-width: 1024px) {
+  margin-top: 150px;
+  @media screen and (min-width: 768px) {
     width: 30vw;
   }
 }
@@ -393,4 +393,14 @@ h6 {
 .small {
   font-size: 18px !important;
 
+}
+
+//sign in
+.signin-input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.ant-form-item-explain-error {
+  text-align: left;
+  font-size: 13px;
 }
