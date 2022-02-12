@@ -739,6 +739,8 @@ export const sendTransactionWithRetry = async (
   if (!wallet) throw new WalletNotConnectedError();
   if (!wallet.publicKey) throw new WalletNotConnectedError();
 
+  console.log({signers})
+
   console.log(`sendTransactionWithRetry; wallet: ${wallet.publicKey}`)
   console.log(`sendTransactionWithRetry; instructions: ${instructions}`)
   console.log(`sendTransactionWithRetry; signers: ${signers.flat}`)
@@ -747,14 +749,18 @@ export const sendTransactionWithRetry = async (
 
 
   let transaction = new Transaction({ feePayer: wallet.publicKey});
-  // instructions.forEach(instruction => transaction.add(instruction));
-  transaction.add(
-    SystemProgram.transfer({
-      fromPubkey: wallet.publicKey,
-      toPubkey: new PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
-      lamports: 1000,
-    })   
-  );
+  // transaction.add(instructions[1]);
+  console.log(wallet.publicKey)
+  console.log("instructions[0]&&&&&&&&&&&", instructions[1]);
+  console.log(transaction);
+  instructions.forEach(instruction => transaction.add(instruction));
+  // transaction.add(
+  //   SystemProgram.transfer({
+  //     fromPubkey: wallet.publicKey,
+  //     toPubkey: new PublicKey('7yi5J2aDWLQ1zUGb7mtiVNE5vtXBx6cUEae1sAgTJ5vT'),
+  //     lamports: 1000,
+  //   })   
+  // );
 
   transaction.recentBlockhash = (
     block || (await connection.getRecentBlockhash(commitment))
@@ -770,15 +776,30 @@ export const sendTransactionWithRetry = async (
   console.log(`signedTransaction2; recentBlockhash: ${transaction.recentBlockhash}`);
   console.log(`signedTransaction2; signature: ${transaction.signature}`);
 
+  if (includesFeePayer) {
+    transaction.setSigners(...signers.map(s => s.publicKey));
+  } else {
+    transaction.setSigners(
+      // fee payed by the wallet owner
+      wallet.publicKey,
+      ...signers.map(s => s.publicKey),
+    );
+  }
+
+  if (signers.length > 0) {
+    transaction.partialSign(...signers);
+  }
+
   let trx:Transaction = transaction;
   if (!includesFeePayer) {
     // console.log(`store paying for transaction?: ${wallet.publicKey}`);
     // transaction.feePayer = wallet.publicKey;
     if(!wallet.signTransaction) return;
-    trx = await wallet.signTransaction(transaction);
+    transaction = await wallet.signTransaction(transaction);
     console.log(`Transaction signature: ${trx.signature}`);
+    console.log(trx.signatures);
 
-    let isVerifiedSignature = trx.verifySignatures();
+    let isVerifiedSignature = transaction.verifySignatures();
     console.log(`The signatures were verifed: ${isVerifiedSignature}`)
     
     console.log(`sendTransactionWithRetry; post-sign`)
@@ -789,17 +810,19 @@ export const sendTransactionWithRetry = async (
     console.log(`sendTransactionWithRetry; pre-beforeSend`)
     beforeSend();
   }
+  // if(!trx.signature) return;
+  // let sgn = await connection.sendRawTransaction(trx.serialize());
+  // const res =  await connection.confirmTransaction(sgn);
   const { txid, slot } = await sendSignedTransaction({
     connection,
-    signedTransaction: trx,
+    signedTransaction: transaction,
   });
   // const { txid, slot } = await sendSignedTransaction({
   //   connection,
   //   signedTransaction: transaction,
   // });
-  console.log(`sendTransactionWithRetry; txid: ${txid}`)
 
-  return { txid, slot };
+  return { txid, slot};
 };
 
 // export const sendTransactionWithRetry = async (

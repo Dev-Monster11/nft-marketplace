@@ -1,4 +1,4 @@
-import { Cluster, clusterApiUrl, Transaction, PublicKey, Keypair, sendAndConfirmTransaction, Connection} from '@solana/web3.js';
+import { Cluster, clusterApiUrl, Transaction, PublicKey, Keypair, sendAndConfirmTransaction, Connection, TransactionInstruction} from '@solana/web3.js';
 import EventEmitter from 'eventemitter3';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
@@ -83,6 +83,7 @@ export default class MyWallet extends EventEmitter {
     if (!this.connected) {
       throw new Error('Wallet not connected');
     }
+    // transaction.instructions[0]
     console.log("transaction", transaction)
     const myPromise = new Promise<Transaction>((resolve, reject) => {
       confirmAlert({
